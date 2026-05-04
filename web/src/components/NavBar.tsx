@@ -25,8 +25,9 @@ export default function NavBar() {
     <header className="sticky top-0 z-40 border-b border-sand/60 bg-parchment/90 backdrop-blur-sm">
       <div className="max-w-5xl mx-auto flex items-center justify-between h-12 px-6">
         <div className="flex items-center gap-6">
-          <span className="text-base font-serif font-medium tracking-wide text-brand select-none">
-            free
+          <span className="text-xl italic font-medium tracking-tight text-brand select-none relative inline-block" style={{ fontFamily: "'Newsreader Variable', 'Newsreader', serif" }}>
+            <span style={{ display: 'inline-block', transform: 'scaleY(1.2)', transformOrigin: 'top' }}>f</span>ree
+            <span className="absolute bottom-0 left-0 right-0" style={{ height: '1.5px', background: 'var(--color-brand)', opacity: 0.25, borderRadius: '1px' }} />
           </span>
           <nav className="flex items-center gap-0.5">
             {links.map(({ to, label }) => (
