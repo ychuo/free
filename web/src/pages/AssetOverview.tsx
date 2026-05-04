@@ -19,7 +19,7 @@ export default function AssetOverview() {
           <h1 className="text-lg font-serif font-medium tracking-wide text-deep">概览</h1>
           <p className="text-[12px] text-stone mt-0.5">你的资产全景</p>
         </div>
-        <Button onClick={createSnapshot} variant="secondary" size="sm">记录快照</Button>
+        <Button onClick={createSnapshot} variant="outline" size="sm">记录快照</Button>
       </div>
 
       <NetWorthCard summary={summary} />

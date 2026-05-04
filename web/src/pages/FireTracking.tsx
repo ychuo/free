@@ -33,7 +33,7 @@ export default function FireTracking() {
           <h1 className="text-lg font-serif font-medium tracking-wide text-deep">FIRE</h1>
           <p className="text-[12px] text-stone mt-0.5">财务自由进度追踪</p>
         </div>
-        <Button variant="secondary" size="sm" onClick={startEdit}>设定目标</Button>
+        <Button variant="outline" size="sm" onClick={startEdit}>设定目标</Button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">

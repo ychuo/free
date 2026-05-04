@@ -3,8 +3,8 @@ import { Plus, Pencil, Trash2 } from 'lucide-react';
 import type { Asset, CreateAssetInput } from '../types';
 import AssetForm from './AssetForm';
 import Modal from './Modal';
+import ConfirmDialog from './ConfirmDialog';
 import { Button } from './ui/button';
-import { Badge } from './ui/badge';
 
 const CATEGORY_LABELS: Record<string, string> = {
   cash: '现金', fixed_income: '固收', equity: '权益', real_estate: '不动产',
@@ -21,6 +21,7 @@ interface Props {
 export default function AssetList({ assets, onCreate, onUpdate, onDelete }: Props) {
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<Asset | null>(null);
+  const [deleting, setDeleting] = useState<Asset | null>(null);
 
   const grouped: Record<string, Asset[]> = {};
   for (const a of assets) { (grouped[a.category] ||= []).push(a); }
@@ -63,13 +64,15 @@ export default function AssetList({ assets, onCreate, onUpdate, onDelete }: Prop
                           <p className="text-[10px] text-stone">被动收入 {(a.passiveIncome / 1e4).toFixed(2)} 万/年</p>
                         )}
                       </div>
-                      <div className="flex opacity-0 group-hover:opacity-100 transition-opacity gap-0.5">
-                        <Button variant="ghost" size="icon-sm" onClick={() => { setEditing(a); setShowForm(true); }}>
+                      <div className="flex opacity-0 group-hover:opacity-100 transition-opacity -mr-1">
+                        <button onClick={() => { setEditing(a); setShowForm(true); }}
+                          className="p-0.5 rounded text-stone/50 hover:text-stone transition-colors">
                           <Pencil className="h-3 w-3" />
-                        </Button>
-                        <Button variant="ghost" size="icon-sm" onClick={() => { if (confirm(`确定删除「${a.name}」？`)) onDelete(a.id); }}>
-                          <Trash2 className="h-3 w-3 text-destructive" />
-                        </Button>
+                        </button>
+                        <button onClick={() => setDeleting(a)}
+                          className="p-0.5 rounded text-stone/50 hover:text-destructive transition-colors">
+                          <Trash2 className="h-3 w-3" />
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -91,6 +94,14 @@ export default function AssetList({ assets, onCreate, onUpdate, onDelete }: Prop
           onClose={() => { setShowForm(false); setEditing(null); }}
         />
       </Modal>
+
+      <ConfirmDialog
+        open={deleting != null}
+        title="确认删除"
+        description={`确定要删除「${deleting?.name}」吗？此操作不可撤销。`}
+        onConfirm={async () => { if (deleting) { await onDelete(deleting.id); setDeleting(null); } }}
+        onCancel={() => setDeleting(null)}
+      />
     </div>
   );
 }

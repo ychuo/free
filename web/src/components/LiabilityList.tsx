@@ -3,6 +3,7 @@ import { Plus, Pencil, Trash2 } from 'lucide-react';
 import type { Liability, CreateLiabilityInput } from '../types';
 import LiabilityForm from './LiabilityForm';
 import Modal from './Modal';
+import ConfirmDialog from './ConfirmDialog';
 import { Button } from './ui/button';
 
 const TYPE_LABELS: Record<string, string> = { mortgage: '房贷', consumer: '消费贷', other: '其他' };
@@ -17,6 +18,7 @@ interface Props {
 export default function LiabilityList({ liabilities, onCreate, onUpdate, onDelete }: Props) {
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<Liability | null>(null);
+  const [deleting, setDeleting] = useState<Liability | null>(null);
 
   return (
     <div className="rounded-lg border border-sand bg-ivory p-5 animate-fade-up stagger-2">
@@ -53,13 +55,15 @@ export default function LiabilityList({ liabilities, onCreate, onUpdate, onDelet
                   <span className="text-[13px] font-medium text-[#b91c1c]">{l.remaining.toLocaleString()}</span>
                   <p className="text-[10px] text-stone">剩余 / {l.totalAmount.toLocaleString()}</p>
                 </div>
-                <div className="flex opacity-0 group-hover:opacity-100 transition-opacity gap-0.5">
-                  <Button variant="ghost" size="icon-sm" onClick={() => { setEditing(l); setShowForm(true); }}>
+                <div className="flex opacity-0 group-hover:opacity-100 transition-opacity -mr-1">
+                  <button onClick={() => { setEditing(l); setShowForm(true); }}
+                    className="p-0.5 rounded text-stone/50 hover:text-stone transition-colors">
                     <Pencil className="h-3 w-3" />
-                  </Button>
-                  <Button variant="ghost" size="icon-sm" onClick={() => { if (confirm(`确定删除「${l.name}」？`)) onDelete(l.id); }}>
-                    <Trash2 className="h-3 w-3 text-destructive" />
-                  </Button>
+                  </button>
+                  <button onClick={() => setDeleting(l)}
+                    className="p-0.5 rounded text-stone/50 hover:text-destructive transition-colors">
+                    <Trash2 className="h-3 w-3" />
+                  </button>
                 </div>
               </div>
             </div>
@@ -78,6 +82,14 @@ export default function LiabilityList({ liabilities, onCreate, onUpdate, onDelet
           onClose={() => { setShowForm(false); setEditing(null); }}
         />
       </Modal>
+
+      <ConfirmDialog
+        open={deleting != null}
+        title="确认删除"
+        description={`确定要删除「${deleting?.name}」吗？此操作不可撤销。`}
+        onConfirm={async () => { if (deleting) { await onDelete(deleting.id); setDeleting(null); } }}
+        onCancel={() => setDeleting(null)}
+      />
     </div>
   );
 }
