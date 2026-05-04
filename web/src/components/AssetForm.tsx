@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { X } from 'lucide-react';
 import { AssetCategory, type CreateAssetInput, type Asset } from '../types';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from './ui/select';
 
 const CATEGORIES = [
   { value: AssetCategory.CASH, label: '现金' }, { value: AssetCategory.FIXED_INCOME, label: '固收' },
@@ -10,8 +13,6 @@ const CATEGORIES = [
 ];
 
 interface Props { asset?: Asset; onSave: (data: CreateAssetInput) => void; onClose: () => void; }
-
-const inputClass = "w-full px-2.5 py-2 rounded-md border border-sand bg-ivory text-[13px] text-deep placeholder:text-stone focus:outline-none focus:ring-2 focus:ring-brand/15 focus:border-brand/30 transition-all";
 
 export default function AssetForm({ asset, onSave, onClose }: Props) {
   const [name, setName] = useState(asset?.name || '');
@@ -26,7 +27,7 @@ export default function AssetForm({ asset, onSave, onClose }: Props) {
   };
 
   return (
-    <div className="w-full max-w-sm rounded-lg border border-sand bg-ivory p-5">
+    <div className="w-full max-w-sm">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-serif font-medium text-deep">{asset ? '编辑资产' : '新增资产'}</h3>
         <button onClick={onClose} className="p-1 rounded-md hover:bg-sand/60 text-stone transition-colors">
@@ -36,37 +37,34 @@ export default function AssetForm({ asset, onSave, onClose }: Props) {
       <form onSubmit={handleSubmit} className="space-y-3">
         <div>
           <label className="block text-[12px] font-medium mb-1 text-stone">名称</label>
-          <input value={name} onChange={e => setName(e.target.value)} required className={inputClass} />
+          <Input value={name} onChange={e => setName(e.target.value)} required />
         </div>
         <div>
           <label className="block text-[12px] font-medium mb-1 text-stone">类别</label>
-          <select value={category} onChange={e => setCategory(e.target.value as AssetCategory)} className={inputClass}>
-            {CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
-          </select>
+          <Select value={category} onValueChange={(v) => setCategory(v as AssetCategory)}>
+            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectContent>
+              {CATEGORIES.map(c => <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>)}
+            </SelectContent>
+          </Select>
         </div>
         <div className="grid grid-cols-2 gap-2.5">
           <div>
             <label className="block text-[12px] font-medium mb-1 text-stone">数量/份额</label>
-            <input type="number" step="0.01" value={quantity} onChange={e => setQuantity(e.target.value)} required className={inputClass} />
+            <Input type="number" step="0.01" value={quantity} onChange={e => setQuantity(e.target.value)} required />
           </div>
           <div>
             <label className="block text-[12px] font-medium mb-1 text-stone">单价</label>
-            <input type="number" step="0.01" value={unitPrice} onChange={e => setUnitPrice(e.target.value)} required className={inputClass} />
+            <Input type="number" step="0.01" value={unitPrice} onChange={e => setUnitPrice(e.target.value)} required />
           </div>
         </div>
         <div>
           <label className="block text-[12px] font-medium mb-1 text-stone">备注</label>
-          <input value={notes} onChange={e => setNotes(e.target.value)} className={inputClass} />
+          <Input value={notes} onChange={e => setNotes(e.target.value)} />
         </div>
         <div className="flex justify-end gap-2 pt-1.5">
-          <button type="button" onClick={onClose}
-            className="px-3 py-1.5 text-[12px] font-medium rounded-md border border-sand text-olive hover:bg-sand/50 transition-colors">
-            取消
-          </button>
-          <button type="submit"
-            className="px-4 py-1.5 text-[12px] font-medium rounded-md bg-brand text-ivory hover:bg-brand-light transition-colors">
-            保存
-          </button>
+          <Button type="button" variant="secondary" size="sm" onClick={onClose}>取消</Button>
+          <Button type="submit" size="sm">保存</Button>
         </div>
       </form>
     </div>

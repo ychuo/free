@@ -3,6 +3,8 @@ import { Plus, Pencil, Trash2 } from 'lucide-react';
 import type { Asset, CreateAssetInput } from '../types';
 import AssetForm from './AssetForm';
 import Modal from './Modal';
+import { Button } from './ui/button';
+import { Badge } from './ui/badge';
 
 const CATEGORY_LABELS: Record<string, string> = {
   cash: '现金', fixed_income: '固收', equity: '权益', real_estate: '不动产',
@@ -27,61 +29,56 @@ export default function AssetList({ assets, onCreate, onUpdate, onDelete }: Prop
     <div className="rounded-lg border border-sand bg-ivory p-5 animate-fade-up stagger-1">
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-sm font-serif font-medium text-deep">资产明细</h3>
-        <button
-          onClick={() => { setEditing(null); setShowForm(true); }}
-          className="flex items-center gap-1 px-2.5 py-1 text-[12px] font-medium rounded-md bg-brand text-ivory hover:bg-brand-light transition-colors"
-        >
-          <Plus className="h-3 w-3" /> 新增
-        </button>
+        <Button size="sm" onClick={() => { setEditing(null); setShowForm(true); }}>
+          <Plus className="h-3 w-3 mr-1" /> 新增
+        </Button>
       </div>
 
       {assets.length === 0 ? (
         <p className="text-center text-stone text-[12px] py-8">尚无资产，点击新增开始记录</p>
       ) : (
-        <div className="space-y-3">
-          {Object.entries(grouped).map(([cat, items]) => {
-            const catTotal = items.reduce((s, a) => s + a.totalValue, 0);
-            return (
-              <div key={cat}>
-                <div className="flex items-center justify-between mb-1.5">
-                  <h4 className="text-[11px] font-medium uppercase tracking-wider text-stone">{CATEGORY_LABELS[cat] || cat}</h4>
-                  <span className="text-[11px] text-stone">{(catTotal / 1e4).toFixed(1)} 万</span>
-                </div>
-                <div className="space-y-1">
-                  {items.map((a) => (
-                    <div
-                      key={a.id}
-                      className="group flex items-center justify-between px-3 py-2 rounded-md border border-sand/60 bg-parchment/50 hover:border-sand transition-colors"
-                    >
-                      <div className="min-w-0 flex-1">
-                        <p className="text-[13px] text-deep truncate">{a.name}</p>
-                        <p className="text-[11px] text-stone mt-0.5">
-                          {a.quantity.toLocaleString()} × {a.unitPrice.toLocaleString()}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-2 ml-3">
+        <div className="space-y-4">
+          {Object.entries(grouped).map(([cat, items]) => (
+            <div key={cat}>
+              <h4 className="text-[11px] font-medium text-stone mb-1.5 px-0.5">
+                {CATEGORY_LABELS[cat] || cat}
+                <span className="ml-1.5 text-stone/60">{items.length}</span>
+              </h4>
+              <div className="space-y-1">
+                {items.map((a) => (
+                  <div
+                    key={a.id}
+                    className="group flex items-center justify-between px-3 py-2 rounded-md border border-sand/60 bg-parchment/50 hover:border-sand transition-colors"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[13px] text-deep truncate">{a.name}</p>
+                      <p className="text-[11px] text-stone mt-0.5">
+                        {a.quantity} × {a.unitPrice.toLocaleString()} = {(a.totalValue / 1e4).toFixed(2)} 万
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 ml-3">
+                      <div className="text-right">
                         <span className="text-[13px] font-medium text-deep">{a.totalValue.toLocaleString()}</span>
-                        <div className="flex opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button
-                            onClick={() => { setEditing(a); setShowForm(true); }}
-                            className="p-1 rounded hover:bg-sand/60 text-stone hover:text-olive transition-colors"
-                          >
-                            <Pencil className="h-3 w-3" />
-                          </button>
-                          <button
-                            onClick={() => { if (confirm(`确定删除「${a.name}」？`)) onDelete(a.id); }}
-                            className="p-1 rounded hover:bg-red-50 text-stone hover:text-[#b91c1c] transition-colors"
-                          >
-                            <Trash2 className="h-3 w-3" />
-                          </button>
-                        </div>
+                        {a.passiveIncome != null && a.passiveIncome > 0 && (
+                          <p className="text-[10px] text-stone">被动收入 {(a.passiveIncome / 1e4).toFixed(2)} 万/年</p>
+                        )}
+                      </div>
+                      <div className="flex opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button onClick={() => { setEditing(a); setShowForm(true); }}
+                          className="p-1 rounded hover:bg-sand/60 text-stone hover:text-olive transition-colors">
+                          <Pencil className="h-3 w-3" />
+                        </button>
+                        <button onClick={() => { if (confirm(`确定删除「${a.name}」？`)) onDelete(a.id); }}
+                          className="p-1 rounded hover:bg-red-50 text-stone hover:text-[#b91c1c] transition-colors">
+                          <Trash2 className="h-3 w-3" />
+                        </button>
                       </div>
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
       )}
 
