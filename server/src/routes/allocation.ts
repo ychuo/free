@@ -13,6 +13,10 @@ export async function allocationRoutes(app: FastifyInstance) {
 
   app.put('/allocation-targets', async (request: FastifyRequest, reply: FastifyReply) => {
     const { targets } = request.body as { targets: { category: string; targetRatio: number }[] };
+    const total = targets.reduce((s, t) => s + t.targetRatio, 0);
+    if (total > 100.01) {
+      return reply.status(400).send({ error: '目标比例总和不能超过 100%' });
+    }
     const ops = targets.map((t) =>
       prisma.allocationTarget.upsert({
         where: { userId_category: { userId, category: t.category } },

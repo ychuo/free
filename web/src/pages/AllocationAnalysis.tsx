@@ -25,6 +25,11 @@ export default function AllocationAnalysis() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const total = Object.values(ratios).reduce((s, v) => s + v, 0);
+    if (total > 100.01) {
+      alert('目标比例总和不能超过 100%');
+      return;
+    }
     await updateTargets(Object.entries(ratios).map(([category, targetRatio]) => ({ category: category as AssetCategory, targetRatio })));
     setEditing(false);
   };
@@ -60,9 +65,21 @@ export default function AllocationAnalysis() {
                 <span className="text-[11px] text-stone w-6 text-right">%</span>
               </div>
             ))}
+            {(() => {
+              const total = Object.values(ratios).reduce((s, v) => s + v, 0);
+              const remaining = 100 - total;
+              const over = total > 100.01;
+              return (
+                <div className={over ? 'text-destructive' : remaining < 0.5 ? 'text-chart-1' : 'text-stone'}>
+                  <p className="text-[11px] pt-1 text-right">
+                    {over ? `超出 ${Math.abs(remaining).toFixed(1)}%` : remaining > 0.01 ? `剩余 ${remaining.toFixed(1)}%` : '已满'}
+                  </p>
+                </div>
+              );
+            })()}
             <div className="flex justify-end gap-2 pt-2">
               <Button type="button" variant="secondary" size="sm" onClick={() => setEditing(false)}>取消</Button>
-              <Button type="submit" size="sm">保存</Button>
+              <Button type="submit" size="sm" disabled={Object.values(ratios).reduce((s, v) => s + v, 0) > 100.01}>保存</Button>
             </div>
           </form>
         </div>
