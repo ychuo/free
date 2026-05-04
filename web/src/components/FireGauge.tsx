@@ -1,54 +1,42 @@
-import { Sparkles } from 'lucide-react';
 import type { FireProgress } from '../types';
 
 export default function FireGauge({ progress }: { progress: FireProgress | null }) {
   if (!progress) return null;
 
   const rate = Math.min(progress.coverageRate, 100);
-  const circumference = 2 * Math.PI * 72;
+  const circumference = 2 * Math.PI * 68;
   const dash = (rate / 100) * circumference;
-
-  const gradient = rate >= 100
-    ? 'stroke-positive'
-    : rate >= 50 ? 'stroke-warning' : 'stroke-negative';
+  const color = rate >= 100 ? '#2d6a4f' : rate >= 50 ? '#b08d4b' : '#b91c1c';
 
   return (
-    <div className="rounded-2xl bg-surface p-8 shadow-card flex flex-col items-center animate-fade-up">
-      <h3 className="font-serif text-lg font-medium mb-2">FIRE 覆盖度</h3>
-      <p className="text-xs text-fg-dim mb-6">被动收入覆盖年支出的比例</p>
+    <div className="rounded-lg border border-sand bg-ivory p-6 flex flex-col items-center animate-fade-up">
+      <h3 className="text-sm font-serif font-medium text-deep mb-0.5">FIRE 覆盖度</h3>
+      <p className="text-[11px] text-stone mb-5">被动收入 ÷ 年支出</p>
 
-      <div className="relative w-48 h-48">
+      <div className="relative w-44 h-44">
         <svg className="w-full h-full -rotate-90" viewBox="0 0 160 160">
-          <circle cx="80" cy="80" r="72" fill="none" className="stroke-line" strokeWidth="10" />
-          <circle
-            cx="80" cy="80" r="72" fill="none"
-            className={`${gradient}`}
-            strokeWidth="10"
-            strokeLinecap="round"
+          <circle cx="80" cy="80" r="68" fill="none" className="stroke-sand" strokeWidth="8" />
+          <circle cx="80" cy="80" r="68" fill="none" stroke={color} strokeWidth="8" strokeLinecap="round"
             strokeDasharray={`${dash} ${circumference}`}
-            style={{ transition: 'stroke-dasharray 0.8s ease' }}
-          />
+            style={{ transition: 'stroke-dasharray 0.8s ease' }} />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          {rate >= 100 ? (
-            <Sparkles className="h-6 w-6 text-positive mb-1" />
-          ) : null}
-          <span className={`text-4xl font-bold num tracking-tight ${rate >= 100 ? 'text-positive' : rate >= 50 ? 'text-warning' : 'text-negative'}`}>
+          <span className="text-3xl font-serif font-medium tracking-tight" style={{ color }}>
             {rate.toFixed(1)}
           </span>
-          <span className="text-xs text-fg-dim">%</span>
+          <span className="text-[11px] text-stone">%</span>
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-4 w-full mt-6 pt-6 border-t border-line">
+      <div className="grid grid-cols-3 gap-3 w-full mt-5 pt-4 border-t border-sand">
         {[
-          { label: '年被动收入', value: `${(progress.annualPassiveIncome / 1e4).toFixed(1)} 万`, color: 'text-positive' },
-          { label: '年支出', value: `${(progress.annualExpense / 1e4).toFixed(1)} 万`, color: 'text-fg' },
-          { label: progress.gap > 0 ? '差距' : '已超额', value: progress.gap > 0 ? `${(progress.gap / 1e4).toFixed(1)} 万` : 'FIRE!', color: progress.gap > 0 ? 'text-fg-dim' : 'text-accent' },
+          { label: '年被动收入', value: `${(progress.annualPassiveIncome / 1e4).toFixed(1)} 万`, color: 'text-[#2d6a4f]' },
+          { label: '年支出', value: `${(progress.annualExpense / 1e4).toFixed(1)} 万`, color: 'text-deep' },
+          { label: progress.gap > 0 ? '差距' : '已超额', value: progress.gap > 0 ? `${(progress.gap / 1e4).toFixed(1)} 万` : 'FIRE!', color: progress.gap > 0 ? 'text-stone' : 'text-brand' },
         ].map(({ label, value, color }) => (
           <div key={label} className="text-center">
-            <p className="text-xs text-fg-dim mb-1">{label}</p>
-            <p className={`text-lg font-bold num tracking-tight ${color}`}>{value}</p>
+            <p className="text-[10px] text-stone mb-0.5">{label}</p>
+            <p className={`text-sm font-serif font-medium tracking-tight ${color}`}>{value}</p>
           </div>
         ))}
       </div>

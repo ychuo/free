@@ -1,5 +1,6 @@
-import { TrendingUp, TrendingDown, Wallet, Landmark, Scale } from 'lucide-react';
+import { TrendingUp, TrendingDown } from 'lucide-react';
 import type { NetWorthSummary } from '../types';
+import { cn } from '../lib/utils';
 
 function fmt(n: number): string {
   const abs = Math.abs(n);
@@ -7,42 +8,48 @@ function fmt(n: number): string {
   return `${(n / 1e4).toFixed(2)} 万`;
 }
 
+const cards = [
+  { key: 'assets', label: '总资产', color: 'text-[#2d6a4f]' },
+  { key: 'liabilities', label: '总负债', color: 'text-[#b91c1c]' },
+  { key: 'netWorth', label: '净资产', color: 'text-brand' },
+] as const;
+
 export default function NetWorthCard({ summary }: { summary: NetWorthSummary | null }) {
   if (!summary) return null;
 
-  const cards = [
-    { label: '总资产', value: summary.totalAssets, icon: Wallet, color: 'text-positive' },
-    { label: '总负债', value: summary.totalLiabilities, icon: Landmark, color: 'text-negative' },
-    { label: '净资产', value: summary.netWorth, icon: Scale, color: 'text-accent' },
-  ];
+  const values = {
+    assets: summary.totalAssets,
+    liabilities: summary.totalLiabilities,
+    netWorth: summary.netWorth,
+  };
 
   return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-3 gap-4">
-        {cards.map(({ label, value, icon: Icon, color }) => (
+    <div className="space-y-3">
+      <div className="grid grid-cols-3 gap-3">
+        {cards.map(({ key, label, color }, i) => (
           <div
-            key={label}
-            className="relative overflow-hidden rounded-2xl bg-surface p-5 shadow-card hover:shadow-hover transition-shadow duration-300 animate-fade-up"
+            key={key}
+            className={cn(
+              'rounded-lg border border-sand bg-ivory px-4 py-3 animate-fade-up',
+              `stagger-${i + 1}`
+            )}
           >
-            <div className="flex items-start justify-between mb-3">
-              <span className="text-sm font-medium text-fg-dim">{label}</span>
-              <Icon className={`h-5 w-5 ${color}`} />
-            </div>
-            <p className={`text-2xl font-bold num tracking-tight ${color}`}>
-              {fmt(value)}
+            <p className="text-xs text-stone mb-1">{label}</p>
+            <p className={cn('text-xl font-serif font-medium tracking-tight', color)}>
+              {fmt(values[key])}
             </p>
           </div>
         ))}
       </div>
       {summary.previousNetWorth != null && summary.previousNetWorth > 0 && (
-        <div className="flex items-center gap-2 text-sm animate-fade-up stagger-4">
+        <div className="flex items-center gap-1.5 text-xs text-stone animate-fade-up stagger-4">
           {summary.change != null && summary.change >= 0 ? (
-            <TrendingUp className="h-4 w-4 text-positive" />
+            <TrendingUp className="h-3 w-3 text-[#2d6a4f]" />
           ) : (
-            <TrendingDown className="h-4 w-4 text-negative" />
+            <TrendingDown className="h-3 w-3 text-[#b91c1c]" />
           )}
-          <span className="text-fg-dim">较上次快照</span>
-          <span className={`font-semibold ${summary.change != null && summary.change >= 0 ? 'text-positive' : 'text-negative'}`}>
+          <span>较上次快照</span>
+          <span className={cn('font-medium', summary.change != null && summary.change >= 0 ? 'text-[#2d6a4f]' : 'text-[#b91c1c]')}>
             {summary.changePercent != null ? `${summary.changePercent >= 0 ? '+' : ''}${summary.changePercent.toFixed(2)}%` : '—'}
           </span>
         </div>

@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
-import { Moon, Sun, Sparkles } from 'lucide-react';
+import { Moon, Sun } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { cn } from '../lib/utils';
 
 const links = [
   { to: '/', label: '概览' },
@@ -16,31 +17,32 @@ export default function NavBar() {
   }, [dark]);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line/50 glass">
-      <div className="max-w-7xl mx-auto flex items-center justify-between h-14 px-6">
-        <div className="flex items-center gap-8">
-          <span className="font-serif text-xl italic font-medium tracking-tight text-accent select-none">
+    <header className="sticky top-0 z-40 border-b border-sand/60 bg-parchment/90 backdrop-blur-sm">
+      <div className="max-w-5xl mx-auto flex items-center justify-between h-12 px-6">
+        <div className="flex items-center gap-6">
+          <span className="text-base font-serif font-medium tracking-wide text-brand select-none">
             free
           </span>
-          <nav className="flex items-center gap-1">
+          <nav className="flex items-center gap-0.5">
             {links.map(({ to, label }) => (
               <NavLink
                 key={to}
                 to={to}
                 end={to === '/'}
                 className={({ isActive }) =>
-                  `relative px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                  cn(
+                    'relative px-3 py-1 text-[13px] rounded-md transition-colors',
                     isActive
-                      ? 'text-accent'
-                      : 'text-fg-dim hover:text-fg'
-                  }`
+                      ? 'text-deep font-medium'
+                      : 'text-stone hover:text-olive'
+                  )
                 }
               >
                 {({ isActive }) => (
                   <>
                     {label}
                     {isActive && (
-                      <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3 h-0.5 rounded-full bg-accent" />
+                      <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3 h-[2px] rounded-full bg-brand" />
                     )}
                   </>
                 )}
@@ -51,9 +53,9 @@ export default function NavBar() {
 
         <button
           onClick={() => setDark(!dark)}
-          className="p-2 rounded-lg text-fg-dim hover:text-fg hover:bg-surface-alt transition-colors"
+          className="p-1.5 rounded-md text-stone hover:text-deep hover:bg-sand/50 transition-colors"
         >
-          {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          {dark ? <Sun className="h-3.5 w-3.5" /> : <Moon className="h-3.5 w-3.5" />}
         </button>
       </div>
     </header>

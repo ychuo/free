@@ -11,6 +11,8 @@ const CATEGORIES = [
 
 interface Props { asset?: Asset; onSave: (data: CreateAssetInput) => void; onClose: () => void; }
 
+const inputClass = "w-full px-2.5 py-2 rounded-md border border-sand bg-ivory text-[13px] text-deep placeholder:text-stone focus:outline-none focus:ring-2 focus:ring-brand/15 focus:border-brand/30 transition-all";
+
 export default function AssetForm({ asset, onSave, onClose }: Props) {
   const [name, setName] = useState(asset?.name || '');
   const [category, setCategory] = useState<AssetCategory>(asset?.category || AssetCategory.EQUITY);
@@ -24,50 +26,45 @@ export default function AssetForm({ asset, onSave, onClose }: Props) {
   };
 
   return (
-    <div className="w-full max-w-md rounded-2xl bg-surface p-6 shadow-xl">
-      <div className="flex items-center justify-between mb-5">
-        <h3 className="font-serif text-lg font-medium">{asset ? '编辑资产' : '新增资产'}</h3>
-        <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-surface-alt text-fg-dim transition-colors">
-          <X className="h-4 w-4" />
+    <div className="w-full max-w-sm rounded-lg border border-sand bg-ivory p-5">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-sm font-serif font-medium text-deep">{asset ? '编辑资产' : '新增资产'}</h3>
+        <button onClick={onClose} className="p-1 rounded-md hover:bg-sand/60 text-stone transition-colors">
+          <X className="h-3.5 w-3.5" />
         </button>
       </div>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-3">
         <div>
-          <label className="block text-sm font-medium mb-1.5 text-fg-dim">名称</label>
-          <input value={name} onChange={e => setName(e.target.value)} required
-            className="w-full px-3 py-2.5 rounded-xl border border-line bg-surface-alt text-sm focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all" />
+          <label className="block text-[12px] font-medium mb-1 text-stone">名称</label>
+          <input value={name} onChange={e => setName(e.target.value)} required className={inputClass} />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1.5 text-fg-dim">类别</label>
-          <select value={category} onChange={e => setCategory(e.target.value as AssetCategory)}
-            className="w-full px-3 py-2.5 rounded-xl border border-line bg-surface-alt text-sm focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all">
+          <label className="block text-[12px] font-medium mb-1 text-stone">类别</label>
+          <select value={category} onChange={e => setCategory(e.target.value as AssetCategory)} className={inputClass}>
             {CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
           </select>
         </div>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-2.5">
           <div>
-            <label className="block text-sm font-medium mb-1.5 text-fg-dim">数量/份额</label>
-            <input type="number" step="0.01" value={quantity} onChange={e => setQuantity(e.target.value)} required
-              className="w-full px-3 py-2.5 rounded-xl border border-line bg-surface-alt text-sm focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all" />
+            <label className="block text-[12px] font-medium mb-1 text-stone">数量/份额</label>
+            <input type="number" step="0.01" value={quantity} onChange={e => setQuantity(e.target.value)} required className={inputClass} />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1.5 text-fg-dim">单价</label>
-            <input type="number" step="0.01" value={unitPrice} onChange={e => setUnitPrice(e.target.value)} required
-              className="w-full px-3 py-2.5 rounded-xl border border-line bg-surface-alt text-sm focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all" />
+            <label className="block text-[12px] font-medium mb-1 text-stone">单价</label>
+            <input type="number" step="0.01" value={unitPrice} onChange={e => setUnitPrice(e.target.value)} required className={inputClass} />
           </div>
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1.5 text-fg-dim">备注</label>
-          <input value={notes} onChange={e => setNotes(e.target.value)}
-            className="w-full px-3 py-2.5 rounded-xl border border-line bg-surface-alt text-sm focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all" />
+          <label className="block text-[12px] font-medium mb-1 text-stone">备注</label>
+          <input value={notes} onChange={e => setNotes(e.target.value)} className={inputClass} />
         </div>
-        <div className="flex justify-end gap-2 pt-2">
+        <div className="flex justify-end gap-2 pt-1.5">
           <button type="button" onClick={onClose}
-            className="px-4 py-2.5 text-sm font-medium rounded-xl border border-line hover:bg-surface-alt transition-colors">
+            className="px-3 py-1.5 text-[12px] font-medium rounded-md border border-sand text-olive hover:bg-sand/50 transition-colors">
             取消
           </button>
           <button type="submit"
-            className="px-5 py-2.5 text-sm font-medium rounded-xl bg-accent text-white hover:brightness-110 transition-all">
+            className="px-4 py-1.5 text-[12px] font-medium rounded-md bg-brand text-ivory hover:bg-brand-light transition-colors">
             保存
           </button>
         </div>

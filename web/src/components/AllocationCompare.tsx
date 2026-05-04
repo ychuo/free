@@ -6,47 +6,30 @@ const LABELS: Record<string, string> = {
   crypto: '数字货币', precious: '贵金属', other: '其他',
 };
 
-const COLORS = {
-  current: '#2563eb',
-  target: '#cbd5e1',
-  over: '#ef4444',
-  under: '#1a9c7a',
-};
-
 export default function AllocationCompare({ analysis }: { analysis: AllocationAnalysis[] }) {
   const data = analysis.map(a => ({
     name: LABELS[a.category] || a.category,
     当前: a.currentRatio,
     目标: a.targetRatio,
-    deviation: a.deviation,
   }));
 
   return (
-    <div className="rounded-2xl bg-surface p-6 shadow-card animate-fade-up">
-      <h3 className="font-serif text-lg font-medium mb-4">当前 vs 目标</h3>
-      <ResponsiveContainer width="100%" height={280}>
+    <div className="rounded-lg border border-sand bg-ivory p-5 animate-fade-up">
+      <h3 className="text-sm font-serif font-medium text-deep mb-3">当前 vs 目标</h3>
+      <ResponsiveContainer width="100%" height={260}>
         <BarChart data={data} barGap={2}>
-          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--line))" />
-          <XAxis dataKey="name" tick={{ fontSize: 12, fill: 'hsl(var(--fg-dim))' }} axisLine={false} tickLine={false} />
-          <YAxis tick={{ fontSize: 12, fill: 'hsl(var(--fg-dim))' }} axisLine={false} tickLine={false} unit="%" />
+          <CartesianGrid strokeDasharray="3 3" stroke="#e8e6dc" />
+          <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#6b6a64' }} axisLine={false} tickLine={false} />
+          <YAxis tick={{ fontSize: 11, fill: '#6b6a64' }} axisLine={false} tickLine={false} unit="%" />
           <Tooltip
             contentStyle={{
-              background: 'hsl(var(--surface))',
-              border: '1px solid hsl(var(--line))',
-              borderRadius: '12px',
-              fontSize: '13px',
+              background: '#faf9f5', border: '1px solid #e8e6dc', borderRadius: '8px',
+              fontSize: '12px', fontFamily: 'var(--font-serif)',
             }}
             formatter={(v: number) => [`${v.toFixed(1)}%`, '']}
           />
-          <Bar dataKey="当前" radius={[4, 4, 0, 0]} maxBarSize={28}>
-            {data.map((entry, i) => (
-              <rect
-                key={i}
-                fill={entry.deviation > 0 ? COLORS.over : Math.abs(entry.deviation) < 1 ? COLORS.current : COLORS.under}
-              />
-            ))}
-          </Bar>
-          <Bar dataKey="目标" fill={COLORS.target} radius={[4, 4, 0, 0]} maxBarSize={28} />
+          <Bar dataKey="当前" fill="#1B365D" radius={[3, 3, 0, 0]} maxBarSize={24} />
+          <Bar dataKey="目标" fill="#e8e6dc" radius={[3, 3, 0, 0]} maxBarSize={24} />
         </BarChart>
       </ResponsiveContainer>
     </div>

@@ -2,105 +2,121 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* ---- Theme tokens ---- */
+/* ── Kami 紙 Design Tokens ── */
 @theme {
-  --font-sans: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Newsreader", "PingFang SC", ui-serif, Georgia, serif;
-  --font-mono: "SF Mono", "Cascadia Code", "JetBrains Mono", ui-monospace, monospace;
+  --font-serif: "TsangerJinKai02", "Source Han Serif SC", "Noto Serif CJK SC", "Songti SC", "PingFang SC", Georgia, "Hiragino Mincho ProN", serif;
+  --font-sans: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", "SF Mono", ui-monospace, monospace;
 
-  --color-bg: hsl(var(--bg));
-  --color-surface: hsl(var(--surface));
-  --color-surface-alt: hsl(var(--surface-alt));
-  --color-fg: hsl(var(--fg));
-  --color-fg-dim: hsl(var(--fg-dim));
-  --color-accent: hsl(var(--accent));
-  --color-accent-dim: hsl(var(--accent-dim));
-  --color-positive: hsl(var(--positive));
-  --color-negative: hsl(var(--negative));
-  --color-warning: hsl(var(--warning));
-  --color-line: hsl(var(--line));
-  --radius-sm: 0.5rem;
-  --radius: 0.75rem;
-  --radius-lg: 1rem;
+  --color-parchment: #f5f4ed;
+  --color-ivory: #faf9f5;
+  --color-deep: #141413;
+  --color-olive: #504e49;
+  --color-stone: #6b6a64;
+  --color-sand: #e8e6dc;
+  --color-sand-soft: #e5e3d8;
+  --color-brand: #1B365D;
+  --color-brand-light: #2D5A8A;
+  --color-dark-surface: #30302e;
+  --color-dark-warm: #3d3d3a;
+
+  --color-background: var(--color-parchment);
+  --color-foreground: var(--color-deep);
+  --color-card: var(--color-ivory);
+  --color-card-foreground: var(--color-deep);
+  --color-primary: var(--color-brand);
+  --color-primary-foreground: var(--color-ivory);
+  --color-secondary: var(--color-sand);
+  --color-secondary-foreground: var(--color-dark-warm);
+  --color-muted: var(--color-sand-soft);
+  --color-muted-foreground: var(--color-stone);
+  --color-accent: var(--color-brand);
+  --color-accent-foreground: var(--color-ivory);
+  --color-destructive: #b91c1c;
+  --color-destructive-foreground: #faf9f5;
+  --color-border: var(--color-sand);
+  --color-input: var(--color-sand);
+  --color-ring: var(--color-brand);
+
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
 }
 
-/* ---- Light mode ---- */
+/* ── Light mode (Kami defaults are light) ── */
 :root {
-  --bg: 40 20% 97%;
-  --surface: 0 0% 100%;
-  --surface-alt: 40 15% 94%;
-  --fg: 240 10% 12%;
-  --fg-dim: 240 5% 40%;
-  --accent: 165 60% 28%;
-  --accent-dim: 165 40% 90%;
-  --positive: 150 50% 35%;
-  --negative: 0 55% 48%;
-  --warning: 35 80% 40%;
-  --line: 240 10% 90%;
-
-  --shadow-card: 0 1px 3px rgb(0 0 0 / 0.04), 0 1px 2px rgb(0 0 0 / 0.03);
-  --shadow-hover: 0 4px 12px rgb(0 0 0 / 0.06), 0 1px 4px rgb(0 0 0 / 0.04);
+  --bg-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.02'/%3E%3C/svg%3E");
 }
 
-/* ---- Dark mode ---- */
+/* ── Dark mode ── */
 .dark {
-  --bg: 240 6% 7%;
-  --surface: 240 6% 11%;
-  --surface-alt: 240 6% 15%;
-  --fg: 40 20% 92%;
-  --fg-dim: 240 5% 55%;
-  --accent: 165 55% 55%;
-  --accent-dim: 165 30% 15%;
-  --positive: 150 45% 50%;
-  --negative: 0 55% 55%;
-  --warning: 35 70% 50%;
-  --line: 240 5% 18%;
-
-  --shadow-card: 0 1px 3px rgb(0 0 0 / 0.15);
-  --shadow-hover: 0 4px 12px rgb(0 0 0 / 0.25);
+  --color-background: #1a1a18;
+  --color-foreground: #e8e6dc;
+  --color-card: #222220;
+  --color-card-foreground: #e8e6dc;
+  --color-primary: #3b7ab8;
+  --color-primary-foreground: #faf9f5;
+  --color-secondary: #2a2a28;
+  --color-secondary-foreground: #e8e6dc;
+  --color-muted: #2a2a28;
+  --color-muted-foreground: #8b8a84;
+  --color-border: #3d3d3a;
+  --color-input: #3d3d3a;
+  --color-ring: #3b7ab8;
 }
 
-/* ---- Base ---- */
+/* ── Base ── */
 body {
-  background-color: hsl(var(--bg));
-  color: hsl(var(--fg));
-  font-family: var(--font-sans);
+  background-color: var(--color-parchment);
+  color: var(--color-deep);
+  font-family: var(--font-serif);
+  font-size: 14px;
+  line-height: 1.55;
+  letter-spacing: 0.02em;
   -webkit-font-smoothing: antialiased;
 }
 
-/* ---- Scrollbar ---- */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: hsl(var(--line)); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: hsl(var(--fg-dim)); }
+/* Paper texture overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.4;
+  background-image: var(--bg-noise);
+  pointer-events: none;
+}
 
-/* ---- Animation utilities ---- */
+/* ── Typography ── */
+h1 { font-family: var(--font-serif); font-weight: 500; }
+h2 { font-family: var(--font-serif); font-weight: 500; }
+h3 { font-family: var(--font-serif); font-weight: 500; }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-sand); border-radius: 3px; }
+
+/* ── Animations ── */
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
-.animate-fade-up { animation: fade-up 0.4s ease-out both; }
-.stagger-1 { animation-delay: 0.05s; }
-.stagger-2 { animation-delay: 0.1s; }
-.stagger-3 { animation-delay: 0.15s; }
-.stagger-4 { animation-delay: 0.2s; }
-
-/* ---- Glass surface (for overlays) ---- */
-.glass {
-  background: hsl(var(--surface) / 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
-.dark .glass {
-  background: hsl(var(--surface) / 0.9);
+@keyframes modal-in {
+  from { opacity: 0; transform: scale(0.97) translateY(4px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
 }
+.animate-fade-up { animation: fade-up 0.35s ease-out both; }
+.stagger-1 { animation-delay: 0.04s; }
+.stagger-2 { animation-delay: 0.08s; }
+.stagger-3 { animation-delay: 0.12s; }
+.stagger-4 { animation-delay: 0.16s; }
 
-/* ---- Number display ---- */
-.num {
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.02em;
-}
-
-/* ---- Form elements ---- */
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button { opacity: 1; }
+/* ── shadcn/ui base ── */
+* { border-color: var(--color-border); }

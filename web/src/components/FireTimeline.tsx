@@ -9,34 +9,22 @@ export default function FireTimeline({ progress }: { progress: FireProgress | nu
   );
 
   return (
-    <div className="rounded-2xl bg-surface p-6 shadow-card animate-fade-up stagger-1">
-      <h3 className="font-serif text-lg font-medium mb-5">净资产进度</h3>
-
-      <div className="flex justify-between text-sm mb-3">
-        <span className="text-fg-dim">当前 <span className="num font-semibold text-fg">{(progress.netWorth / 1e4).toFixed(1)} 万</span></span>
-        <span className="text-fg-dim">目标 <span className="num font-semibold text-fg">{(progress.fireTarget / 1e4).toFixed(0)} 万</span></span>
+    <div className="rounded-lg border border-sand bg-ivory p-5 animate-fade-up stagger-1">
+      <h3 className="text-sm font-serif font-medium text-deep mb-4">净资产进度</h3>
+      <div className="flex justify-between text-[12px] mb-2.5">
+        <span className="text-stone">当前 <span className="text-deep font-medium">{(progress.netWorth / 1e4).toFixed(1)} 万</span></span>
+        <span className="text-stone">目标 <span className="text-deep font-medium">{(progress.fireTarget / 1e4).toFixed(0)} 万</span></span>
       </div>
-
-      <div className="relative h-2.5 bg-surface-alt rounded-full overflow-hidden">
-        <div
-          className="absolute inset-y-0 left-0 rounded-full bg-accent transition-all duration-700 ease-out"
-          style={{ width: `${pct}%` }}
-        />
-        <div
-          className="absolute inset-y-0 left-0 rounded-full opacity-30"
-          style={{
-            width: `${pct}%`,
-            background: 'repeating-linear-gradient(-45deg, transparent, transparent 4px, rgba(255,255,255,0.3) 4px, rgba(255,255,255,0.3) 8px)',
-          }}
-        />
+      <div className="relative h-2 bg-sand rounded-full overflow-hidden">
+        <div className="absolute inset-y-0 left-0 rounded-full bg-brand transition-all duration-700 ease-out"
+          style={{ width: `${pct}%` }} />
       </div>
-
-      <p className="text-sm text-fg-dim mt-3">
-        进度 <span className="num font-semibold text-accent">{pct.toFixed(1)}%</span>
+      <p className="text-[12px] text-stone mt-2.5">
+        进度 <span className="text-brand font-medium">{pct.toFixed(1)}%</span>
         {progress.gap > 0 ? (
-          <> · 还需 <span className="num">{(progress.gap / 1e4).toFixed(1)} 万</span></>
+          <> · 还需 <span className="text-deep">{(progress.gap / 1e4).toFixed(1)} 万</span></>
         ) : (
-          <span className="text-positive font-medium"> · 已达成 FIRE</span>
+          <span className="text-[#2d6a4f] font-medium"> · 已达成 FIRE</span>
         )}
       </p>
     </div>
