@@ -5,6 +5,7 @@
   "workspaces": ["shared", "server", "web"],
   "scripts": {
     "dev": "turbo run dev",
+    "up": "(cd server && bun run dev) & (cd web && bun run dev) & wait",
     "build": "turbo run build",
     "db:migrate": "cd server && bunx prisma migrate dev",
     "db:seed": "cd server && bun run prisma/seed.ts",
