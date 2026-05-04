@@ -10,10 +10,15 @@ const links = [
 ];
 
 export default function NavBar() {
-  const [dark, setDark] = useState(() => document.documentElement.classList.contains('dark'));
+  const [dark, setDark] = useState(() => {
+    if (localStorage.getItem('free-theme') === 'dark') return true;
+    if (localStorage.getItem('free-theme') === 'light') return false;
+    return document.documentElement.classList.contains('dark');
+  });
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', dark);
+    localStorage.setItem('free-theme', dark ? 'dark' : 'light');
   }, [dark]);
 
   return (
