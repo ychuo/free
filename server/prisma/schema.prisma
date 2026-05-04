@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Asset {
+  id            String   @id @default(uuid())
+  userId        String   @default("default")
+  name          String
+  category      String
+  subType       String?
+  quantity      Float
+  unitPrice     Float
+  totalValue    Float
+  currency      String   @default("CNY")
+  passiveIncome Float?
+  properties    Json?
+  acquiredAt    DateTime?
+  notes         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([userId])
+  @@index([userId, category])
+}
+
+model Liability {
+  id             String   @id @default(uuid())
+  userId         String   @default("default")
+  name           String
+  type           String
+  totalAmount    Float
+  remaining      Float
+  interestRate   Float?
+  monthlyPayment Float?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model FireProfile {
+  userId              String @id @default("default")
+  annualExpense       Float
+  safeWithdrawalRate  Float  @default(0.04)
+  fireTarget          Float
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model AllocationTarget {
+  id          String @id @default(uuid())
+  userId      String @default("default")
+  category    String
+  targetRatio Float
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, category])
+  @@index([userId])
+}
+
+model Snapshot {
+  id              String   @id @default(uuid())
+  userId          String   @default("default")
+  snapshotDate    DateTime @default(now())
+  totalAssets     Float
+  totalLiabilities Float
+  netWorth        Float
+  breakdown       Json
+  createdAt       DateTime @default(now())
+
+  @@index([userId, snapshotDate])
+}
