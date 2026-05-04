@@ -2,7 +2,6 @@ import { NavLink } from 'react-router-dom';
 import { Moon, Sun } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { cn } from '../lib/utils';
-import { Button } from './ui/button';
 
 const links = [
   { to: '/', label: '概览' },

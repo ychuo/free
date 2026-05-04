@@ -53,19 +53,13 @@ export default function LiabilityList({ liabilities, onCreate, onUpdate, onDelet
                   <span className="text-[13px] font-medium text-[#b91c1c]">{l.remaining.toLocaleString()}</span>
                   <p className="text-[10px] text-stone">剩余 / {l.totalAmount.toLocaleString()}</p>
                 </div>
-                <div className="flex opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button
-                    onClick={() => { setEditing(l); setShowForm(true); }}
-                    className="p-1 rounded hover:bg-sand/60 text-stone hover:text-olive transition-colors"
-                  >
+                <div className="flex opacity-0 group-hover:opacity-100 transition-opacity gap-0.5">
+                  <Button variant="ghost" size="icon-sm" onClick={() => { setEditing(l); setShowForm(true); }}>
                     <Pencil className="h-3 w-3" />
-                  </button>
-                  <button
-                    onClick={() => { if (confirm(`确定删除「${l.name}」？`)) onDelete(l.id); }}
-                    className="p-1 rounded hover:bg-red-50 text-stone hover:text-[#b91c1c] transition-colors"
-                  >
-                    <Trash2 className="h-3 w-3" />
-                  </button>
+                  </Button>
+                  <Button variant="ghost" size="icon-sm" onClick={() => { if (confirm(`确定删除「${l.name}」？`)) onDelete(l.id); }}>
+                    <Trash2 className="h-3 w-3 text-destructive" />
+                  </Button>
                 </div>
               </div>
             </div>
