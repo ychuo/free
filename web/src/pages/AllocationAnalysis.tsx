@@ -5,6 +5,7 @@ import { useNetWorth } from '../hooks/useNetWorth';
 import AllocationCompare from '../components/AllocationCompare';
 import RebalanceList from '../components/RebalanceList';
 import AllocationHistory from '../components/AllocationHistory';
+import Modal from '../components/Modal';
 import { AssetCategory } from '../types';
 
 const ALL_CATEGORIES = [AssetCategory.CASH, AssetCategory.FIXED_INCOME, AssetCategory.EQUITY, AssetCategory.REAL_ESTATE, AssetCategory.CRYPTO, AssetCategory.PRECIOUS, AssetCategory.OTHER];
@@ -51,36 +52,33 @@ export default function AllocationAnalysis() {
 
       <AllocationHistory snapshots={snapshots} />
 
-      {editing && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-scale-in">
-          <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={() => setEditing(false)} />
-          <div className="relative w-full max-w-md rounded-2xl bg-surface p-6 shadow-xl">
-            <h3 className="font-serif text-lg font-medium mb-5">设定目标配置比例</h3>
-            <form onSubmit={handleSubmit} className="space-y-3">
-              {ALL_CATEGORIES.map(cat => (
-                <div key={cat} className="flex items-center gap-3">
-                  <label className="text-sm font-medium w-20 text-fg-dim">{LABELS[cat] || cat}</label>
-                  <input type="number" min="0" max="100" step="0.5"
-                    value={ratios[cat] ?? 0}
-                    onChange={e => setRatios({ ...ratios, [cat]: parseFloat(e.target.value) || 0 })}
-                    className="flex-1 px-3 py-2 rounded-xl border border-line bg-surface-alt text-sm focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all" />
-                  <span className="text-sm text-fg-dim w-8 text-right">%</span>
-                </div>
-              ))}
-              <div className="flex justify-end gap-2 pt-2">
-                <button type="button" onClick={() => setEditing(false)}
-                  className="px-4 py-2.5 text-sm font-medium rounded-xl border border-line hover:bg-surface-alt transition-colors">
-                  取消
-                </button>
-                <button type="submit"
-                  className="px-5 py-2.5 text-sm font-medium rounded-xl bg-accent text-white hover:brightness-110 transition-all">
-                  保存
-                </button>
+      <Modal open={editing} onClose={() => setEditing(false)}>
+        <div className="w-full max-w-md rounded-2xl bg-surface p-6 shadow-xl">
+          <h3 className="font-serif text-lg font-medium mb-5">设定目标配置比例</h3>
+          <form onSubmit={handleSubmit} className="space-y-3">
+            {ALL_CATEGORIES.map(cat => (
+              <div key={cat} className="flex items-center gap-3">
+                <label className="text-sm font-medium w-20 text-fg-dim">{LABELS[cat] || cat}</label>
+                <input type="number" min="0" max="100" step="0.5"
+                  value={ratios[cat] ?? 0}
+                  onChange={e => setRatios({ ...ratios, [cat]: parseFloat(e.target.value) || 0 })}
+                  className="flex-1 px-3 py-2 rounded-xl border border-line bg-surface-alt text-sm focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all" />
+                <span className="text-sm text-fg-dim w-8 text-right">%</span>
               </div>
-            </form>
-          </div>
+            ))}
+            <div className="flex justify-end gap-2 pt-2">
+              <button type="button" onClick={() => setEditing(false)}
+                className="px-4 py-2.5 text-sm font-medium rounded-xl border border-line hover:bg-surface-alt transition-colors">
+                取消
+              </button>
+              <button type="submit"
+                className="px-5 py-2.5 text-sm font-medium rounded-xl bg-accent text-white hover:brightness-110 transition-all">
+                保存
+              </button>
+            </div>
+          </form>
         </div>
-      )}
+      </Modal>
     </div>
   );
 }

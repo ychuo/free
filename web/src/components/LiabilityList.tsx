@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Plus, Pencil, Trash2 } from 'lucide-react';
 import type { Liability, CreateLiabilityInput } from '../types';
 import LiabilityForm from './LiabilityForm';
+import Modal from './Modal';
 
 const TYPE_LABELS: Record<string, string> = { mortgage: '房贷', consumer: '消费贷', other: '其他' };
 
@@ -74,7 +75,7 @@ export default function LiabilityList({ liabilities, onCreate, onUpdate, onDelet
         </div>
       )}
 
-      {showForm && (
+      <Modal open={showForm} onClose={() => { setShowForm(false); setEditing(null); }}>
         <LiabilityForm
           liability={editing || undefined}
           onSave={async (data) => {
@@ -84,7 +85,7 @@ export default function LiabilityList({ liabilities, onCreate, onUpdate, onDelet
           }}
           onClose={() => { setShowForm(false); setEditing(null); }}
         />
-      )}
+      </Modal>
     </div>
   );
 }

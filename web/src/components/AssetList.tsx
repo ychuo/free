@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Plus, Pencil, Trash2, TrendingUp } from 'lucide-react';
+import { Plus, Pencil, Trash2 } from 'lucide-react';
 import type { Asset, CreateAssetInput } from '../types';
 import AssetForm from './AssetForm';
+import Modal from './Modal';
 
 const CATEGORY_LABELS: Record<string, string> = {
   cash: '现金', fixed_income: '固收', equity: '权益', real_estate: '不动产',
@@ -84,7 +85,7 @@ export default function AssetList({ assets, onCreate, onUpdate, onDelete }: Prop
         </div>
       )}
 
-      {showForm && (
+      <Modal open={showForm} onClose={() => { setShowForm(false); setEditing(null); }}>
         <AssetForm
           asset={editing || undefined}
           onSave={async (data) => {
@@ -94,7 +95,7 @@ export default function AssetList({ assets, onCreate, onUpdate, onDelete }: Prop
           }}
           onClose={() => { setShowForm(false); setEditing(null); }}
         />
-      )}
+      </Modal>
     </div>
   );
 }
