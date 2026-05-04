@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C /Users/chao/workspace/free log --oneline -10)",
+      "Bash(git init *)",
+      "Bash(git add *)",
+      "Bash(bunx npm *)",
+      "mcp__plugin_context7_context7__resolve-library-id",
+      "mcp__plugin_context7_context7__query-docs",
+      "Bash(bun install *)"
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "free",
+  "private": true,
+  "packageManager": "bun@1.3.4",
+  "workspaces": ["shared", "server", "web"],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "db:migrate": "cd server && bunx prisma migrate dev",
+    "db:seed": "cd server && bun run prisma/seed.ts",
+    "db:studio": "cd server && bunx prisma studio"
+  },
+  "devDependencies": {
+    "turbo": "^2.9.8"
+  }
+}
