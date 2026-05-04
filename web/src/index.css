@@ -65,7 +65,7 @@
   --muted-foreground: #6b6a64;
   --accent: #1B365D;
   --accent-foreground: #faf9f5;
-  --destructive: #b91c1c;
+  --destructive: #B53333;
   --border: #e8e6dc;
   --input: #e8e6dc;
   --ring: #1B365D;
@@ -76,42 +76,42 @@
   --chart-5: #b5454a;
 }
 
-/* ── Dark mode ── */
+/* ── Dark mode: Kami warm palette ── */
 .dark {
-  --color-parchment: #151412;
-  --color-ivory: #1e1d1a;
-  --color-deep: #d6d1c3;
-  --color-olive: #9e9a8f;
-  --color-stone: #858176;
-  --color-sand: #34322e;
-  --color-sand-soft: #2c2a26;
-  --color-brand: #c9a64e;
-  --color-brand-light: #dbb860;
-  --color-dark-surface: #262420;
-  --color-dark-warm: #34322e;
-  --background: #151412;
-  --foreground: #d6d1c3;
-  --card: #1e1d1a;
-  --card-foreground: #d6d1c3;
-  --popover: #1e1d1a;
-  --popover-foreground: #d6d1c3;
-  --primary: #c9a64e;
-  --primary-foreground: #151412;
-  --secondary: #262420;
-  --secondary-foreground: #d6d1c3;
-  --muted: #262420;
-  --muted-foreground: #858176;
-  --accent: #c9a64e;
-  --accent-foreground: #151412;
-  --destructive: #c97272;
-  --border: #34322e;
-  --input: #34322e;
-  --ring: #c9a64e;
-  --chart-1: #7a9e7e;
-  --chart-2: #c9a64e;
-  --chart-3: #7b9abe;
-  --chart-4: #9b7fba;
-  --chart-5: #c97272;
+  --color-parchment: #141413;
+  --color-ivory: #1c1c1a;
+  --color-deep: #e4ddd0;
+  --color-olive: #b0a99d;
+  --color-stone: #959086;
+  --color-sand: #2a2a27;
+  --color-sand-soft: #21211e;
+  --color-brand: #2D5A8A;
+  --color-brand-light: #8ab8dd;
+  --color-dark-surface: #1c1c1a;
+  --color-dark-warm: #30302e;
+  --background: #141413;
+  --foreground: #e4ddd0;
+  --card: #1c1c1a;
+  --card-foreground: #e4ddd0;
+  --popover: #1c1c1a;
+  --popover-foreground: #e4ddd0;
+  --primary: #2D5A8A;
+  --primary-foreground: #faf9f5;
+  --secondary: #30302e;
+  --secondary-foreground: #e4ddd0;
+  --muted: #21211e;
+  --muted-foreground: #959086;
+  --accent: #2D5A8A;
+  --accent-foreground: #faf9f5;
+  --destructive: #c96060;
+  --border: #2a2a27;
+  --input: #2a2a27;
+  --ring: #2D5A8A;
+  --chart-1: #6db58a;
+  --chart-2: #c4a355;
+  --chart-3: #5a8ab5;
+  --chart-4: #9b7fc0;
+  --chart-5: #cf7a7a;
 }
 
 /* ── Base ── */

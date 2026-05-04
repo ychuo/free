@@ -18,18 +18,18 @@ export default function AllocationCompare({ analysis }: { analysis: AllocationAn
       <h3 className="text-sm font-serif font-medium text-deep mb-3">当前 vs 目标</h3>
       <ResponsiveContainer width="100%" height={260}>
         <BarChart data={data} barGap={2}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#e8e6dc" />
-          <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#6b6a64' }} axisLine={false} tickLine={false} />
-          <YAxis tick={{ fontSize: 11, fill: '#6b6a64' }} axisLine={false} tickLine={false} unit="%" />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+          <XAxis dataKey="name" tick={{ fontSize: 11, fill: 'var(--muted-foreground)' }} axisLine={false} tickLine={false} />
+          <YAxis tick={{ fontSize: 11, fill: 'var(--muted-foreground)' }} axisLine={false} tickLine={false} unit="%" />
           <Tooltip
             contentStyle={{
-              background: '#faf9f5', border: '1px solid #e8e6dc', borderRadius: '8px',
+              background: 'var(--card)', border: '1px solid var(--border)', borderRadius: '8px',
               fontSize: '12px', fontFamily: 'var(--font-serif)',
             }}
             formatter={(v: number) => [`${v.toFixed(1)}%`, '']}
           />
-          <Bar dataKey="当前" fill="#1B365D" radius={[3, 3, 0, 0]} maxBarSize={24} />
-          <Bar dataKey="目标" fill="#e8e6dc" radius={[3, 3, 0, 0]} maxBarSize={24} />
+          <Bar dataKey="当前" fill="var(--primary)" radius={[3, 3, 0, 0]} maxBarSize={24} />
+          <Bar dataKey="目标" fill="var(--secondary)" radius={[3, 3, 0, 0]} maxBarSize={24} />
         </BarChart>
       </ResponsiveContainer>
     </div>
