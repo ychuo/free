@@ -52,9 +52,13 @@ export default function NavBar() {
           </nav>
         </div>
 
-        <Button variant="ghost" size="icon-sm" onClick={() => setDark(!dark)}>
-          {dark ? <Sun className="h-3.5 w-3.5" /> : <Moon className="h-3.5 w-3.5" />}
-        </Button>
+        <button
+          onClick={() => setDark(!dark)}
+          className="p-1.5 rounded-md text-stone/60 hover:text-stone transition-colors"
+          aria-label="切换主题"
+        >
+          {dark ? <Sun className="h-3 w-3" /> : <Moon className="h-3 w-3" />}
+        </button>
       </div>
     </header>
   );

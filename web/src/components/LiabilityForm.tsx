@@ -10,6 +10,7 @@ const TYPES = [
   { value: LiabilityType.CONSUMER, label: '消费贷' },
   { value: LiabilityType.OTHER, label: '其他' },
 ];
+const TYPE_MAP = Object.fromEntries(TYPES.map(t => [t.value, t.label]));
 
 interface Props { liability?: Liability; onSave: (data: CreateLiabilityInput) => void; onClose: () => void; }
 
@@ -41,12 +42,14 @@ export default function LiabilityForm({ liability, onSave, onClose }: Props) {
       <form onSubmit={handleSubmit} className="space-y-3">
         <div>
           <label className="block text-[12px] font-medium mb-1 text-stone">名称</label>
-          <Input value={name} onChange={e => setName(e.target.value)} required />
+          <Input placeholder="例：房贷" value={name} onChange={e => setName(e.target.value)} required />
         </div>
         <div>
           <label className="block text-[12px] font-medium mb-1 text-stone">类别</label>
           <Select value={type} onValueChange={(v) => setType(v as LiabilityType)}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="选择类型">{TYPE_MAP[type]}</SelectValue>
+            </SelectTrigger>
             <SelectContent>
               {TYPES.map(t => <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>)}
             </SelectContent>
@@ -55,21 +58,21 @@ export default function LiabilityForm({ liability, onSave, onClose }: Props) {
         <div className="grid grid-cols-2 gap-2.5">
           <div>
             <label className="block text-[12px] font-medium mb-1 text-stone">总负债额</label>
-            <Input type="number" step="0.01" value={totalAmount} onChange={e => setTotalAmount(e.target.value)} required />
+            <Input type="number" placeholder="0" step="0.01" value={totalAmount} onChange={e => setTotalAmount(e.target.value)} required />
           </div>
           <div>
             <label className="block text-[12px] font-medium mb-1 text-stone">剩余本金</label>
-            <Input type="number" step="0.01" value={remaining} onChange={e => setRemaining(e.target.value)} required />
+            <Input type="number" placeholder="0" step="0.01" value={remaining} onChange={e => setRemaining(e.target.value)} required />
           </div>
         </div>
         <div className="grid grid-cols-2 gap-2.5">
           <div>
             <label className="block text-[12px] font-medium mb-1 text-stone">年利率 (%)</label>
-            <Input type="number" step="0.01" value={interestRate} onChange={e => setInterestRate(e.target.value)} />
+            <Input type="number" placeholder="4.00" step="0.01" value={interestRate} onChange={e => setInterestRate(e.target.value)} />
           </div>
           <div>
             <label className="block text-[12px] font-medium mb-1 text-stone">月供</label>
-            <Input type="number" step="0.01" value={monthlyPayment} onChange={e => setMonthlyPayment(e.target.value)} />
+            <Input type="number" placeholder="0" step="0.01" value={monthlyPayment} onChange={e => setMonthlyPayment(e.target.value)} />
           </div>
         </div>
         <div className="flex justify-end gap-2 pt-1.5">

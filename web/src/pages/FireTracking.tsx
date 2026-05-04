@@ -66,11 +66,11 @@ export default function FireTracking() {
           <form onSubmit={handleSubmit} className="space-y-3">
             <div>
               <label className="block text-[12px] font-medium mb-1 text-stone">年生活支出（元）</label>
-              <Input type="number" step="1" value={annualExpense} onChange={e => setAnnualExpense(e.target.value)} required />
+              <Input type="number" placeholder="例：300000" step="1" value={annualExpense} onChange={e => setAnnualExpense(e.target.value)} required />
             </div>
             <div>
               <label className="block text-[12px] font-medium mb-1 text-stone">安全提取率 (%)</label>
-              <Input type="number" step="0.1" value={safeWithdrawalRate} onChange={e => setSafeWithdrawalRate(e.target.value)} required />
+              <Input type="number" placeholder="4.0" step="0.1" value={safeWithdrawalRate} onChange={e => setSafeWithdrawalRate(e.target.value)} required />
               <p className="text-[10px] text-stone mt-1">经典 FIRE 为 4%，保守建议更低</p>
             </div>
             <div className="flex justify-end gap-2 pt-1.5">

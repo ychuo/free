@@ -3,6 +3,7 @@ import { Plus, Pencil, Trash2 } from 'lucide-react';
 import type { Liability, CreateLiabilityInput } from '../types';
 import LiabilityForm from './LiabilityForm';
 import Modal from './Modal';
+import { Button } from './ui/button';
 
 const TYPE_LABELS: Record<string, string> = { mortgage: '房贷', consumer: '消费贷', other: '其他' };
 
@@ -21,12 +22,9 @@ export default function LiabilityList({ liabilities, onCreate, onUpdate, onDelet
     <div className="rounded-lg border border-sand bg-ivory p-5 animate-fade-up stagger-2">
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-sm font-serif font-medium text-deep">负债明细</h3>
-        <button
-          onClick={() => { setEditing(null); setShowForm(true); }}
-          className="flex items-center gap-1 px-2.5 py-1 text-[12px] font-medium rounded-md bg-brand text-ivory hover:bg-brand-light transition-colors"
-        >
-          <Plus className="h-3 w-3" /> 新增
-        </button>
+        <Button size="sm" onClick={() => { setEditing(null); setShowForm(true); }}>
+          <Plus className="h-3 w-3 mr-1" /> 新增
+        </Button>
       </div>
 
       {liabilities.length === 0 ? (

@@ -11,6 +11,7 @@ const CATEGORIES = [
   { value: AssetCategory.CRYPTO, label: '数字货币' }, { value: AssetCategory.PRECIOUS, label: '贵金属' },
   { value: AssetCategory.OTHER, label: '其他' },
 ];
+const CAT_MAP = Object.fromEntries(CATEGORIES.map(c => [c.value, c.label]));
 
 interface Props { asset?: Asset; onSave: (data: CreateAssetInput) => void; onClose: () => void; }
 
@@ -37,12 +38,14 @@ export default function AssetForm({ asset, onSave, onClose }: Props) {
       <form onSubmit={handleSubmit} className="space-y-3">
         <div>
           <label className="block text-[12px] font-medium mb-1 text-stone">名称</label>
-          <Input value={name} onChange={e => setName(e.target.value)} required />
+          <Input placeholder="例：沪深300ETF" value={name} onChange={e => setName(e.target.value)} required />
         </div>
         <div>
           <label className="block text-[12px] font-medium mb-1 text-stone">类别</label>
           <Select value={category} onValueChange={(v) => setCategory(v as AssetCategory)}>
-            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="选择类别">{CAT_MAP[category]}</SelectValue>
+            </SelectTrigger>
             <SelectContent>
               {CATEGORIES.map(c => <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>)}
             </SelectContent>
@@ -51,16 +54,16 @@ export default function AssetForm({ asset, onSave, onClose }: Props) {
         <div className="grid grid-cols-2 gap-2.5">
           <div>
             <label className="block text-[12px] font-medium mb-1 text-stone">数量/份额</label>
-            <Input type="number" step="0.01" value={quantity} onChange={e => setQuantity(e.target.value)} required />
+            <Input type="number" placeholder="0" step="0.01" value={quantity} onChange={e => setQuantity(e.target.value)} required />
           </div>
           <div>
             <label className="block text-[12px] font-medium mb-1 text-stone">单价</label>
-            <Input type="number" step="0.01" value={unitPrice} onChange={e => setUnitPrice(e.target.value)} required />
+            <Input type="number" placeholder="0.00" step="0.01" value={unitPrice} onChange={e => setUnitPrice(e.target.value)} required />
           </div>
         </div>
         <div>
           <label className="block text-[12px] font-medium mb-1 text-stone">备注</label>
-          <Input value={notes} onChange={e => setNotes(e.target.value)} />
+          <Input placeholder="可选备注" value={notes} onChange={e => setNotes(e.target.value)} />
         </div>
         <div className="flex justify-end gap-2 pt-1.5">
           <Button type="button" variant="secondary" size="sm" onClick={onClose}>取消</Button>
