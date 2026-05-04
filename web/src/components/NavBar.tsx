@@ -1,11 +1,11 @@
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Target, PieChart, Moon, Sun } from 'lucide-react';
+import { Moon, Sun, Sparkles } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 const links = [
-  { to: '/', icon: LayoutDashboard, label: '资产总览' },
-  { to: '/fire', icon: Target, label: 'FIRE 追踪' },
-  { to: '/allocation', icon: PieChart, label: '配置分析' },
+  { to: '/', label: '概览' },
+  { to: '/fire', label: 'FIRE' },
+  { to: '/allocation', label: '配置' },
 ];
 
 export default function NavBar() {
@@ -16,33 +16,46 @@ export default function NavBar() {
   }, [dark]);
 
   return (
-    <nav className="h-14 border-b flex items-center justify-between px-6 bg-card">
-      <div className="flex items-center gap-1">
-        <span className="text-xl font-bold text-primary mr-6">free</span>
-        {links.map(({ to, icon: Icon, label }) => (
-          <NavLink
-            key={to}
-            to={to}
-            end={to === '/'}
-            className={({ isActive }) =>
-              `flex items-center gap-2 px-3 py-2 rounded-md text-sm transition-colors ${
-                isActive
-                  ? 'bg-primary/10 text-primary font-medium'
-                  : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
-              }`
-            }
-          >
-            <Icon className="h-4 w-4" />
-            {label}
-          </NavLink>
-        ))}
+    <header className="sticky top-0 z-40 border-b border-line/50 glass">
+      <div className="max-w-7xl mx-auto flex items-center justify-between h-14 px-6">
+        <div className="flex items-center gap-8">
+          <span className="font-serif text-xl italic font-medium tracking-tight text-accent select-none">
+            free
+          </span>
+          <nav className="flex items-center gap-1">
+            {links.map(({ to, label }) => (
+              <NavLink
+                key={to}
+                to={to}
+                end={to === '/'}
+                className={({ isActive }) =>
+                  `relative px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                    isActive
+                      ? 'text-accent'
+                      : 'text-fg-dim hover:text-fg'
+                  }`
+                }
+              >
+                {({ isActive }) => (
+                  <>
+                    {label}
+                    {isActive && (
+                      <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3 h-0.5 rounded-full bg-accent" />
+                    )}
+                  </>
+                )}
+              </NavLink>
+            ))}
+          </nav>
+        </div>
+
+        <button
+          onClick={() => setDark(!dark)}
+          className="p-2 rounded-lg text-fg-dim hover:text-fg hover:bg-surface-alt transition-colors"
+        >
+          {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+        </button>
       </div>
-      <button
-        onClick={() => setDark(!dark)}
-        className="p-2 rounded-md hover:bg-secondary text-muted-foreground"
-      >
-        {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-      </button>
-    </nav>
+    </header>
   );
 }

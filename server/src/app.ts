@@ -10,7 +10,7 @@ import { snapshotRoutes } from './routes/snapshots';
 export async function createApp() {
   const app = Fastify({ logger: true });
 
-  await app.register(cors);
+  await app.register(cors, { methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'] });
 
   await app.register(assetRoutes, { prefix: '/api/assets' });
   await app.register(liabilityRoutes, { prefix: '/api/liabilities' });
