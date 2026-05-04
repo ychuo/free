@@ -5,6 +5,7 @@ import NetWorthCard from '../components/NetWorthCard';
 import AssetPieChart from '../components/AssetPieChart';
 import AssetList from '../components/AssetList';
 import LiabilityList from '../components/LiabilityList';
+import { Button } from '../components/ui/button';
 
 export default function AssetOverview() {
   const { assets, create, update, remove } = useAssets();
@@ -18,12 +19,7 @@ export default function AssetOverview() {
           <h1 className="text-lg font-serif font-medium tracking-wide text-deep">概览</h1>
           <p className="text-[12px] text-stone mt-0.5">你的资产全景</p>
         </div>
-        <button
-          onClick={createSnapshot}
-          className="px-3 py-1.5 text-[12px] font-medium rounded-md border border-sand text-olive hover:bg-sand/50 transition-colors"
-        >
-          记录快照
-        </button>
+        <Button onClick={createSnapshot} variant="secondary" size="sm">记录快照</Button>
       </div>
 
       <NetWorthCard summary={summary} />

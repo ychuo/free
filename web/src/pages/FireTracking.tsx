@@ -3,8 +3,8 @@ import { useFireProfile } from '../hooks/useFireProfile';
 import FireGauge from '../components/FireGauge';
 import FireTimeline from '../components/FireTimeline';
 import Modal from '../components/Modal';
-
-const inputClass = "w-full px-2.5 py-2 rounded-md border border-sand bg-ivory text-[13px] text-deep focus:outline-none focus:ring-2 focus:ring-brand/15 focus:border-brand/30 transition-all";
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
 
 export default function FireTracking() {
   const { progress, update } = useFireProfile();
@@ -33,12 +33,7 @@ export default function FireTracking() {
           <h1 className="text-lg font-serif font-medium tracking-wide text-deep">FIRE</h1>
           <p className="text-[12px] text-stone mt-0.5">财务自由进度追踪</p>
         </div>
-        <button
-          onClick={startEdit}
-          className="px-3 py-1.5 text-[12px] font-medium rounded-md border border-sand text-olive hover:bg-sand/50 transition-colors"
-        >
-          设定目标
-        </button>
+        <Button variant="secondary" size="sm" onClick={startEdit}>设定目标</Button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
@@ -66,23 +61,21 @@ export default function FireTracking() {
       </div>
 
       <Modal open={editing} onClose={() => setEditing(false)}>
-        <div className="w-full max-w-sm rounded-lg border border-sand bg-ivory p-5">
+        <div className="w-full max-w-sm">
           <h3 className="text-sm font-serif font-medium text-deep mb-4">设定 FIRE 目标</h3>
           <form onSubmit={handleSubmit} className="space-y-3">
             <div>
               <label className="block text-[12px] font-medium mb-1 text-stone">年生活支出（元）</label>
-              <input type="number" step="1" value={annualExpense} onChange={e => setAnnualExpense(e.target.value)} required className={inputClass} />
+              <Input type="number" step="1" value={annualExpense} onChange={e => setAnnualExpense(e.target.value)} required />
             </div>
             <div>
               <label className="block text-[12px] font-medium mb-1 text-stone">安全提取率 (%)</label>
-              <input type="number" step="0.1" value={safeWithdrawalRate} onChange={e => setSafeWithdrawalRate(e.target.value)} required className={inputClass} />
+              <Input type="number" step="0.1" value={safeWithdrawalRate} onChange={e => setSafeWithdrawalRate(e.target.value)} required />
               <p className="text-[10px] text-stone mt-1">经典 FIRE 为 4%，保守建议更低</p>
             </div>
             <div className="flex justify-end gap-2 pt-1.5">
-              <button type="button" onClick={() => setEditing(false)}
-                className="px-3 py-1.5 text-[12px] font-medium rounded-md border border-sand text-olive hover:bg-sand/50 transition-colors">取消</button>
-              <button type="submit"
-                className="px-4 py-1.5 text-[12px] font-medium rounded-md bg-brand text-ivory hover:bg-brand-light transition-colors">保存</button>
+              <Button type="button" variant="secondary" size="sm" onClick={() => setEditing(false)}>取消</Button>
+              <Button type="submit" size="sm">保存</Button>
             </div>
           </form>
         </div>

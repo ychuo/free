@@ -6,11 +6,11 @@ import RebalanceList from '../components/RebalanceList';
 import AllocationHistory from '../components/AllocationHistory';
 import Modal from '../components/Modal';
 import { AssetCategory } from '../types';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
 
 const ALL_CATEGORIES = [AssetCategory.CASH, AssetCategory.FIXED_INCOME, AssetCategory.EQUITY, AssetCategory.REAL_ESTATE, AssetCategory.CRYPTO, AssetCategory.PRECIOUS, AssetCategory.OTHER];
 const LABELS: Record<string, string> = { cash: '现金', fixed_income: '固收', equity: '权益', real_estate: '不动产', crypto: '数字货币', precious: '贵金属', other: '其他' };
-const inputClass = "flex-1 px-2 py-1.5 rounded-md border border-sand bg-ivory text-[12px] text-deep focus:outline-none focus:ring-2 focus:ring-brand/15 focus:border-brand/30 transition-all";
-
 export default function AllocationAnalysis() {
   const { targets, analysis, updateTargets } = useAllocation();
   const { snapshots } = useNetWorth();
@@ -36,12 +36,7 @@ export default function AllocationAnalysis() {
           <h1 className="text-lg font-serif font-medium tracking-wide text-deep">配置</h1>
           <p className="text-[12px] text-stone mt-0.5">资产配置分析与再平衡</p>
         </div>
-        <button
-          onClick={startEdit}
-          className="px-3 py-1.5 text-[12px] font-medium rounded-md border border-sand text-olive hover:bg-sand/50 transition-colors"
-        >
-          目标配置
-        </button>
+        <Button variant="secondary" size="sm" onClick={startEdit}>目标配置</Button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
@@ -58,18 +53,16 @@ export default function AllocationAnalysis() {
             {ALL_CATEGORIES.map(cat => (
               <div key={cat} className="flex items-center gap-2.5">
                 <label className="text-[12px] font-medium w-18 text-stone">{LABELS[cat] || cat}</label>
-                <input type="number" min="0" max="100" step="0.5"
+                <Input type="number" min="0" max="100" step="0.5"
                   value={ratios[cat] ?? 0}
                   onChange={e => setRatios({ ...ratios, [cat]: parseFloat(e.target.value) || 0 })}
-                  className={inputClass} />
+                  className="flex-1" />
                 <span className="text-[11px] text-stone w-6 text-right">%</span>
               </div>
             ))}
             <div className="flex justify-end gap-2 pt-2">
-              <button type="button" onClick={() => setEditing(false)}
-                className="px-3 py-1.5 text-[12px] font-medium rounded-md border border-sand text-olive hover:bg-sand/50 transition-colors">取消</button>
-              <button type="submit"
-                className="px-4 py-1.5 text-[12px] font-medium rounded-md bg-brand text-ivory hover:bg-brand-light transition-colors">保存</button>
+              <Button type="button" variant="secondary" size="sm" onClick={() => setEditing(false)}>取消</Button>
+              <Button type="submit" size="sm">保存</Button>
             </div>
           </form>
         </div>

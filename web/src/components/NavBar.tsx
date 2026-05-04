@@ -2,6 +2,7 @@ import { NavLink } from 'react-router-dom';
 import { Moon, Sun } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { cn } from '../lib/utils';
+import { Button } from './ui/button';
 
 const links = [
   { to: '/', label: '概览' },
@@ -51,12 +52,9 @@ export default function NavBar() {
           </nav>
         </div>
 
-        <button
-          onClick={() => setDark(!dark)}
-          className="p-1.5 rounded-md text-stone hover:text-deep hover:bg-sand/50 transition-colors"
-        >
+        <Button variant="ghost" size="icon-sm" onClick={() => setDark(!dark)}>
           {dark ? <Sun className="h-3.5 w-3.5" /> : <Moon className="h-3.5 w-3.5" />}
-        </button>
+        </Button>
       </div>
     </header>
   );

@@ -1,5 +1,4 @@
-import { useEffect } from 'react';
-import { createPortal } from 'react-dom';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 
 interface Props {
   open: boolean;
@@ -8,33 +7,11 @@ interface Props {
 }
 
 export default function Modal({ open, onClose, children }: Props) {
-  useEffect(() => {
-    if (!open) return;
-    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
-    document.addEventListener('keydown', handler);
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.removeEventListener('keydown', handler);
-      document.body.style.overflow = '';
-    };
-  }, [open, onClose]);
-
-  if (!open) return null;
-
-  return createPortal(
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      <div
-        className="absolute inset-0 bg-black/30 animate-[fade-in_120ms_ease-out]"
-        onClick={onClose}
-      />
-      <div className="relative animate-[modal-in_150ms_ease-out] rounded-lg border border-sand bg-ivory p-5 shadow-lg">
+  return (
+    <Dialog open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
+      <DialogContent showCloseButton={false} className="border-sand bg-ivory p-5">
         {children}
-      </div>
-      <style>{`
-        @keyframes fade-in { from { opacity: 0 } to { opacity: 1 } }
-        @keyframes modal-in { from { opacity: 0; transform: scale(0.97) translateY(6px) } to { opacity: 1; transform: scale(1) translateY(0) } }
-      `}</style>
-    </div>,
-    document.body
+      </DialogContent>
+    </Dialog>
   );
 }
