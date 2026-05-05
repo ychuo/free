@@ -32,7 +32,7 @@ export class UStockAdapter implements PriceAdapter {
     const json = (await res.json()) as any;
     const d = json['Global Quote'];
 
-    if (!d || !d['05. price']) throw new Error(`No data for ${tickerSymbol}`);
+    if (!d?.['05. price']) throw new Error(`No data for ${tickerSymbol}`);
 
     return {
       tickerSymbol,

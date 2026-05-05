@@ -111,7 +111,7 @@ export class PriceService {
 
   async refreshAsset(assetId: string): Promise<boolean> {
     const asset = await prisma.asset.findUnique({ where: { id: assetId } });
-    if (!asset || !asset.tickerSymbol || asset.priceSource !== 'AUTO') return false;
+    if (!asset?.tickerSymbol || asset.priceSource !== 'AUTO') return false;
 
     const adapter = this.findAdapterForExchange(asset.exchangeCode || '');
     if (!adapter) return false;
