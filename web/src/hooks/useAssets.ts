@@ -46,15 +46,5 @@ export function useAssets() {
     }
   };
 
-  const removeMany = async (ids: string[]) => {
-    try {
-      const result = await api.assets.deleteMany(ids);
-      toast.success(`已删除 ${result.deleted} 项资产`);
-      await fetch();
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : '批量删除失败');
-    }
-  };
-
-  return { assets, loading, create, update, remove, removeMany, refetch: fetch };
+  return { assets, loading, create, update, remove, refetch: fetch };
 }

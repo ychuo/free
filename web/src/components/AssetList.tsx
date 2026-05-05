@@ -1,64 +1,26 @@
-import { Pencil, Plus, Search, Trash2 } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { Pencil, Plus, Trash2 } from 'lucide-react';
+import { useState } from 'react';
 import type { Asset, CreateAssetInput } from '../types';
 import { type AssetCategory, CATEGORY_LABELS } from '../types';
 import AssetForm from './AssetForm';
 import ConfirmDialog from './ConfirmDialog';
 import Modal from './Modal';
 import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
 interface Props {
   assets: Asset[];
   onCreate: (input: CreateAssetInput) => Promise<void>;
   onUpdate: (id: string, input: Partial<CreateAssetInput>) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
-  onDeleteMany?: (ids: string[]) => Promise<void>;
 }
 
-export default function AssetList({ assets, onCreate, onUpdate, onDelete, onDeleteMany }: Props) {
+export default function AssetList({ assets, onCreate, onUpdate, onDelete }: Props) {
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<Asset | null>(null);
   const [deleting, setDeleting] = useState<Asset | null>(null);
 
-  const [selected, setSelected] = useState<Set<string>>(new Set());
-
-  const toggleSelect = (id: string) => {
-    setSelected((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  };
-
-  const toggleAll = () => {
-    if (selected.size === filtered.length) {
-      setSelected(new Set());
-    } else {
-      setSelected(new Set(filtered.map((a) => a.id)));
-    }
-  };
-
-  const [search, setSearch] = useState('');
-  const [sortBy, setSortBy] = useState<'name' | 'value' | 'category'>('category');
-
-  const filtered = useMemo(() => {
-    let list = assets;
-    if (search.trim()) {
-      const q = search.trim().toLowerCase();
-      list = list.filter((a) => a.name.toLowerCase().includes(q));
-    }
-    return [...list].sort((a, b) => {
-      if (sortBy === 'name') return a.name.localeCompare(b.name, 'zh-CN');
-      if (sortBy === 'value') return b.totalValue - a.totalValue;
-      return a.category.localeCompare(b.category);
-    });
-  }, [assets, search, sortBy]);
-
   const grouped: Record<string, Asset[]> = {};
-  for (const a of filtered) {
+  for (const a of assets) {
     if (!grouped[a.category]) grouped[a.category] = [];
     grouped[a.category].push(a);
   }
@@ -78,57 +40,8 @@ export default function AssetList({ assets, onCreate, onUpdate, onDelete, onDele
         </Button>
       </div>
 
-      <div className="flex items-center gap-2 mt-3">
-        <div className="relative flex-1">
-          <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-stone/50" />
-          <Input
-            placeholder="搜索资产..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="pl-6 h-7 text-[12px]"
-          />
-        </div>
-        <Select value={sortBy} onValueChange={(v) => setSortBy(v as 'name' | 'value' | 'category')}>
-          <SelectTrigger className="h-7 w-24 text-[12px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="category">按类别</SelectItem>
-            <SelectItem value="name">按名称</SelectItem>
-            <SelectItem value="value">按金额</SelectItem>
-          </SelectContent>
-        </Select>
-        {filtered.length > 0 && (
-          <button
-            type="button"
-            onClick={toggleAll}
-            className="text-[11px] text-stone hover:text-deep transition-colors whitespace-nowrap"
-          >
-            {selected.size === filtered.length ? '取消全选' : '全选'}
-          </button>
-        )}
-      </div>
-
-      {selected.size > 0 && (
-        <div className="flex items-center justify-between mb-3 px-3 py-2 rounded-md bg-brand/5 border border-brand/20">
-          <span className="text-[12px] text-deep">已选 {selected.size} 项</span>
-          <Button
-            size="sm"
-            variant="destructive"
-            onClick={async () => {
-              await onDeleteMany?.(Array.from(selected));
-              setSelected(new Set());
-            }}
-          >
-            批量删除
-          </Button>
-        </div>
-      )}
-
-      {filtered.length === 0 ? (
-        <p className="text-center text-stone text-[12px] py-8">
-          {search ? '无匹配资产' : '尚无资产，点击新增开始记录'}
-        </p>
+      {assets.length === 0 ? (
+        <p className="text-center text-stone text-[12px] py-8">尚无资产，点击新增开始记录</p>
       ) : (
         <div className="space-y-4">
           {Object.entries(grouped).map(([cat, items]) => (
@@ -143,12 +56,6 @@ export default function AssetList({ assets, onCreate, onUpdate, onDelete, onDele
                     key={a.id}
                     className="group flex items-center justify-between px-3 py-2 rounded-md border border-sand/60 bg-parchment/50 hover:border-sand transition-colors"
                   >
-                    <input
-                      type="checkbox"
-                      checked={selected.has(a.id)}
-                      onChange={() => toggleSelect(a.id)}
-                      className="h-3.5 w-3.5 rounded border-sand text-brand focus:ring-0 cursor-pointer mr-2"
-                    />
                     <div className="min-w-0 flex-1">
                       <p className="text-[13px] text-deep truncate">
                         {a.name}

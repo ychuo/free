@@ -1,5 +1,5 @@
 import { Download, Upload } from 'lucide-react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 import AssetList from '../components/AssetList';
 import AssetPieChart from '../components/AssetPieChart';
@@ -8,6 +8,7 @@ import LiabilityList from '../components/LiabilityList';
 import NetWorthCard from '../components/NetWorthCard';
 import { AssetListSkeleton, ChartSkeleton, NetWorthSkeleton } from '../components/Skeleton';
 import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
 import { useAllocation } from '../hooks/useAllocation';
 import { useAssets } from '../hooks/useAssets';
 import { useFireProfile } from '../hooks/useFireProfile';
@@ -17,7 +18,7 @@ import { api } from '../lib/api';
 import type { AssetCategory, ExportData, LiabilityType } from '../types';
 
 export default function AssetOverview() {
-  const { assets, create, update, remove, removeMany, loading: assetsLoading } = useAssets();
+  const { assets, create, update, remove, loading: assetsLoading } = useAssets();
   const {
     liabilities,
     create: createL,
@@ -32,6 +33,7 @@ export default function AssetOverview() {
   const [snapshotDate, setSnapshotDate] = useState('');
   const [importConfirmOpen, setImportConfirmOpen] = useState(false);
   const [importData, setImportData] = useState<ExportData | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const withRefresh = <T extends (...args: any[]) => Promise<any>>(fn: T): T =>
     (async (...args: any[]) => {
@@ -122,11 +124,11 @@ export default function AssetOverview() {
           <p className="text-[12px] text-stone mt-0.5">你的资产全景</p>
         </div>
         <div className="flex items-center gap-2">
-          <input
+          <Input
             type="date"
             value={snapshotDate}
             onChange={(e) => setSnapshotDate(e.target.value)}
-            className="h-8 rounded-md border border-sand bg-ivory px-2.5 text-[12px] text-stone focus:outline-none focus:border-sepia/50"
+            className="h-8 w-34 text-[12px]"
           />
           <Button onClick={() => setSnapshotConfirmOpen(true)} variant="outline" size="sm">
             记录快照
@@ -134,10 +136,16 @@ export default function AssetOverview() {
           <Button onClick={handleExport} variant="outline" size="sm">
             <Download className="h-3 w-3 mr-1" /> 导出
           </Button>
-          <label className="inline-flex items-center justify-center rounded-md border border-sand bg-ivory px-3 h-8 text-[12px] font-medium text-stone hover:bg-sand/50 transition-colors cursor-pointer">
+          <Button variant="outline" size="sm" onClick={() => fileRef.current?.click()}>
             <Upload className="h-3 w-3 mr-1" /> 导入
-            <input type="file" accept=".json" onChange={handleImportFile} className="hidden" />
-          </label>
+          </Button>
+          <input
+            ref={fileRef}
+            type="file"
+            accept=".json"
+            onChange={handleImportFile}
+            className="hidden"
+          />
         </div>
       </div>
 
@@ -153,10 +161,6 @@ export default function AssetOverview() {
             onCreate={withRefresh(create)}
             onUpdate={withRefresh(update)}
             onDelete={withRefresh(remove)}
-            onDeleteMany={async (ids) => {
-              await removeMany(ids);
-              await refetchNetWorth();
-            }}
           />
         )}
       </div>

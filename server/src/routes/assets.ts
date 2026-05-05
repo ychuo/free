@@ -101,14 +101,6 @@ export async function assetRoutes(app: FastifyInstance) {
     },
   );
 
-  app.delete('/', async (request: FastifyRequest, reply: FastifyReply) => {
-    const { ids } = request.body as { ids: string[] };
-    const result = await prisma.asset.deleteMany({
-      where: { id: { in: ids }, userId },
-    });
-    return reply.send({ deleted: result.count });
-  });
-
   app.delete('/:id', async (request: FastifyRequest, reply: FastifyReply) => {
     const { id } = request.params as { id: string };
     await prisma.asset.deleteMany({ where: { id, userId } });
