@@ -8,6 +8,16 @@ export enum AssetCategory {
   OTHER = 'other',
 }
 
+export const CATEGORY_LABELS: Record<AssetCategory, string> = {
+  [AssetCategory.CASH]: '现金',
+  [AssetCategory.FIXED_INCOME]: '固收',
+  [AssetCategory.EQUITY]: '权益',
+  [AssetCategory.REAL_ESTATE]: '不动产',
+  [AssetCategory.CRYPTO]: '数字货币',
+  [AssetCategory.PRECIOUS]: '贵金属',
+  [AssetCategory.OTHER]: '其他',
+};
+
 export interface Asset {
   id: string;
   name: string;
