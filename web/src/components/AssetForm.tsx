@@ -141,7 +141,7 @@ export default function AssetForm({ asset, onSave, onClose }: Props) {
         )}
         <div>
           <label className="block text-[12px] font-medium mb-1 text-stone">币种</label>
-          <Select value={currency} onValueChange={setCurrency}>
+          <Select value={currency} onValueChange={(v) => setCurrency(v ?? DEFAULT_CURRENCY)}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="选择币种">{SUPPORTED_CURRENCIES[currency]}</SelectValue>
             </SelectTrigger>

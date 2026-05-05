@@ -1,7 +1,7 @@
 import { Pencil, Plus, Search, Trash2 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import type { Asset, CreateAssetInput } from '../types';
-import { CATEGORY_LABELS } from '../types';
+import { type AssetCategory, CATEGORY_LABELS } from '../types';
 import AssetForm from './AssetForm';
 import ConfirmDialog from './ConfirmDialog';
 import Modal from './Modal';
@@ -134,7 +134,7 @@ export default function AssetList({ assets, onCreate, onUpdate, onDelete, onDele
           {Object.entries(grouped).map(([cat, items]) => (
             <div key={cat}>
               <h4 className="text-[11px] font-medium text-stone mb-1.5 px-0.5">
-                {CATEGORY_LABELS[cat] || cat}
+                {CATEGORY_LABELS[cat as AssetCategory] || cat}
                 <span className="ml-1.5 text-stone/60">{items.length}</span>
               </h4>
               <div className="space-y-1">

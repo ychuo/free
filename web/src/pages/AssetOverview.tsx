@@ -43,8 +43,19 @@ export default function AssetOverview() {
     const data: ExportData = {
       version: 1,
       exportedAt: new Date().toISOString(),
-      assets: assets.map(({ id, createdAt, updatedAt, totalValue, ...rest }) => rest),
-      liabilities: liabilities.map(({ id, createdAt, updatedAt, ...rest }) => rest),
+      assets: assets.map(({ id, createdAt, updatedAt, totalValue, ...rest }) => ({
+        ...rest,
+        subType: rest.subType ?? undefined,
+        passiveIncome: rest.passiveIncome ?? undefined,
+        properties: rest.properties ?? undefined,
+        acquiredAt: rest.acquiredAt ?? undefined,
+        notes: rest.notes ?? undefined,
+      })),
+      liabilities: liabilities.map(({ id, createdAt, updatedAt, ...rest }) => ({
+        ...rest,
+        interestRate: rest.interestRate ?? undefined,
+        monthlyPayment: rest.monthlyPayment ?? undefined,
+      })),
       fireProfile: fireProfile
         ? {
             annualExpense: fireProfile.annualExpense,
