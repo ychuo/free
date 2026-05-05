@@ -1,11 +1,13 @@
-import { Pencil, Plus, Trash2 } from 'lucide-react';
-import { useState } from 'react';
+import { Pencil, Plus, Search, Trash2 } from 'lucide-react';
+import { useMemo, useState } from 'react';
 import type { Asset, CreateAssetInput } from '../types';
 import { CATEGORY_LABELS } from '../types';
 import AssetForm from './AssetForm';
 import ConfirmDialog from './ConfirmDialog';
 import Modal from './Modal';
 import { Button } from './ui/button';
+import { Input } from './ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
 interface Props {
   assets: Asset[];
@@ -19,8 +21,24 @@ export default function AssetList({ assets, onCreate, onUpdate, onDelete }: Prop
   const [editing, setEditing] = useState<Asset | null>(null);
   const [deleting, setDeleting] = useState<Asset | null>(null);
 
+  const [search, setSearch] = useState('');
+  const [sortBy, setSortBy] = useState<'name' | 'value' | 'category'>('category');
+
+  const filtered = useMemo(() => {
+    let list = assets;
+    if (search.trim()) {
+      const q = search.trim().toLowerCase();
+      list = list.filter((a) => a.name.toLowerCase().includes(q));
+    }
+    return [...list].sort((a, b) => {
+      if (sortBy === 'name') return a.name.localeCompare(b.name, 'zh-CN');
+      if (sortBy === 'value') return b.totalValue - a.totalValue;
+      return a.category.localeCompare(b.category);
+    });
+  }, [assets, search, sortBy]);
+
   const grouped: Record<string, Asset[]> = {};
-  for (const a of assets) {
+  for (const a of filtered) {
     if (!grouped[a.category]) grouped[a.category] = [];
     grouped[a.category].push(a);
   }
@@ -40,8 +58,32 @@ export default function AssetList({ assets, onCreate, onUpdate, onDelete }: Prop
         </Button>
       </div>
 
-      {assets.length === 0 ? (
-        <p className="text-center text-stone text-[12px] py-8">尚无资产，点击新增开始记录</p>
+      <div className="flex items-center gap-2 mt-3">
+        <div className="relative flex-1">
+          <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-stone/50" />
+          <Input
+            placeholder="搜索资产..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="pl-6 h-7 text-[12px]"
+          />
+        </div>
+        <Select value={sortBy} onValueChange={(v) => setSortBy(v as 'name' | 'value' | 'category')}>
+          <SelectTrigger className="h-7 w-24 text-[12px]">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="category">按类别</SelectItem>
+            <SelectItem value="name">按名称</SelectItem>
+            <SelectItem value="value">按金额</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {filtered.length === 0 ? (
+        <p className="text-center text-stone text-[12px] py-8">
+          {search ? '无匹配资产' : '尚无资产，点击新增开始记录'}
+        </p>
       ) : (
         <div className="space-y-4">
           {Object.entries(grouped).map(([cat, items]) => (
