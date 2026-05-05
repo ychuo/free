@@ -1,4 +1,5 @@
-import { Download, Upload } from 'lucide-react';
+import { format } from 'date-fns';
+import { CalendarIcon, Download, Upload } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 import AssetList from '../components/AssetList';
@@ -8,13 +9,15 @@ import LiabilityList from '../components/LiabilityList';
 import NetWorthCard from '../components/NetWorthCard';
 import { AssetListSkeleton, ChartSkeleton, NetWorthSkeleton } from '../components/Skeleton';
 import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
+import { Calendar } from '../components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '../components/ui/popover';
 import { useAllocation } from '../hooks/useAllocation';
 import { useAssets } from '../hooks/useAssets';
 import { useFireProfile } from '../hooks/useFireProfile';
 import { useLiabilities } from '../hooks/useLiabilities';
 import { useNetWorth } from '../hooks/useNetWorth';
 import { api } from '../lib/api';
+import { cn } from '../lib/utils';
 import type { AssetCategory, ExportData, LiabilityType } from '../types';
 
 export default function AssetOverview() {
@@ -30,7 +33,7 @@ export default function AssetOverview() {
   const { profile: fireProfile } = useFireProfile();
   const { targets } = useAllocation();
   const [snapshotConfirmOpen, setSnapshotConfirmOpen] = useState(false);
-  const [snapshotDate, setSnapshotDate] = useState('');
+  const [snapshotDate, setSnapshotDate] = useState<Date | undefined>(undefined);
   const [importConfirmOpen, setImportConfirmOpen] = useState(false);
   const [importData, setImportData] = useState<ExportData | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -124,12 +127,32 @@ export default function AssetOverview() {
           <p className="text-[12px] text-stone mt-0.5">你的资产全景</p>
         </div>
         <div className="flex items-center gap-2">
-          <Input
-            type="date"
-            value={snapshotDate}
-            onChange={(e) => setSnapshotDate(e.target.value)}
-            className="h-8 w-34 text-[12px]"
-          />
+          <Popover>
+            <PopoverTrigger
+              render={(props) => (
+                <Button
+                  {...props}
+                  variant="outline"
+                  size="sm"
+                  className={cn(
+                    'justify-start text-left font-normal',
+                    !snapshotDate && 'text-muted-foreground',
+                  )}
+                >
+                  <CalendarIcon className="mr-1 h-3 w-3" />
+                  {snapshotDate ? format(snapshotDate, 'yyyy-MM-dd') : '选择日期'}
+                </Button>
+              )}
+            />
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                mode="single"
+                selected={snapshotDate}
+                onSelect={setSnapshotDate}
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
           <Button onClick={() => setSnapshotConfirmOpen(true)} variant="outline" size="sm">
             记录快照
           </Button>
@@ -183,8 +206,8 @@ export default function AssetOverview() {
         confirmLabel="记录"
         variant="default"
         onConfirm={async () => {
-          await createSnapshot(snapshotDate || undefined);
-          setSnapshotDate('');
+          await createSnapshot(snapshotDate?.toISOString());
+          setSnapshotDate(undefined);
           setSnapshotConfirmOpen(false);
         }}
         onCancel={() => setSnapshotConfirmOpen(false)}
