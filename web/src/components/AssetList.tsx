@@ -52,7 +52,12 @@ export default function AssetList({ assets, onCreate, onUpdate, onDelete }: Prop
                     className="group flex items-center justify-between px-3 py-2 rounded-md border border-sand/60 bg-parchment/50 hover:border-sand transition-colors"
                   >
                     <div className="min-w-0 flex-1">
-                      <p className="text-[13px] text-deep truncate">{a.name}</p>
+                      <p className="text-[13px] text-deep truncate">
+                        {a.name}
+                        {a.subType && (
+                          <span className="ml-1.5 inline-block px-1 py-px rounded border border-sand bg-ivory text-[10px] text-stone align-middle">{a.subType}</span>
+                        )}
+                      </p>
                       <p className="text-[11px] text-stone mt-0.5">
                         {a.quantity} × {a.unitPrice.toLocaleString()} = {(a.totalValue / 1e4).toFixed(2)} 万
                       </p>

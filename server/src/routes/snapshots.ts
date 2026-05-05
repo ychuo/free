@@ -30,4 +30,17 @@ export async function snapshotRoutes(app: FastifyInstance) {
     });
     return reply.send(snapshots);
   });
+
+  app.delete('/', async (_request: FastifyRequest, reply: FastifyReply) => {
+    const { count } = await prisma.snapshot.deleteMany({ where: { userId } });
+    return reply.send({ deleted: count });
+  });
+
+  app.delete('/:id', async (request: FastifyRequest, reply: FastifyReply) => {
+    const { id } = request.params as { id: string };
+    const existing = await prisma.snapshot.findFirst({ where: { id, userId } });
+    if (!existing) return reply.status(404).send({ error: '快照不存在' });
+    await prisma.snapshot.delete({ where: { id } });
+    return reply.status(204).send();
+  });
 }

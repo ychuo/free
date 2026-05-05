@@ -9,8 +9,8 @@ function fmt(n: number): string {
 }
 
 const cards = [
-  { key: 'assets', label: '总资产', color: 'text-[#2d6a4f]' },
-  { key: 'liabilities', label: '总负债', color: 'text-[#b91c1c]' },
+  { key: 'assets', label: '总资产', color: 'text-chart-1' },
+  { key: 'liabilities', label: '总负债', color: 'text-destructive' },
   { key: 'netWorth', label: '净资产', color: 'text-brand' },
 ] as const;
 
@@ -44,12 +44,12 @@ export default function NetWorthCard({ summary }: { summary: NetWorthSummary | n
       {summary.previousNetWorth != null && summary.previousNetWorth > 0 && (
         <div className="flex items-center gap-1.5 text-xs text-stone animate-fade-up stagger-4">
           {summary.change != null && summary.change >= 0 ? (
-            <TrendingUp className="h-3 w-3 text-[#2d6a4f]" />
+            <TrendingUp className="h-3 w-3 text-chart-1" />
           ) : (
-            <TrendingDown className="h-3 w-3 text-[#b91c1c]" />
+            <TrendingDown className="h-3 w-3 text-destructive" />
           )}
           <span>较上次快照</span>
-          <span className={cn('font-medium', summary.change != null && summary.change >= 0 ? 'text-[#2d6a4f]' : 'text-[#b91c1c]')}>
+          <span className={cn('font-medium', summary.change != null && summary.change >= 0 ? 'text-chart-1' : 'text-destructive')}>
             {summary.changePercent != null ? `${summary.changePercent >= 0 ? '+' : ''}${summary.changePercent.toFixed(2)}%` : '—'}
           </span>
         </div>

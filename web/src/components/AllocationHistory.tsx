@@ -18,7 +18,7 @@ export default function AllocationHistory({ snapshots }: { snapshots: Snapshot[]
   }
 
   const reversed = [...snapshots].reverse();
-  const categories = Object.keys(reversed[0]?.breakdown || {});
+  const categories = [...new Set(snapshots.flatMap(s => Object.keys(s.breakdown || {})))];
   const data = reversed.map(s => {
     const total = s.totalAssets;
     const point: Record<string, unknown> = {

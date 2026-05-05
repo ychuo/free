@@ -44,5 +44,7 @@ export const api = {
   snapshots: {
     create: () => request('/snapshots', { method: 'POST' }),
     list: () => request('/snapshots'),
+    delete: (id: string) => request(`/snapshots/${id}`, { method: 'DELETE' }),
+    clearAll: () => request('/snapshots', { method: 'DELETE' }),
   },
 };

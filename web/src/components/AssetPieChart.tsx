@@ -1,7 +1,10 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import type { NetWorthSummary } from '../types';
 
-const COLORS = ['#2d6a4f', '#b08d4b', '#1B365D', '#6b4c8a', '#b5454a', '#3d7a8a', '#78716c'];
+const COLORS = [
+  'var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)',
+  'var(--chart-4)', 'var(--chart-5)', 'var(--chart-1)', 'var(--chart-2)',
+];
 const LABELS: Record<string, string> = {
   cash: '现金', fixed_income: '固收', equity: '权益', real_estate: '不动产',
   crypto: '数字货币', precious: '贵金属', other: '其他',
@@ -40,8 +43,8 @@ export default function AssetPieChart({ summary }: { summary: NetWorthSummary | 
           </Pie>
           <Tooltip
             contentStyle={{
-              background: '#faf9f5',
-              border: '1px solid #e8e6dc',
+              background: 'var(--color-ivory)',
+              border: '1px solid var(--color-sand)',
               borderRadius: '8px',
               fontSize: '12px',
               fontFamily: 'var(--font-serif)',

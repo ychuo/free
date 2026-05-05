@@ -24,7 +24,7 @@ export default function FireTimeline({ progress }: { progress: FireProgress | nu
         {progress.gap > 0 ? (
           <> · 还需 <span className="text-deep">{(progress.gap / 1e4).toFixed(1)} 万</span></>
         ) : (
-          <span className="text-[#2d6a4f] font-medium"> · 已达成 FIRE</span>
+          <span className="text-chart-1 font-medium"> · 已达成 FIRE</span>
         )}
       </p>
     </div>

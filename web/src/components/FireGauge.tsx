@@ -6,7 +6,7 @@ export default function FireGauge({ progress }: { progress: FireProgress | null 
   const rate = Math.min(progress.coverageRate, 100);
   const circumference = 2 * Math.PI * 68;
   const dash = (rate / 100) * circumference;
-  const color = rate >= 100 ? '#2d6a4f' : rate >= 50 ? '#b08d4b' : '#b91c1c';
+  const color = rate >= 100 ? 'var(--chart-1)' : rate >= 50 ? 'var(--chart-2)' : 'var(--destructive)';
 
   return (
     <div className="rounded-lg border border-sand bg-ivory p-6 flex flex-col items-center animate-fade-up">
@@ -30,7 +30,7 @@ export default function FireGauge({ progress }: { progress: FireProgress | null 
 
       <div className="grid grid-cols-3 gap-3 w-full mt-5 pt-4 border-t border-sand">
         {[
-          { label: '年被动收入', value: `${(progress.annualPassiveIncome / 1e4).toFixed(1)} 万`, color: 'text-[#2d6a4f]' },
+          { label: '年被动收入', value: `${(progress.annualPassiveIncome / 1e4).toFixed(1)} 万`, color: 'text-chart-1' },
           { label: '年支出', value: `${(progress.annualExpense / 1e4).toFixed(1)} 万`, color: 'text-deep' },
           { label: progress.gap > 0 ? '差距' : '已超额', value: progress.gap > 0 ? `${(progress.gap / 1e4).toFixed(1)} 万` : 'FIRE!', color: progress.gap > 0 ? 'text-stone' : 'text-brand' },
         ].map(({ label, value, color }) => (

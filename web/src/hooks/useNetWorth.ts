@@ -20,6 +20,8 @@ export function useNetWorth() {
   useEffect(() => { fetch(); }, [fetch]);
 
   const createSnapshot = async () => { await api.snapshots.create(); await fetch(); };
+  const deleteSnapshot = async (id: string) => { await api.snapshots.delete(id); await fetch(); };
+  const clearSnapshots = async () => { await api.snapshots.clearAll(); await fetch(); };
 
-  return { summary, snapshots, loading, createSnapshot, refetch: fetch };
+  return { summary, snapshots, loading, createSnapshot, deleteSnapshot, clearSnapshots, refetch: fetch };
 }
