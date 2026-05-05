@@ -366,6 +366,7 @@ export interface RebalanceAlertStatus {
   targetRatio: number;
   deviation: number;
   threshold: number;
+  enabled: boolean;
   triggered: boolean;
 }
 

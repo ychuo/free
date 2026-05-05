@@ -1,20 +1,22 @@
 import { Pencil, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
-import type { Asset, CreateAssetInput } from '../types';
+import type { Asset, CreateAssetInput, MarketPrice } from '../types';
 import { type AssetCategory, CATEGORY_LABELS } from '../types';
 import AssetForm from './AssetForm';
 import ConfirmDialog from './ConfirmDialog';
 import Modal from './Modal';
+import { PriceBadge } from './PriceBadge';
 import { Button } from './ui/button';
 
 interface Props {
   assets: Asset[];
+  prices?: MarketPrice[];
   onCreate: (input: CreateAssetInput) => Promise<void>;
   onUpdate: (id: string, input: Partial<CreateAssetInput>) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
 }
 
-export default function AssetList({ assets, onCreate, onUpdate, onDelete }: Props) {
+export default function AssetList({ assets, prices, onCreate, onUpdate, onDelete }: Props) {
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<Asset | null>(null);
   const [deleting, setDeleting] = useState<Asset | null>(null);
@@ -68,6 +70,26 @@ export default function AssetList({ assets, onCreate, onUpdate, onDelete }: Prop
                       <p className="text-[11px] text-stone mt-0.5">
                         {a.quantity} × {a.unitPrice.toLocaleString()} ={' '}
                         {(a.totalValue / 1e4).toFixed(2)} 万
+                        {a.tickerSymbol &&
+                          prices &&
+                          (() => {
+                            const assetPrice = prices.find(
+                              (p) =>
+                                p.tickerSymbol === a.tickerSymbol &&
+                                p.exchangeCode === a.exchangeCode,
+                            );
+                            return assetPrice ? (
+                              <span className="ml-1.5">
+                                <PriceBadge
+                                  tickerSymbol={a.tickerSymbol}
+                                  priceSource={a.priceSource}
+                                  currentPrice={assetPrice.currentPrice}
+                                  dayChangePercent={assetPrice.dayChangePercent}
+                                  priceUpdatedAt={assetPrice.updatedAt}
+                                />
+                              </span>
+                            ) : null;
+                          })()}
                       </p>
                     </div>
                     <div className="flex items-center gap-2 ml-3">

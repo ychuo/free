@@ -1,5 +1,5 @@
 import { Trash2 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AllocationCompare from '../components/AllocationCompare';
 import AllocationHistory from '../components/AllocationHistory';
 import ConfirmDialog from '../components/ConfirmDialog';
@@ -10,6 +10,7 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { useAllocation } from '../hooks/useAllocation';
 import { useNetWorth } from '../hooks/useNetWorth';
+import { useRebalanceAlerts } from '../hooks/useRebalanceAlerts';
 import type { Snapshot } from '../types';
 import { AssetCategory, CATEGORY_LABELS } from '../types';
 
@@ -25,10 +26,31 @@ const ALL_CATEGORIES = [
 export default function AllocationAnalysis() {
   const { targets, analysis, updateTargets, loading } = useAllocation();
   const { snapshots, clearSnapshots, deleteSnapshot } = useNetWorth();
+  const { statuses, updateAlerts } = useRebalanceAlerts();
   const [editing, setEditing] = useState(false);
   const [ratios, setRatios] = useState<Record<string, number>>({});
   const [clearConfirmOpen, setClearConfirmOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<Snapshot | null>(null);
+  const [showThresholds, setShowThresholds] = useState(false);
+  const [localThresholds, setLocalThresholds] = useState<
+    Record<string, { threshold: number; enabled: boolean }>
+  >({});
+
+  useEffect(() => {
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+  }, []);
+
+  useEffect(() => {
+    const triggered = statuses.filter((s) => s.triggered);
+    if (triggered.length > 0 && 'Notification' in window && Notification.permission === 'granted') {
+      const names = triggered.map((s) => CATEGORY_LABELS[s.category] || s.category).join('、');
+      new Notification('配置偏离提醒', {
+        body: `${names} 偏离目标配置超过阈值，建议再平衡`,
+      });
+    }
+  }, [statuses]);
 
   const startEdit = () => {
     const r: Record<string, number> = {};
@@ -60,9 +82,25 @@ export default function AllocationAnalysis() {
           <h1 className="text-lg font-serif font-medium tracking-wide text-deep">配置</h1>
           <p className="text-[12px] text-stone mt-0.5">资产配置分析与再平衡</p>
         </div>
-        <Button variant="outline" size="sm" onClick={startEdit}>
-          目标配置
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              const t: Record<string, { threshold: number; enabled: boolean }> = {};
+              for (const s of statuses) {
+                t[s.category] = { threshold: s.threshold, enabled: s.enabled };
+              }
+              setLocalThresholds(t);
+              setShowThresholds(!showThresholds);
+            }}
+          >
+            偏离阈值
+          </Button>
+          <Button variant="outline" size="sm" onClick={startEdit}>
+            目标配置
+          </Button>
+        </div>
       </div>
 
       {loading ? (
@@ -143,6 +181,77 @@ export default function AllocationAnalysis() {
         }}
         onCancel={() => setDeleteTarget(null)}
       />
+
+      <Modal open={showThresholds} onClose={() => setShowThresholds(false)}>
+        <div className="w-full max-w-sm rounded-lg border border-sand bg-ivory p-5">
+          <h3 className="text-sm font-serif font-medium text-deep mb-4">偏离度阈值设置</h3>
+          <div className="space-y-2">
+            {statuses.map((s) => (
+              <div key={s.category} className="flex items-center gap-2">
+                <span className="text-[12px] w-16 text-stone">
+                  {CATEGORY_LABELS[s.category] || s.category}
+                </span>
+                <input
+                  type="range"
+                  min="1"
+                  max="20"
+                  value={localThresholds[s.category]?.threshold ?? s.threshold}
+                  onChange={(e) =>
+                    setLocalThresholds({
+                      ...localThresholds,
+                      [s.category]: {
+                        threshold: parseInt(e.target.value),
+                        enabled: localThresholds[s.category]?.enabled ?? s.enabled,
+                      },
+                    })
+                  }
+                  className="flex-1 h-1"
+                />
+                <span className="text-[11px] w-8 text-right text-stone">
+                  {localThresholds[s.category]?.threshold ?? s.threshold}%
+                </span>
+                <button
+                  onClick={() =>
+                    setLocalThresholds({
+                      ...localThresholds,
+                      [s.category]: {
+                        threshold: localThresholds[s.category]?.threshold ?? s.threshold,
+                        enabled: !(localThresholds[s.category]?.enabled ?? s.enabled),
+                      },
+                    })
+                  }
+                  className={`text-[11px] px-2 py-0.5 rounded ${
+                    (localThresholds[s.category]?.enabled ?? s.enabled)
+                      ? 'bg-brand/10 text-brand'
+                      : 'bg-stone/10 text-stone'
+                  }`}
+                >
+                  {(localThresholds[s.category]?.enabled ?? s.enabled) ? '启用' : '禁用'}
+                </button>
+              </div>
+            ))}
+          </div>
+          <div className="flex justify-end gap-2 pt-4">
+            <Button variant="outline" size="sm" onClick={() => setShowThresholds(false)}>
+              取消
+            </Button>
+            <Button
+              size="sm"
+              onClick={() => {
+                const alerts = Object.entries(localThresholds).map(([category, config]) => ({
+                  category: category as AssetCategory,
+                  threshold: config.threshold,
+                  enabled: config.enabled,
+                }));
+                updateAlerts({ alerts });
+                setShowThresholds(false);
+              }}
+            >
+              保存
+            </Button>
+          </div>
+        </div>
+      </Modal>
 
       <Modal open={editing} onClose={() => setEditing(false)}>
         <div className="w-full max-w-sm rounded-lg border border-sand bg-ivory p-5">

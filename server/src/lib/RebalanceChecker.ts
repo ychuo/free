@@ -23,6 +23,7 @@ export class RebalanceChecker {
         targetRatio: item.targetRatio,
         deviation,
         threshold,
+        enabled,
         triggered: enabled && deviation > threshold,
       });
     }

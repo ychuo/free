@@ -4,6 +4,8 @@ import Layout from './components/Layout';
 import AllocationAnalysis from './pages/AllocationAnalysis';
 import AssetOverview from './pages/AssetOverview';
 import FireTracking from './pages/FireTracking';
+import ReturnAttribution from './pages/ReturnAttribution';
+import TransactionList from './pages/TransactionList';
 
 export default function App() {
   return (
@@ -13,6 +15,8 @@ export default function App() {
           <Route path="/" element={<AssetOverview />} />
           <Route path="/fire" element={<FireTracking />} />
           <Route path="/allocation" element={<AllocationAnalysis />} />
+          <Route path="/returns" element={<ReturnAttribution />} />
+          <Route path="/transactions" element={<TransactionList />} />
         </Route>
       </Routes>
       <Toaster

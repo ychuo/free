@@ -1,4 +1,4 @@
-import { Download, Upload } from 'lucide-react';
+import { Download, RefreshCw, Upload } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 import AssetList from '../components/AssetList';
@@ -13,7 +13,9 @@ import { useAssets } from '../hooks/useAssets';
 import { useFireProfile } from '../hooks/useFireProfile';
 import { useLiabilities } from '../hooks/useLiabilities';
 import { useNetWorth } from '../hooks/useNetWorth';
+import { usePrices } from '../hooks/usePrices';
 import { api } from '../lib/api';
+import { cn } from '../lib/utils';
 import type { AssetCategory, ExportData, LiabilityType } from '../types';
 
 export default function AssetOverview() {
@@ -28,6 +30,7 @@ export default function AssetOverview() {
   const { summary, createSnapshot, refetch: refetchNetWorth, loading: nwLoading } = useNetWorth();
   const { profile: fireProfile } = useFireProfile();
   const { targets } = useAllocation();
+  const { prices, refreshing, refreshAll } = usePrices();
   const [snapshotConfirmOpen, setSnapshotConfirmOpen] = useState(false);
   const [importConfirmOpen, setImportConfirmOpen] = useState(false);
   const [importData, setImportData] = useState<ExportData | null>(null);
@@ -131,6 +134,10 @@ export default function AssetOverview() {
           <Button variant="outline" size="sm" onClick={() => fileRef.current?.click()}>
             <Upload className="h-3 w-3 mr-1" /> 导入
           </Button>
+          <Button onClick={refreshAll} variant="outline" size="sm" disabled={refreshing}>
+            <RefreshCw className={cn('h-3 w-3 mr-1', refreshing && 'animate-spin')} />
+            {refreshing ? '刷新中...' : '刷新价格'}
+          </Button>
           <input
             ref={fileRef}
             type="file"
@@ -150,6 +157,7 @@ export default function AssetOverview() {
         ) : (
           <AssetList
             assets={assets}
+            prices={prices}
             onCreate={withRefresh(create)}
             onUpdate={withRefresh(update)}
             onDelete={withRefresh(remove)}

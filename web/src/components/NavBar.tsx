@@ -7,6 +7,8 @@ const links = [
   { to: '/', label: '概览' },
   { to: '/fire', label: 'FIRE' },
   { to: '/allocation', label: '配置' },
+  { to: '/returns', label: '收益' },
+  { to: '/transactions', label: '交易' },
 ];
 
 export default function NavBar() {

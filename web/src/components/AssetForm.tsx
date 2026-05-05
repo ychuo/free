@@ -51,8 +51,11 @@ export default function AssetForm({ asset, onSave, onClose }: Props) {
   const [exchangeRate, setExchangeRate] = useState(
     asset?.properties?.exchangeRate != null ? String(asset.properties.exchangeRate) : '',
   );
+  const [tickerSymbol, setTickerSymbol] = useState(asset?.tickerSymbol ?? '');
+  const [exchangeCode, setExchangeCode] = useState(asset?.exchangeCode ?? '');
 
   const totalValue = (parseFloat(quantity) || 0) * (parseFloat(unitPrice) || 0);
+  const supportsMarketData = ['equity', 'crypto', 'fixed_income'].includes(category);
 
   const handleYieldRateChange = (rate: string) => {
     setYieldRate(rate);
@@ -70,6 +73,8 @@ export default function AssetForm({ asset, onSave, onClose }: Props) {
       name,
       category,
       subType: subType || undefined,
+      tickerSymbol: tickerSymbol || undefined,
+      exchangeCode: exchangeCode || undefined,
       quantity: parseFloat(quantity),
       unitPrice: parseFloat(unitPrice),
       currency: currency || 'CNY',
@@ -106,6 +111,35 @@ export default function AssetForm({ asset, onSave, onClose }: Props) {
             required
           />
         </div>
+        {supportsMarketData && (
+          <>
+            <div>
+              <label className="block text-[12px] font-medium mb-1 text-stone">交易代码</label>
+              <Input
+                placeholder="如 600519.SH, AAPL"
+                value={tickerSymbol}
+                onChange={(e) => setTickerSymbol(e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="block text-[12px] font-medium mb-1 text-stone">交易所</label>
+              <select
+                value={exchangeCode}
+                onChange={(e) => setExchangeCode(e.target.value)}
+                className="w-full h-8 rounded-md border border-sand bg-ivory text-[13px] px-2"
+              >
+                <option value="">请选择</option>
+                <option value="SH">上海 (SH)</option>
+                <option value="SZ">深圳 (SZ)</option>
+                <option value="HKEX">港交所 (HKEX)</option>
+                <option value="NYSE">纽交所 (NYSE)</option>
+                <option value="NASDAQ">纳斯达克 (NASDAQ)</option>
+                <option value="FUND">基金</option>
+                <option value="CRYPTO">数字货币</option>
+              </select>
+            </div>
+          </>
+        )}
         <div>
           <label className="block text-[12px] font-medium mb-1 text-stone">类别</label>
           <Select value={category} onValueChange={(v) => setCategory(v as AssetCategory)}>
