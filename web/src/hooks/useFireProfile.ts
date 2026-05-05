@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { api } from '../lib/api';
 import type { FireProfile, FireProgress, UpdateFireProfileInput } from '../types';
 
@@ -25,8 +26,13 @@ export function useFireProfile() {
   }, [fetch]);
 
   const update = async (input: UpdateFireProfileInput) => {
-    await api.fireProfile.update(input);
-    await fetch();
+    try {
+      await api.fireProfile.update(input);
+      toast.success('FIRE 目标已更新');
+      await fetch();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : '更新失败');
+    }
   };
 
   return { profile, progress, loading, update, refetch: fetch };

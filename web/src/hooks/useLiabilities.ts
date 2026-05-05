@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { api } from '../lib/api';
 import type { CreateLiabilityInput, Liability, UpdateLiabilityInput } from '../types';
 
@@ -18,16 +19,31 @@ export function useLiabilities() {
   }, [fetch]);
 
   const create = async (input: CreateLiabilityInput) => {
-    await api.liabilities.create(input);
-    await fetch();
+    try {
+      await api.liabilities.create(input);
+      toast.success('已添加负债');
+      await fetch();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : '添加失败');
+    }
   };
   const update = async (id: string, input: UpdateLiabilityInput) => {
-    await api.liabilities.update(id, input);
-    await fetch();
+    try {
+      await api.liabilities.update(id, input);
+      toast.success('已更新负债');
+      await fetch();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : '更新失败');
+    }
   };
   const remove = async (id: string) => {
-    await api.liabilities.delete(id);
-    await fetch();
+    try {
+      await api.liabilities.delete(id);
+      toast.success('已删除负债');
+      await fetch();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : '删除失败');
+    }
   };
 
   return { liabilities, loading, create, update, remove, refetch: fetch };

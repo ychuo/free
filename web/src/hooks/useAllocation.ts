@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { api } from '../lib/api';
 import type { AllocationAnalysis, AllocationTarget, AssetCategory } from '../types';
 
@@ -20,8 +21,13 @@ export function useAllocation() {
   }, [fetch]);
 
   const updateTargets = async (newTargets: { category: AssetCategory; targetRatio: number }[]) => {
-    await api.allocation.updateTargets({ targets: newTargets });
-    await fetch();
+    try {
+      await api.allocation.updateTargets({ targets: newTargets });
+      toast.success('目标配置已更新');
+      await fetch();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : '更新失败');
+    }
   };
 
   return { targets, analysis, loading, updateTargets, refetch: fetch };
