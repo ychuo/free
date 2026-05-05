@@ -37,9 +37,9 @@ export class HStockAdapter implements PriceAdapter {
       tickerSymbol,
       exchangeCode: 'HKEX',
       name: d.f58 as string | undefined,
-      currentPrice: d.f43 / 100,
-      previousClose: d.f60 ? d.f60 / 100 : undefined,
-      dayChange: d.f169 ? d.f169 / 100 : undefined,
+      currentPrice: d.f43 / 1000,
+      previousClose: d.f60 ? d.f60 / 1000 : undefined,
+      dayChange: d.f169 ? d.f169 / 1000 : undefined,
       dayChangePercent: d.f170 ? d.f170 / 100 : undefined,
       currency: 'HKD',
     };
