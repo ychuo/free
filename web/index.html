@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>free — 资产配置</title>
     <script>
-      (function() {
+      (() => {
         var stored = localStorage.getItem('free-theme');
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         if (stored) {
           document.documentElement.classList.toggle('dark', stored === 'dark');
         } else {
-          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
           document.documentElement.classList.toggle('dark', prefersDark);
         }
       })();
