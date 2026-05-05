@@ -23,9 +23,11 @@ export function useNetWorth() {
     fetch();
   }, [fetch]);
 
-  const createSnapshot = async () => {
+  const createSnapshot = async (snapshotDate?: string) => {
     try {
-      await api.snapshots.create();
+      await api.snapshots.create(
+        snapshotDate ? { snapshotDate: new Date(snapshotDate).toISOString() } : undefined,
+      );
       toast.success('快照已保存');
       await fetch();
     } catch (e) {

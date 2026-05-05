@@ -21,6 +21,7 @@ export default function AssetOverview() {
   } = useLiabilities();
   const { summary, createSnapshot, refetch: refetchNetWorth, loading: nwLoading } = useNetWorth();
   const [snapshotConfirmOpen, setSnapshotConfirmOpen] = useState(false);
+  const [snapshotDate, setSnapshotDate] = useState('');
 
   const withRefresh = <T extends (...args: any[]) => Promise<any>>(fn: T): T =>
     (async (...args: any[]) => {
@@ -35,9 +36,17 @@ export default function AssetOverview() {
           <h1 className="text-lg font-serif font-medium tracking-wide text-deep">概览</h1>
           <p className="text-[12px] text-stone mt-0.5">你的资产全景</p>
         </div>
-        <Button onClick={() => setSnapshotConfirmOpen(true)} variant="outline" size="sm">
-          记录快照
-        </Button>
+        <div className="flex items-center gap-2">
+          <input
+            type="date"
+            value={snapshotDate}
+            onChange={(e) => setSnapshotDate(e.target.value)}
+            className="h-8 rounded-md border border-sand bg-ivory px-2.5 text-[12px] text-stone focus:outline-none focus:border-sepia/50"
+          />
+          <Button onClick={() => setSnapshotConfirmOpen(true)} variant="outline" size="sm">
+            记录快照
+          </Button>
+        </div>
       </div>
 
       {nwLoading ? <NetWorthSkeleton /> : <NetWorthCard summary={summary} />}
@@ -74,7 +83,8 @@ export default function AssetOverview() {
         confirmLabel="记录"
         variant="default"
         onConfirm={async () => {
-          await createSnapshot();
+          await createSnapshot(snapshotDate || undefined);
+          setSnapshotDate('');
           setSnapshotConfirmOpen(false);
         }}
         onCancel={() => setSnapshotConfirmOpen(false)}

@@ -63,7 +63,11 @@ export const api = {
     analysis: () => request<AllocationAnalysis[]>('/allocation-analysis'),
   },
   snapshots: {
-    create: () => request<Snapshot>('/snapshots', { method: 'POST' }),
+    create: (data?: { snapshotDate: string }) =>
+      request<Snapshot>(
+        '/snapshots',
+        data ? { method: 'POST', body: JSON.stringify(data) } : { method: 'POST' },
+      ),
     list: () => request<Snapshot[]>('/snapshots'),
     delete: (id: string) => request<void>(`/snapshots/${id}`, { method: 'DELETE' }),
     clearAll: () => request<{ deleted: number }>('/snapshots', { method: 'DELETE' }),

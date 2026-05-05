@@ -11,7 +11,8 @@ import { prisma } from '../lib/prisma';
 const userId = config.userId;
 
 export async function snapshotRoutes(app: FastifyInstance) {
-  app.post('/', async (_request: FastifyRequest, reply: FastifyReply) => {
+  app.post('/', async (request: FastifyRequest, reply: FastifyReply) => {
+    const { snapshotDate } = (request.body || {}) as { snapshotDate?: string };
     const assets = await prisma.asset.findMany({ where: { userId } });
     const liabilities = await prisma.liability.findMany({ where: { userId } });
 
@@ -21,7 +22,14 @@ export async function snapshotRoutes(app: FastifyInstance) {
     const breakdown = computeCategoryBreakdown(assets);
 
     const snapshot = await prisma.snapshot.create({
-      data: { userId, totalAssets, totalLiabilities, netWorth, breakdown },
+      data: {
+        userId,
+        totalAssets,
+        totalLiabilities,
+        netWorth,
+        breakdown,
+        snapshotDate: snapshotDate ? new Date(snapshotDate) : undefined,
+      },
     });
     return reply.status(201).send(snapshot);
   });

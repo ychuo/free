@@ -14,18 +14,26 @@ export async function allocationRoutes(app: FastifyInstance) {
 
   app.put('/allocation-targets', async (request: FastifyRequest, reply: FastifyReply) => {
     const { targets } = request.body as { targets: { category: string; targetRatio: number }[] };
+
+    // Validate total
     const total = targets.reduce((s, t) => s + t.targetRatio, 0);
     if (total > 100.01) {
       return reply.status(400).send({ error: '目标比例总和不能超过 100%' });
     }
-    const ops = targets.map((t) =>
-      prisma.allocationTarget.upsert({
-        where: { userId_category: { userId, category: t.category } },
-        update: { targetRatio: t.targetRatio },
-        create: { userId, category: t.category, targetRatio: t.targetRatio },
-      }),
-    );
-    await prisma.$transaction(ops);
+
+    // Filter out zero-ratio targets
+    const nonZero = targets.filter((t) => t.targetRatio > 0);
+
+    // Delete all existing targets, then create non-zero ones
+    await prisma.$transaction([
+      prisma.allocationTarget.deleteMany({ where: { userId } }),
+      ...nonZero.map((t) =>
+        prisma.allocationTarget.create({
+          data: { userId, category: t.category, targetRatio: t.targetRatio },
+        }),
+      ),
+    ]);
+
     const updated = await prisma.allocationTarget.findMany({ where: { userId } });
     return reply.send(updated);
   });
