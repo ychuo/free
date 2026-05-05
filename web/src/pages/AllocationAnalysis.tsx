@@ -8,6 +8,7 @@ import RebalanceList from '../components/RebalanceList';
 import { CardSkeleton, ChartSkeleton } from '../components/Skeleton';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
+import { Slider } from '../components/ui/slider';
 import { useAllocation } from '../hooks/useAllocation';
 import { useNetWorth } from '../hooks/useNetWorth';
 import { useRebalanceAlerts } from '../hooks/useRebalanceAlerts';
@@ -191,27 +192,30 @@ export default function AllocationAnalysis() {
                 <span className="text-[12px] w-16 text-stone">
                   {CATEGORY_LABELS[s.category] || s.category}
                 </span>
-                <input
-                  type="range"
-                  min="1"
-                  max="20"
-                  value={localThresholds[s.category]?.threshold ?? s.threshold}
-                  onChange={(e) =>
+                <Slider
+                  min={1}
+                  max={20}
+                  value={[localThresholds[s.category]?.threshold ?? s.threshold]}
+                  onValueChange={(v) => {
+                    const val = Array.isArray(v) ? v[0] : v;
                     setLocalThresholds({
                       ...localThresholds,
                       [s.category]: {
-                        threshold: parseInt(e.target.value, 10),
+                        threshold: val ?? s.threshold,
                         enabled: localThresholds[s.category]?.enabled ?? s.enabled,
                       },
-                    })
-                  }
-                  className="flex-1 h-1"
+                    });
+                  }}
+                  className="flex-1"
                 />
                 <span className="text-[11px] w-8 text-right text-stone">
                   {localThresholds[s.category]?.threshold ?? s.threshold}%
                 </span>
-                <button
-                  type="button"
+                <Button
+                  variant={
+                    (localThresholds[s.category]?.enabled ?? s.enabled) ? 'default' : 'outline'
+                  }
+                  size="sm"
                   onClick={() =>
                     setLocalThresholds({
                       ...localThresholds,
@@ -221,14 +225,10 @@ export default function AllocationAnalysis() {
                       },
                     })
                   }
-                  className={`text-[11px] px-2 py-0.5 rounded ${
-                    (localThresholds[s.category]?.enabled ?? s.enabled)
-                      ? 'bg-brand/10 text-brand'
-                      : 'bg-stone/10 text-stone'
-                  }`}
+                  className="text-[11px] h-6 px-2"
                 >
                   {(localThresholds[s.category]?.enabled ?? s.enabled) ? '启用' : '禁用'}
-                </button>
+                </Button>
               </div>
             ))}
           </div>

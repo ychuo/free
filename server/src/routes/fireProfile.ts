@@ -2,7 +2,12 @@ import type { FireProgress } from '@free/shared';
 import { FIRE_PROFILE_SCHEMA } from '@free/shared';
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { config } from '../config';
-import { computeNetWorth, sumAnnualPassiveIncome } from '../lib/calculations';
+import {
+  sumAnnualPassiveIncome,
+  sumTotalAssetsWithRates,
+  sumTotalLiabilities,
+} from '../lib/calculations';
+import { buildRateMap } from '../lib/exchangeRate';
 import { prisma } from '../lib/prisma';
 
 const userId = config.userId;
@@ -42,8 +47,9 @@ export async function fireProfileRoutes(app: FastifyInstance) {
     const assets = await prisma.asset.findMany({ where: { userId } });
     const liabilities = await prisma.liability.findMany({ where: { userId } });
 
+    const rateFn = await buildRateMap();
     const annualPassiveIncome = sumAnnualPassiveIncome(assets);
-    const netWorth = computeNetWorth(assets, liabilities);
+    const netWorth = sumTotalAssetsWithRates(assets, rateFn) - sumTotalLiabilities(liabilities);
 
     const progress: FireProgress = {
       annualExpense: profile.annualExpense,

@@ -5,6 +5,7 @@ import { TRANSACTION_TYPE_LABELS, TransactionType } from '../types';
 import Modal from './Modal';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
 interface TransactionFormProps {
   open: boolean;
@@ -74,33 +75,39 @@ export default function TransactionForm({
 
         <div>
           <label className="text-[12px] text-stone">资产</label>
-          <select
-            value={assetId}
-            onChange={(e) => setAssetId(e.target.value)}
-            className="w-full h-8 rounded-md border border-sand bg-ivory text-[13px] px-2"
-          >
-            <option value="">选择资产</option>
-            {assets.map((a) => (
-              <option key={a.id} value={a.id}>
-                {a.name}
-              </option>
-            ))}
-          </select>
+          <Select value={assetId} onValueChange={(v) => setAssetId(v ?? '')}>
+            <SelectTrigger className="w-full h-8 text-[13px]">
+              <SelectValue placeholder="选择资产">
+                {assets.find((a) => a.id === assetId)?.name ?? '选择资产'}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {assets.map((a) => (
+                <SelectItem key={a.id} value={a.id}>
+                  {a.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         <div>
           <label className="text-[12px] text-stone">类型</label>
-          <select
+          <Select
             value={type}
-            onChange={(e) => setType(e.target.value as TransactionType)}
-            className="w-full h-8 rounded-md border border-sand bg-ivory text-[13px] px-2"
+            onValueChange={(v) => setType((v ?? TransactionType.BUY) as TransactionType)}
           >
-            {Object.entries(TRANSACTION_TYPE_LABELS).map(([k, v]) => (
-              <option key={k} value={k}>
-                {v}
-              </option>
-            ))}
-          </select>
+            <SelectTrigger className="w-full h-8 text-[13px]">
+              <SelectValue placeholder="选择类型">{TRANSACTION_TYPE_LABELS[type]}</SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {Object.entries(TRANSACTION_TYPE_LABELS).map(([k, v]) => (
+                <SelectItem key={k} value={k}>
+                  {v}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         <div>
