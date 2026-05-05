@@ -2,12 +2,13 @@ import { useState } from 'react';
 import FireGauge from '../components/FireGauge';
 import FireTimeline from '../components/FireTimeline';
 import Modal from '../components/Modal';
+import { CardSkeleton, ChartSkeleton } from '../components/Skeleton';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { useFireProfile } from '../hooks/useFireProfile';
 
 export default function FireTracking() {
-  const { progress, update } = useFireProfile();
+  const { progress, update, loading } = useFireProfile();
   const [editing, setEditing] = useState(false);
   const [annualExpense, setAnnualExpense] = useState('');
   const [safeWithdrawalRate, setSafeWithdrawalRate] = useState('');
@@ -41,45 +42,54 @@ export default function FireTracking() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        <FireGauge progress={progress} />
-        <div className="space-y-5">
-          <FireTimeline progress={progress} />
-          <div className="rounded-lg border border-sand bg-ivory p-5 animate-fade-up stagger-2">
-            <h3 className="text-sm font-serif font-medium text-deep mb-3">当前目标</h3>
-            <dl className="space-y-2.5">
-              {[
-                {
-                  label: '年生活支出',
-                  value: progress?.annualExpense.toLocaleString() || '—',
-                  suffix: '元/年',
-                },
-                {
-                  label: '安全提取率',
-                  value: progress ? `${(progress.safeWithdrawalRate * 100).toFixed(1)}` : '—',
-                  suffix: '%',
-                },
-                {
-                  label: 'FIRE 达标线',
-                  value: progress?.fireTarget.toLocaleString() || '—',
-                  suffix: '元',
-                  accent: true,
-                },
-              ].map(({ label, value, suffix, accent }) => (
-                <div
-                  key={label}
-                  className="flex items-center justify-between py-1.5 border-b border-sand/60 last:border-0"
-                >
-                  <dt className="text-[12px] text-stone">{label}</dt>
-                  <dd className={`text-[13px] font-medium ${accent ? 'text-brand' : 'text-deep'}`}>
-                    {value} <span className="text-[11px] text-stone font-normal">{suffix}</span>
-                  </dd>
-                </div>
-              ))}
-            </dl>
+      {loading ? (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <ChartSkeleton />
+          <CardSkeleton />
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <FireGauge progress={progress} />
+          <div className="space-y-5">
+            <FireTimeline progress={progress} />
+            <div className="rounded-lg border border-sand bg-ivory p-5 animate-fade-up stagger-2">
+              <h3 className="text-sm font-serif font-medium text-deep mb-3">当前目标</h3>
+              <dl className="space-y-2.5">
+                {[
+                  {
+                    label: '年生活支出',
+                    value: progress?.annualExpense.toLocaleString() || '—',
+                    suffix: '元/年',
+                  },
+                  {
+                    label: '安全提取率',
+                    value: progress ? `${(progress.safeWithdrawalRate * 100).toFixed(1)}` : '—',
+                    suffix: '%',
+                  },
+                  {
+                    label: 'FIRE 达标线',
+                    value: progress?.fireTarget.toLocaleString() || '—',
+                    suffix: '元',
+                    accent: true,
+                  },
+                ].map(({ label, value, suffix, accent }) => (
+                  <div
+                    key={label}
+                    className="flex items-center justify-between py-1.5 border-b border-sand/60 last:border-0"
+                  >
+                    <dt className="text-[12px] text-stone">{label}</dt>
+                    <dd
+                      className={`text-[13px] font-medium ${accent ? 'text-brand' : 'text-deep'}`}
+                    >
+                      {value} <span className="text-[11px] text-stone font-normal">{suffix}</span>
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       <Modal open={editing} onClose={() => setEditing(false)}>
         <div className="w-full max-w-sm">

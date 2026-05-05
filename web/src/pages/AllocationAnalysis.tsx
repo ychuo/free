@@ -5,6 +5,7 @@ import AllocationHistory from '../components/AllocationHistory';
 import ConfirmDialog from '../components/ConfirmDialog';
 import Modal from '../components/Modal';
 import RebalanceList from '../components/RebalanceList';
+import { CardSkeleton, ChartSkeleton } from '../components/Skeleton';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { useAllocation } from '../hooks/useAllocation';
@@ -31,7 +32,7 @@ const LABELS: Record<string, string> = {
   other: '其他',
 };
 export default function AllocationAnalysis() {
-  const { targets, analysis, updateTargets } = useAllocation();
+  const { targets, analysis, updateTargets, loading } = useAllocation();
   const { snapshots, clearSnapshots, deleteSnapshot } = useNetWorth();
   const [editing, setEditing] = useState(false);
   const [ratios, setRatios] = useState<Record<string, number>>({});
@@ -73,10 +74,17 @@ export default function AllocationAnalysis() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        <AllocationCompare analysis={analysis} />
-        <RebalanceList analysis={analysis} />
-      </div>
+      {loading ? (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <ChartSkeleton />
+          <CardSkeleton />
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          <AllocationCompare analysis={analysis} />
+          <RebalanceList analysis={analysis} />
+        </div>
+      )}
 
       <AllocationHistory snapshots={snapshots} />
 

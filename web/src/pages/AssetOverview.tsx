@@ -4,15 +4,22 @@ import AssetPieChart from '../components/AssetPieChart';
 import ConfirmDialog from '../components/ConfirmDialog';
 import LiabilityList from '../components/LiabilityList';
 import NetWorthCard from '../components/NetWorthCard';
+import { AssetListSkeleton, ChartSkeleton, NetWorthSkeleton } from '../components/Skeleton';
 import { Button } from '../components/ui/button';
 import { useAssets } from '../hooks/useAssets';
 import { useLiabilities } from '../hooks/useLiabilities';
 import { useNetWorth } from '../hooks/useNetWorth';
 
 export default function AssetOverview() {
-  const { assets, create, update, remove } = useAssets();
-  const { liabilities, create: createL, update: updateL, remove: removeL } = useLiabilities();
-  const { summary, createSnapshot, refetch: refetchNetWorth } = useNetWorth();
+  const { assets, create, update, remove, loading: assetsLoading } = useAssets();
+  const {
+    liabilities,
+    create: createL,
+    update: updateL,
+    remove: removeL,
+    loading: liabLoading,
+  } = useLiabilities();
+  const { summary, createSnapshot, refetch: refetchNetWorth, loading: nwLoading } = useNetWorth();
   const [snapshotConfirmOpen, setSnapshotConfirmOpen] = useState(false);
 
   const withRefresh = <T extends (...args: any[]) => Promise<any>>(fn: T): T =>
@@ -33,24 +40,32 @@ export default function AssetOverview() {
         </Button>
       </div>
 
-      <NetWorthCard summary={summary} />
+      {nwLoading ? <NetWorthSkeleton /> : <NetWorthCard summary={summary} />}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        <AssetPieChart summary={summary} />
-        <AssetList
-          assets={assets}
-          onCreate={withRefresh(create)}
-          onUpdate={withRefresh(update)}
-          onDelete={withRefresh(remove)}
-        />
+        {nwLoading ? <ChartSkeleton /> : <AssetPieChart summary={summary} />}
+        {assetsLoading ? (
+          <AssetListSkeleton />
+        ) : (
+          <AssetList
+            assets={assets}
+            onCreate={withRefresh(create)}
+            onUpdate={withRefresh(update)}
+            onDelete={withRefresh(remove)}
+          />
+        )}
       </div>
 
-      <LiabilityList
-        liabilities={liabilities}
-        onCreate={withRefresh(createL)}
-        onUpdate={withRefresh(updateL)}
-        onDelete={withRefresh(removeL)}
-      />
+      {liabLoading ? (
+        <AssetListSkeleton />
+      ) : (
+        <LiabilityList
+          liabilities={liabilities}
+          onCreate={withRefresh(createL)}
+          onUpdate={withRefresh(updateL)}
+          onDelete={withRefresh(removeL)}
+        />
+      )}
 
       <ConfirmDialog
         open={snapshotConfirmOpen}
