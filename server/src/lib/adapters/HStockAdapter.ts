@@ -23,7 +23,10 @@ export class HStockAdapter implements PriceAdapter {
     const cleanTicker = tickerSymbol.replace('.HK', '').replace('.HKEX', '');
     const url = `https://push2.eastmoney.com/api/qt/stock/get?secid=116.${cleanTicker}&fields=f43,f44,f45,f46,f47,f48,f57,f58,f169,f170`;
 
-    const res = await fetch(url, { signal: controller.signal });
+    const res = await fetch(url, {
+      signal: controller.signal,
+      headers: { 'User-Agent': 'Mozilla/5.0' },
+    });
     clearTimeout(timer);
     const json = (await res.json()) as any;
     const d = json.data;
@@ -46,7 +49,8 @@ export class HStockAdapter implements PriceAdapter {
     try {
       await this.fetchPrice('00700.HKEX');
       return true;
-    } catch {
+    } catch (e) {
+      console.error('[HStockAdapter] isAvailable error:', e);
       return false;
     }
   }

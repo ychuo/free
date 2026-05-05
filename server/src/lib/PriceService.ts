@@ -48,11 +48,6 @@ export class PriceService {
     const errors: string[] = [];
 
     for (const [, { adapter, symbols }] of byExchange) {
-      if (!(await adapter.isAvailable())) {
-        failed += symbols.length;
-        errors.push(`${adapter.name}: unavailable`);
-        continue;
-      }
       try {
         const results = await adapter.fetchPrices(symbols);
         for (const r of results) {

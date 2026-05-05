@@ -24,6 +24,7 @@ export class CryptoAdapter implements PriceAdapter {
     const res = await fetch(url, { signal: controller.signal });
     clearTimeout(timer);
     const json = (await res.json()) as Record<string, any>;
+    if (!json.bitcoin && !json.ethereum) console.error('[CryptoAdapter] fetchPrices response:', JSON.stringify(json).slice(0, 300));
 
     const results: PriceResult[] = [];
     for (let i = 0; i < symbols.length; i++) {
@@ -51,7 +52,8 @@ export class CryptoAdapter implements PriceAdapter {
     try {
       await this.fetchPrice('BTC');
       return true;
-    } catch {
+    } catch (e) {
+      console.error('[CryptoAdapter] isAvailable error:', e);
       return false;
     }
   }
