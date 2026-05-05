@@ -81,10 +81,21 @@ export class ReturnCalculator {
   }> {
     const assets = await prisma.asset.findMany({ where: { userId } });
     const now = new Date();
-    const fromDate = from
-      ? new Date(from)
-      : new Date(assets.reduce((min, a) => Math.min(min, a.createdAt.getTime()), now.getTime()));
     const toDate = to ? new Date(to) : now;
+
+    let fromDate: Date;
+    if (from) {
+      fromDate = new Date(from);
+    } else {
+      const earliestTx = await prisma.transaction.findFirst({
+        where: { userId },
+        orderBy: { date: 'asc' },
+        select: { date: true },
+      });
+      fromDate = earliestTx
+        ? earliestTx.date
+        : new Date(assets.reduce((min, a) => Math.min(min, a.createdAt.getTime()), now.getTime()));
+    }
 
     const assetIds = assets.map((a) => a.id);
     const twr = await this.computeTWR(assetIds, fromDate, toDate);
