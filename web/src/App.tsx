@@ -6,6 +6,7 @@ import AssetOverview from './pages/AssetOverview';
 import FireTracking from './pages/FireTracking';
 import ReturnAttribution from './pages/ReturnAttribution';
 import TransactionList from './pages/TransactionList';
+import UserGuide from './pages/UserGuide';
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
           <Route path="/allocation" element={<AllocationAnalysis />} />
           <Route path="/returns" element={<ReturnAttribution />} />
           <Route path="/transactions" element={<TransactionList />} />
+          <Route path="/guide" element={<UserGuide />} />
         </Route>
       </Routes>
       <Toaster
