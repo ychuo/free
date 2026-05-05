@@ -1,5 +1,6 @@
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
-import type { NetWorthSummary } from '../types';
+import type { AssetCategory, NetWorthSummary } from '../types';
+import { CATEGORY_LABELS } from '../types';
 
 const COLORS = [
   'var(--chart-1)',
@@ -7,18 +8,9 @@ const COLORS = [
   'var(--chart-3)',
   'var(--chart-4)',
   'var(--chart-5)',
-  'var(--chart-1)',
-  'var(--chart-2)',
+  'var(--primary)',
+  'var(--secondary-foreground)',
 ];
-const LABELS: Record<string, string> = {
-  cash: '现金',
-  fixed_income: '固收',
-  equity: '权益',
-  real_estate: '不动产',
-  crypto: '数字货币',
-  precious: '贵金属',
-  other: '其他',
-};
 
 export default function AssetPieChart({ summary }: { summary: NetWorthSummary | null }) {
   if (!summary) return null;
@@ -26,7 +18,7 @@ export default function AssetPieChart({ summary }: { summary: NetWorthSummary | 
   const data = Object.entries(summary.categoryBreakdown)
     .filter(([, v]) => v > 0)
     .map(([category, value], i) => ({
-      name: LABELS[category] || category,
+      name: CATEGORY_LABELS[category as AssetCategory] || category,
       value,
       color: COLORS[i % COLORS.length],
     }));

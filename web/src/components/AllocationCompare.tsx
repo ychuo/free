@@ -1,19 +1,10 @@
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import type { AllocationAnalysis } from '../types';
-
-const LABELS: Record<string, string> = {
-  cash: '现金',
-  fixed_income: '固收',
-  equity: '权益',
-  real_estate: '不动产',
-  crypto: '数字货币',
-  precious: '贵金属',
-  other: '其他',
-};
+import { CATEGORY_LABELS } from '../types';
 
 export default function AllocationCompare({ analysis }: { analysis: AllocationAnalysis[] }) {
   const data = analysis.map((a) => ({
-    name: LABELS[a.category] || a.category,
+    name: CATEGORY_LABELS[a.category] || a.category,
     当前: a.currentRatio,
     目标: a.targetRatio,
   }));

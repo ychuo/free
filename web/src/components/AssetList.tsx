@@ -1,20 +1,11 @@
 import { Pencil, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import type { Asset, CreateAssetInput } from '../types';
+import { CATEGORY_LABELS } from '../types';
 import AssetForm from './AssetForm';
 import ConfirmDialog from './ConfirmDialog';
 import Modal from './Modal';
 import { Button } from './ui/button';
-
-const CATEGORY_LABELS: Record<string, string> = {
-  cash: '现金',
-  fixed_income: '固收',
-  equity: '权益',
-  real_estate: '不动产',
-  crypto: '数字货币',
-  precious: '贵金属',
-  other: '其他',
-};
 
 interface Props {
   assets: Asset[];

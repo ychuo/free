@@ -11,7 +11,7 @@ import { Input } from '../components/ui/input';
 import { useAllocation } from '../hooks/useAllocation';
 import { useNetWorth } from '../hooks/useNetWorth';
 import type { Snapshot } from '../types';
-import { AssetCategory } from '../types';
+import { AssetCategory, CATEGORY_LABELS } from '../types';
 
 const ALL_CATEGORIES = [
   AssetCategory.CASH,
@@ -22,15 +22,6 @@ const ALL_CATEGORIES = [
   AssetCategory.PRECIOUS,
   AssetCategory.OTHER,
 ];
-const LABELS: Record<string, string> = {
-  cash: '现金',
-  fixed_income: '固收',
-  equity: '权益',
-  real_estate: '不动产',
-  crypto: '数字货币',
-  precious: '贵金属',
-  other: '其他',
-};
 export default function AllocationAnalysis() {
   const { targets, analysis, updateTargets, loading } = useAllocation();
   const { snapshots, clearSnapshots, deleteSnapshot } = useNetWorth();
@@ -160,7 +151,7 @@ export default function AllocationAnalysis() {
             {ALL_CATEGORIES.map((cat) => (
               <div key={cat} className="flex items-center gap-2.5">
                 <label className="text-[12px] font-medium w-18 text-stone">
-                  {LABELS[cat] || cat}
+                  {CATEGORY_LABELS[cat] || cat}
                 </label>
                 <Input
                   type="number"

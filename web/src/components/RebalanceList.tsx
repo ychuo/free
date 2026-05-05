@@ -1,16 +1,7 @@
 import { ArrowDownRight, ArrowUpRight, CheckCircle2 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import type { AllocationAnalysis } from '../types';
-
-const LABELS: Record<string, string> = {
-  cash: '现金',
-  fixed_income: '固收',
-  equity: '权益',
-  real_estate: '不动产',
-  crypto: '数字货币',
-  precious: '贵金属',
-  other: '其他',
-};
+import { CATEGORY_LABELS } from '../types';
 
 export default function RebalanceList({ analysis }: { analysis: AllocationAnalysis[] }) {
   const items = analysis
@@ -57,7 +48,7 @@ export default function RebalanceList({ analysis }: { analysis: AllocationAnalys
                   />
                 )}
                 <span className="text-[12px] font-medium text-deep">
-                  {LABELS[a.category] || a.category}
+                  {CATEGORY_LABELS[a.category] || a.category}
                 </span>
               </div>
               <div className="text-right">

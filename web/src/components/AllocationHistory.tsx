@@ -8,26 +8,18 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import type { Snapshot } from '../types';
+import type { AssetCategory, Snapshot } from '../types';
+import { CATEGORY_LABELS } from '../types';
 
 const COLORS = [
-  'var(--chart-3)',
   'var(--chart-1)',
   'var(--chart-2)',
+  'var(--chart-3)',
   'var(--chart-4)',
   'var(--chart-5)',
-  'var(--chart-3)',
-  'var(--chart-2)',
+  'var(--primary)',
+  'var(--secondary-foreground)',
 ];
-const LABELS: Record<string, string> = {
-  cash: '现金',
-  fixed_income: '固收',
-  equity: '权益',
-  real_estate: '不动产',
-  crypto: '数字货币',
-  precious: '贵金属',
-  other: '其他',
-};
 
 export default function AllocationHistory({ snapshots }: { snapshots: Snapshot[] }) {
   if (snapshots.length === 0) {
@@ -51,12 +43,13 @@ export default function AllocationHistory({ snapshots }: { snapshots: Snapshot[]
     };
     for (const cat of categories) {
       const val = (s.breakdown as Record<string, number>)[cat] || 0;
-      point[LABELS[cat] || cat] = total > 0 ? parseFloat(((val / total) * 100).toFixed(1)) : 0;
+      point[CATEGORY_LABELS[cat as AssetCategory] || cat] =
+        total > 0 ? parseFloat(((val / total) * 100).toFixed(1)) : 0;
     }
     return point;
   });
 
-  const keys = categories.map((cat) => LABELS[cat] || cat);
+  const keys = categories.map((cat) => CATEGORY_LABELS[cat as AssetCategory] || cat);
 
   return (
     <div className="rounded-lg border border-sand bg-ivory p-5 animate-fade-up stagger-2">
