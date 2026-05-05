@@ -122,6 +122,15 @@ export default function AssetList({ assets, onCreate, onUpdate, onDelete }: Prop
                             被动收入 {(a.passiveIncome / 1e4).toFixed(2)} 万/年
                           </p>
                         )}
+                        {a.currency !== 'CNY' && a.properties?.exchangeRate != null && (
+                          <p className="text-[10px] text-stone/70">
+                            ≈{' '}
+                            {(
+                              a.totalValue * (a.properties.exchangeRate as number)
+                            ).toLocaleString()}{' '}
+                            CNY
+                          </p>
+                        )}
                       </div>
                       <div className="flex opacity-0 group-hover:opacity-100 transition-opacity -mr-1">
                         <button

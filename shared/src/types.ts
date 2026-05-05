@@ -186,6 +186,17 @@ export const FIRE_PROFILE_SCHEMA = {
   additionalProperties: false,
 } as const;
 
+export const SUPPORTED_CURRENCIES: Record<string, string> = {
+  CNY: '人民币 (CNY)',
+  USD: '美元 (USD)',
+  HKD: '港币 (HKD)',
+  EUR: '欧元 (EUR)',
+  JPY: '日元 (JPY)',
+  GBP: '英镑 (GBP)',
+};
+
+export const DEFAULT_CURRENCY = 'CNY';
+
 export const ALLOCATION_TARGETS_SCHEMA = {
   type: 'object',
   required: ['targets'],

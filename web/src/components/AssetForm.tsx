@@ -1,6 +1,12 @@
 import { X } from 'lucide-react';
 import { useState } from 'react';
-import { type Asset, AssetCategory, type CreateAssetInput } from '../types';
+import {
+  type Asset,
+  AssetCategory,
+  type CreateAssetInput,
+  DEFAULT_CURRENCY,
+  SUPPORTED_CURRENCIES,
+} from '../types';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
@@ -41,6 +47,10 @@ export default function AssetForm({ asset, onSave, onClose }: Props) {
   const [passiveIncome, setPassiveIncome] = useState(String(asset?.passiveIncome || ''));
   const [yieldRate, setYieldRate] = useState('');
   const [notes, setNotes] = useState(asset?.notes || '');
+  const [currency, setCurrency] = useState(asset?.currency || DEFAULT_CURRENCY);
+  const [exchangeRate, setExchangeRate] = useState(
+    asset?.properties?.exchangeRate != null ? String(asset.properties.exchangeRate) : '',
+  );
 
   const totalValue = (parseFloat(quantity) || 0) * (parseFloat(unitPrice) || 0);
 
@@ -62,8 +72,12 @@ export default function AssetForm({ asset, onSave, onClose }: Props) {
       subType: subType || undefined,
       quantity: parseFloat(quantity),
       unitPrice: parseFloat(unitPrice),
-      currency: 'CNY',
+      currency: currency || 'CNY',
       passiveIncome: passiveIncome ? parseFloat(passiveIncome) : undefined,
+      properties:
+        currency !== 'CNY'
+          ? { exchangeRate: exchangeRate ? parseFloat(exchangeRate) : undefined }
+          : undefined,
       notes: notes || undefined,
     });
   };
@@ -123,6 +137,36 @@ export default function AssetForm({ asset, onSave, onClose }: Props) {
                 ))}
               </SelectContent>
             </Select>
+          </div>
+        )}
+        <div>
+          <label className="block text-[12px] font-medium mb-1 text-stone">币种</label>
+          <Select value={currency} onValueChange={setCurrency}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="选择币种">{SUPPORTED_CURRENCIES[currency]}</SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {Object.entries(SUPPORTED_CURRENCIES).map(([code, label]) => (
+                <SelectItem key={code} value={code}>
+                  {label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        {currency !== 'CNY' && (
+          <div>
+            <label className="block text-[12px] font-medium mb-1 text-stone">
+              汇率 (1 {currency} = ? CNY)
+            </label>
+            <Input
+              type="number"
+              placeholder="例：7.25"
+              step="0.01"
+              value={exchangeRate}
+              onChange={(e) => setExchangeRate(e.target.value)}
+              required
+            />
           </div>
         )}
         <div className="grid grid-cols-2 gap-2.5">
