@@ -197,6 +197,39 @@ export const SUPPORTED_CURRENCIES: Record<string, string> = {
 
 export const DEFAULT_CURRENCY = 'CNY';
 
+export interface ExportData {
+  version: 1;
+  exportedAt: string;
+  assets: Array<{
+    name: string;
+    category: string;
+    subType?: string;
+    quantity: number;
+    unitPrice: number;
+    currency: string;
+    passiveIncome?: number;
+    properties?: Record<string, unknown>;
+    acquiredAt?: string;
+    notes?: string;
+  }>;
+  liabilities: Array<{
+    name: string;
+    type: string;
+    totalAmount: number;
+    remaining: number;
+    interestRate?: number;
+    monthlyPayment?: number;
+  }>;
+  fireProfile: {
+    annualExpense: number;
+    safeWithdrawalRate: number;
+  } | null;
+  allocationTargets: Array<{
+    category: string;
+    targetRatio: number;
+  }>;
+}
+
 export const ALLOCATION_TARGETS_SCHEMA = {
   type: 'object',
   required: ['targets'],

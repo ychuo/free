@@ -1,4 +1,6 @@
+import { Download, Upload } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 import AssetList from '../components/AssetList';
 import AssetPieChart from '../components/AssetPieChart';
 import ConfirmDialog from '../components/ConfirmDialog';
@@ -6,9 +8,13 @@ import LiabilityList from '../components/LiabilityList';
 import NetWorthCard from '../components/NetWorthCard';
 import { AssetListSkeleton, ChartSkeleton, NetWorthSkeleton } from '../components/Skeleton';
 import { Button } from '../components/ui/button';
+import { useAllocation } from '../hooks/useAllocation';
 import { useAssets } from '../hooks/useAssets';
+import { useFireProfile } from '../hooks/useFireProfile';
 import { useLiabilities } from '../hooks/useLiabilities';
 import { useNetWorth } from '../hooks/useNetWorth';
+import { api } from '../lib/api';
+import type { AssetCategory, ExportData, LiabilityType } from '../types';
 
 export default function AssetOverview() {
   const { assets, create, update, remove, loading: assetsLoading } = useAssets();
@@ -20,14 +26,82 @@ export default function AssetOverview() {
     loading: liabLoading,
   } = useLiabilities();
   const { summary, createSnapshot, refetch: refetchNetWorth, loading: nwLoading } = useNetWorth();
+  const { profile: fireProfile } = useFireProfile();
+  const { targets } = useAllocation();
   const [snapshotConfirmOpen, setSnapshotConfirmOpen] = useState(false);
   const [snapshotDate, setSnapshotDate] = useState('');
+  const [importConfirmOpen, setImportConfirmOpen] = useState(false);
+  const [importData, setImportData] = useState<ExportData | null>(null);
 
   const withRefresh = <T extends (...args: any[]) => Promise<any>>(fn: T): T =>
     (async (...args: any[]) => {
       await fn(...args);
       await refetchNetWorth();
     }) as T;
+
+  const handleExport = () => {
+    const data: ExportData = {
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      assets: assets.map(({ id, createdAt, updatedAt, totalValue, ...rest }) => rest),
+      liabilities: liabilities.map(({ id, createdAt, updatedAt, ...rest }) => rest),
+      fireProfile: fireProfile
+        ? {
+            annualExpense: fireProfile.annualExpense,
+            safeWithdrawalRate: fireProfile.safeWithdrawalRate,
+          }
+        : null,
+      allocationTargets: targets.map(({ id, ...rest }) => rest),
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `free-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleImportFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const data = JSON.parse(text) as ExportData;
+      if (!data.version || !Array.isArray(data.assets) || !Array.isArray(data.liabilities)) {
+        toast.error('文件格式无效');
+        return;
+      }
+      setImportData(data);
+      setImportConfirmOpen(true);
+    } catch {
+      toast.error('解析文件失败');
+    }
+    e.target.value = '';
+  };
+
+  const executeImport = async () => {
+    if (!importData) return;
+    try {
+      for (const a of importData.assets) {
+        await api.assets.create({ ...a, category: a.category as AssetCategory });
+      }
+      for (const l of importData.liabilities) {
+        await api.liabilities.create({ ...l, type: l.type as LiabilityType });
+      }
+      if (importData.fireProfile) {
+        await api.fireProfile.update(importData.fireProfile);
+      }
+      if (importData.allocationTargets.length > 0) {
+        await api.allocation.updateTargets({ targets: importData.allocationTargets });
+      }
+      toast.success('数据导入完成');
+      setImportData(null);
+      setImportConfirmOpen(false);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : '导入失败');
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -46,6 +120,13 @@ export default function AssetOverview() {
           <Button onClick={() => setSnapshotConfirmOpen(true)} variant="outline" size="sm">
             记录快照
           </Button>
+          <Button onClick={handleExport} variant="outline" size="sm">
+            <Download className="h-3 w-3 mr-1" /> 导出
+          </Button>
+          <label className="inline-flex items-center justify-center rounded-md border border-sand bg-ivory px-3 h-8 text-[12px] font-medium text-stone hover:bg-sand/50 transition-colors cursor-pointer">
+            <Upload className="h-3 w-3 mr-1" /> 导入
+            <input type="file" accept=".json" onChange={handleImportFile} className="hidden" />
+          </label>
         </div>
       </div>
 
@@ -88,6 +169,18 @@ export default function AssetOverview() {
           setSnapshotConfirmOpen(false);
         }}
         onCancel={() => setSnapshotConfirmOpen(false)}
+      />
+      <ConfirmDialog
+        open={importConfirmOpen}
+        title="导入数据"
+        description={`即将导入 ${importData?.assets.length ?? 0} 项资产、${importData?.liabilities.length ?? 0} 项负债。数据将追加到现有数据，建议先清除现有数据以避免重复。`}
+        confirmLabel="导入"
+        variant="default"
+        onConfirm={executeImport}
+        onCancel={() => {
+          setImportConfirmOpen(false);
+          setImportData(null);
+        }}
       />
     </div>
   );
