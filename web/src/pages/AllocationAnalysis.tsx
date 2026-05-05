@@ -89,8 +89,15 @@ export default function AllocationAnalysis() {
             size="sm"
             onClick={() => {
               const t: Record<string, { threshold: number; enabled: boolean }> = {};
-              for (const s of statuses) {
-                t[s.category] = { threshold: s.threshold, enabled: s.enabled };
+              if (statuses.length > 0) {
+                for (const s of statuses) {
+                  t[s.category] = { threshold: s.threshold, enabled: s.enabled };
+                }
+              } else {
+                // Fallback to allocation targets when no assets exist
+                for (const target of targets) {
+                  t[target.category] = { threshold: 5, enabled: true };
+                }
               }
               setLocalThresholds(t);
               setShowThresholds(!showThresholds);
@@ -187,47 +194,43 @@ export default function AllocationAnalysis() {
         <div className="w-full max-w-sm rounded-lg border border-sand bg-ivory p-5">
           <h3 className="text-sm font-serif font-medium text-deep mb-4">偏离度阈值设置</h3>
           <div className="space-y-2">
-            {statuses.map((s) => (
-              <div key={s.category} className="flex items-center gap-2">
+            {Object.entries(localThresholds).map(([category, config]) => (
+              <div key={category} className="flex items-center gap-2">
                 <span className="text-[12px] w-16 text-stone">
-                  {CATEGORY_LABELS[s.category] || s.category}
+                  {CATEGORY_LABELS[category as AssetCategory] || category}
                 </span>
                 <Slider
                   min={1}
                   max={20}
-                  value={[localThresholds[s.category]?.threshold ?? s.threshold]}
+                  value={[config.threshold]}
                   onValueChange={(v) => {
                     const val = Array.isArray(v) ? v[0] : v;
                     setLocalThresholds({
                       ...localThresholds,
-                      [s.category]: {
-                        threshold: val ?? s.threshold,
-                        enabled: localThresholds[s.category]?.enabled ?? s.enabled,
+                      [category]: {
+                        threshold: val ?? config.threshold,
+                        enabled: config.enabled,
                       },
                     });
                   }}
                   className="flex-1"
                 />
-                <span className="text-[11px] w-8 text-right text-stone">
-                  {localThresholds[s.category]?.threshold ?? s.threshold}%
-                </span>
+                <span className="text-[11px] w-8 text-right text-stone">{config.threshold}%</span>
                 <Button
-                  variant={
-                    (localThresholds[s.category]?.enabled ?? s.enabled) ? 'default' : 'outline'
-                  }
+                  variant={config.enabled ? 'default' : 'outline'}
                   size="sm"
                   onClick={() =>
                     setLocalThresholds({
                       ...localThresholds,
-                      [s.category]: {
-                        threshold: localThresholds[s.category]?.threshold ?? s.threshold,
-                        enabled: !(localThresholds[s.category]?.enabled ?? s.enabled),
+                      [category]: {
+                        threshold: config.threshold,
+                        enabled: !config.enabled,
                       },
                     })
                   }
                   className="text-[11px] h-6 px-2"
                 >
-                  {(localThresholds[s.category]?.enabled ?? s.enabled) ? '启用' : '禁用'}
+                  {config.enabled ? '启用' : '禁用'}
                 </Button>
               </div>
             ))}
