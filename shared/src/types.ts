@@ -18,19 +18,32 @@ export const CATEGORY_LABELS: Record<AssetCategory, string> = {
   [AssetCategory.OTHER]: '其他',
 };
 
+export enum PriceSource {
+  MANUAL = 'MANUAL',
+  AUTO = 'AUTO',
+}
+
+export const EXCHANGE_CODES = ['SH', 'SZ', 'HKEX', 'NYSE', 'NASDAQ', 'FUND', 'CRYPTO'] as const;
+export type ExchangeCode = (typeof EXCHANGE_CODES)[number];
+
 export interface Asset {
   id: string;
   name: string;
   category: AssetCategory;
   subType: string | null;
+  tickerSymbol: string | null;
+  exchangeCode: string | null;
+  priceSource: PriceSource;
   quantity: number;
   unitPrice: number;
   totalValue: number;
   currency: string;
+  costBasis: number | null;
   passiveIncome: number | null;
   properties: Record<string, unknown> | null;
   acquiredAt: string | null;
   notes: string | null;
+  priceUpdatedAt: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -39,6 +52,8 @@ export interface CreateAssetInput {
   name: string;
   category: AssetCategory;
   subType?: string;
+  tickerSymbol?: string;
+  exchangeCode?: string;
   quantity: number;
   unitPrice: number;
   currency?: string;
@@ -242,6 +257,153 @@ export const ALLOCATION_TARGETS_SCHEMA = {
         properties: {
           category: { type: 'string', enum: Object.values(AssetCategory) },
           targetRatio: { type: 'number', minimum: 0, maximum: 100 },
+        },
+        additionalProperties: false,
+      },
+    },
+  },
+  additionalProperties: false,
+} as const;
+
+// === v2: Price & Market ===
+
+export interface MarketPrice {
+  tickerSymbol: string;
+  exchangeCode: string;
+  name: string | null;
+  currentPrice: number;
+  previousClose: number | null;
+  dayChange: number | null;
+  dayChangePercent: number | null;
+  updatedAt: string;
+}
+
+export interface ExchangeRate {
+  fromCurrency: string;
+  toCurrency: string;
+  rate: number;
+  updatedAt: string;
+}
+
+// === v2: Transactions ===
+
+export enum TransactionType {
+  BUY = 'BUY',
+  SELL = 'SELL',
+  DIVIDEND = 'DIVIDEND',
+  FEE = 'FEE',
+}
+
+export const TRANSACTION_TYPE_LABELS: Record<TransactionType, string> = {
+  [TransactionType.BUY]: '买入',
+  [TransactionType.SELL]: '卖出',
+  [TransactionType.DIVIDEND]: '分红',
+  [TransactionType.FEE]: '费用',
+};
+
+export interface Transaction {
+  id: string;
+  userId: string;
+  assetId: string;
+  type: TransactionType;
+  date: string;
+  quantity: number | null;
+  price: number | null;
+  amount: number;
+  fee: number | null;
+  notes: string | null;
+  createdAt: string;
+}
+
+export interface CreateTransactionInput {
+  assetId: string;
+  type: TransactionType;
+  date: string;
+  quantity?: number | null;
+  price?: number | null;
+  amount: number;
+  fee?: number | null;
+  notes?: string | null;
+}
+
+export interface UpdateTransactionInput extends Partial<CreateTransactionInput> {}
+
+// === v2: Returns ===
+
+export interface AssetReturn {
+  assetId: string;
+  assetName: string;
+  category: AssetCategory;
+  costBasis: number;
+  currentValue: number;
+  totalReturn: number;
+  totalReturnPercent: number;
+  contribution: number;
+  contributionPercent: number;
+}
+
+export interface ReturnAnalysis {
+  twr: number | null;
+  totalReturn: number;
+  totalReturnPercent: number;
+  perAsset: AssetReturn[];
+  from: string;
+  to: string;
+}
+
+// === v2: Rebalance Alerts ===
+
+export interface RebalanceAlert {
+  userId: string;
+  category: AssetCategory;
+  threshold: number;
+  enabled: boolean;
+}
+
+export interface RebalanceAlertStatus {
+  category: AssetCategory;
+  currentRatio: number;
+  targetRatio: number;
+  deviation: number;
+  threshold: number;
+  triggered: boolean;
+}
+
+export interface UpdateRebalanceAlertsInput {
+  alerts: { category: AssetCategory; threshold: number; enabled: boolean }[];
+}
+
+// === v2: JSON Schemas ===
+
+export const TRANSACTION_SCHEMA = {
+  type: 'object',
+  required: ['assetId', 'type', 'date', 'amount'],
+  properties: {
+    assetId: { type: 'string', minLength: 1 },
+    type: { type: 'string', enum: Object.values(TransactionType) },
+    date: { type: 'string' },
+    quantity: { type: 'number' },
+    price: { type: 'number' },
+    amount: { type: 'number' },
+    fee: { type: 'number' },
+    notes: { type: 'string' },
+  },
+  additionalProperties: false,
+} as const;
+
+export const REBALANCE_ALERTS_SCHEMA = {
+  type: 'object',
+  required: ['alerts'],
+  properties: {
+    alerts: {
+      type: 'array',
+      items: {
+        type: 'object',
+        required: ['category', 'threshold', 'enabled'],
+        properties: {
+          category: { type: 'string', enum: Object.values(AssetCategory) },
+          threshold: { type: 'number', minimum: 1, maximum: 50 },
+          enabled: { type: 'boolean' },
         },
         additionalProperties: false,
       },
