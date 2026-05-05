@@ -12,16 +12,23 @@ model Asset {
   name          String
   category      String
   subType       String?
+  tickerSymbol  String?
+  exchangeCode  String?
+  priceSource   String   @default("MANUAL")
   quantity      Float
   unitPrice     Float
   totalValue    Float
   currency      String   @default("CNY")
+  costBasis     Float?
   passiveIncome Float?
   properties    Json?
   acquiredAt    DateTime?
   notes         String?
+  priceUpdatedAt DateTime?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+
+  transactions Transaction[]
 
   @@index([userId])
   @@index([userId, category])
@@ -73,4 +80,53 @@ model Snapshot {
   createdAt       DateTime @default(now())
 
   @@index([userId, snapshotDate])
+}
+
+model MarketPrice {
+  tickerSymbol    String
+  exchangeCode    String
+  name            String?
+  currentPrice    Float
+  previousClose   Float?
+  dayChange       Float?
+  dayChangePercent Float?
+  updatedAt       DateTime @default(now())
+
+  @@id([tickerSymbol, exchangeCode])
+}
+
+model ExchangeRate {
+  fromCurrency String
+  toCurrency   String   @default("CNY")
+  rate         Float
+  updatedAt    DateTime @default(now())
+
+  @@id([fromCurrency, toCurrency])
+}
+
+model Transaction {
+  id        String   @id @default(uuid())
+  userId    String   @default("default")
+  assetId   String
+  asset     Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  type      String
+  date      DateTime
+  quantity  Float?
+  price     Float?
+  amount    Float
+  fee       Float?   @default(0)
+  notes     String?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([assetId])
+}
+
+model RebalanceAlert {
+  userId    String
+  category  String
+  threshold Float   @default(5)
+  enabled   Boolean @default(true)
+
+  @@id([userId, category])
 }
