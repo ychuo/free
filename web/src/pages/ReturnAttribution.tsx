@@ -1,5 +1,6 @@
 import { AssetListSkeleton } from '../components/Skeleton';
 import { useReturns } from '../hooks/useReturns';
+import { type AssetCategory, CATEGORY_LABELS } from '../types';
 
 export default function ReturnAttribution() {
   const { analysis, loading } = useReturns();
@@ -84,7 +85,9 @@ export default function ReturnAttribution() {
                   {analysis.perAsset.map((pa) => (
                     <tr key={pa.assetId} className="border-t border-sand/30 hover:bg-sand/10">
                       <td className="px-4 py-2 font-medium">{pa.assetName}</td>
-                      <td className="px-4 py-2">{pa.category}</td>
+                      <td className="px-4 py-2">
+                        {CATEGORY_LABELS[pa.category as AssetCategory] || pa.category}
+                      </td>
                       <td className="px-4 py-2 text-right">{formatCNY(pa.costBasis)}</td>
                       <td className="px-4 py-2 text-right">{formatCNY(pa.currentValue)}</td>
                       <td

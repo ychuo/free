@@ -58,6 +58,7 @@ export class ReturnCalculator {
 
   async analyzeReturns(
     userId: string,
+    getRate: (currency: string) => number,
     from?: string,
     to?: string,
   ): Promise<{
@@ -103,8 +104,9 @@ export class ReturnCalculator {
     }> = [];
 
     for (const a of assets) {
-      const cb = a.costBasis ?? 0;
-      const cv = a.totalValue;
+      const rate = getRate(a.currency);
+      const cb = (a.costBasis ?? 0) * rate;
+      const cv = a.totalValue * rate;
       const ret = cv - cb;
       const retPct = cb > 0 ? ((cv - cb) / cb) * 100 : 0;
       totalCost += cb;
