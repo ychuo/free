@@ -200,7 +200,7 @@ export default function AllocationAnalysis() {
                     setLocalThresholds({
                       ...localThresholds,
                       [s.category]: {
-                        threshold: parseInt(e.target.value),
+                        threshold: parseInt(e.target.value, 10),
                         enabled: localThresholds[s.category]?.enabled ?? s.enabled,
                       },
                     })
@@ -211,6 +211,7 @@ export default function AllocationAnalysis() {
                   {localThresholds[s.category]?.threshold ?? s.threshold}%
                 </span>
                 <button
+                  type="button"
                   onClick={() =>
                     setLocalThresholds({
                       ...localThresholds,

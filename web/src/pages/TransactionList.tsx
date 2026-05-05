@@ -91,6 +91,7 @@ export default function TransactionList() {
                     <td className="px-4 py-2 text-right">{tx.fee ? formatAmount(tx.fee) : '-'}</td>
                     <td className="px-2 py-2">
                       <button
+                        type="button"
                         onClick={(e) => {
                           e.stopPropagation();
                           remove(tx.id);

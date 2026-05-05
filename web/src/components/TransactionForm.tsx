@@ -67,7 +67,7 @@ export default function TransactionForm({
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-medium">{transaction ? '编辑交易' : '新增交易'}</h2>
-          <button onClick={onClose} className="text-stone/50 hover:text-stone">
+          <button type="button" onClick={onClose} className="text-stone/50 hover:text-stone">
             <X className="h-3 w-3" />
           </button>
         </div>
