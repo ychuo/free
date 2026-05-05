@@ -14,12 +14,32 @@ interface Props {
   onCreate: (input: CreateAssetInput) => Promise<void>;
   onUpdate: (id: string, input: Partial<CreateAssetInput>) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
+  onDeleteMany?: (ids: string[]) => Promise<void>;
 }
 
-export default function AssetList({ assets, onCreate, onUpdate, onDelete }: Props) {
+export default function AssetList({ assets, onCreate, onUpdate, onDelete, onDeleteMany }: Props) {
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<Asset | null>(null);
   const [deleting, setDeleting] = useState<Asset | null>(null);
+
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+
+  const toggleSelect = (id: string) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleAll = () => {
+    if (selected.size === filtered.length) {
+      setSelected(new Set());
+    } else {
+      setSelected(new Set(filtered.map((a) => a.id)));
+    }
+  };
 
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState<'name' | 'value' | 'category'>('category');
@@ -78,7 +98,32 @@ export default function AssetList({ assets, onCreate, onUpdate, onDelete }: Prop
             <SelectItem value="value">按金额</SelectItem>
           </SelectContent>
         </Select>
+        {filtered.length > 0 && (
+          <button
+            type="button"
+            onClick={toggleAll}
+            className="text-[11px] text-stone hover:text-deep transition-colors whitespace-nowrap"
+          >
+            {selected.size === filtered.length ? '取消全选' : '全选'}
+          </button>
+        )}
       </div>
+
+      {selected.size > 0 && (
+        <div className="flex items-center justify-between mb-3 px-3 py-2 rounded-md bg-brand/5 border border-brand/20">
+          <span className="text-[12px] text-deep">已选 {selected.size} 项</span>
+          <Button
+            size="sm"
+            variant="destructive"
+            onClick={async () => {
+              await onDeleteMany?.(Array.from(selected));
+              setSelected(new Set());
+            }}
+          >
+            批量删除
+          </Button>
+        </div>
+      )}
 
       {filtered.length === 0 ? (
         <p className="text-center text-stone text-[12px] py-8">
@@ -98,6 +143,12 @@ export default function AssetList({ assets, onCreate, onUpdate, onDelete }: Prop
                     key={a.id}
                     className="group flex items-center justify-between px-3 py-2 rounded-md border border-sand/60 bg-parchment/50 hover:border-sand transition-colors"
                   >
+                    <input
+                      type="checkbox"
+                      checked={selected.has(a.id)}
+                      onChange={() => toggleSelect(a.id)}
+                      className="h-3.5 w-3.5 rounded border-sand text-brand focus:ring-0 cursor-pointer mr-2"
+                    />
                     <div className="min-w-0 flex-1">
                       <p className="text-[13px] text-deep truncate">
                         {a.name}

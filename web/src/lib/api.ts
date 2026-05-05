@@ -34,6 +34,8 @@ export const api = {
     update: (id: string, data: unknown) =>
       request<Asset>(`/assets/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
     delete: (id: string) => request<void>(`/assets/${id}`, { method: 'DELETE' }),
+    deleteMany: (ids: string[]) =>
+      request<{ deleted: number }>('/assets', { method: 'DELETE', body: JSON.stringify({ ids }) }),
   },
   liabilities: {
     list: () => request<Liability[]>('/liabilities'),

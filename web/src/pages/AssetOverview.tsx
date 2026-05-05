@@ -17,7 +17,7 @@ import { api } from '../lib/api';
 import type { AssetCategory, ExportData, LiabilityType } from '../types';
 
 export default function AssetOverview() {
-  const { assets, create, update, remove, loading: assetsLoading } = useAssets();
+  const { assets, create, update, remove, removeMany, loading: assetsLoading } = useAssets();
   const {
     liabilities,
     create: createL,
@@ -142,6 +142,10 @@ export default function AssetOverview() {
             onCreate={withRefresh(create)}
             onUpdate={withRefresh(update)}
             onDelete={withRefresh(remove)}
+            onDeleteMany={async (ids) => {
+              await removeMany(ids);
+              await refetchNetWorth();
+            }}
           />
         )}
       </div>
