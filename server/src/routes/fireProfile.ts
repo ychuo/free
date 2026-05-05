@@ -1,4 +1,5 @@
 import type { FireProgress } from '@free/shared';
+import { FIRE_PROFILE_SCHEMA } from '@free/shared';
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { config } from '../config';
 import { computeNetWorth, sumAnnualPassiveIncome } from '../lib/calculations';
@@ -13,17 +14,26 @@ export async function fireProfileRoutes(app: FastifyInstance) {
     return reply.send(profile);
   });
 
-  app.put('/fire-profile', async (request: FastifyRequest, reply: FastifyReply) => {
-    const { annualExpense, safeWithdrawalRate } = request.body as any;
-    const fireTarget = annualExpense / (safeWithdrawalRate || 0.04);
+  app.put(
+    '/fire-profile',
+    { schema: { body: FIRE_PROFILE_SCHEMA } },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      const { annualExpense, safeWithdrawalRate } = request.body as any;
+      const fireTarget = annualExpense / (safeWithdrawalRate || 0.04);
 
-    const profile = await prisma.fireProfile.upsert({
-      where: { userId },
-      update: { annualExpense, safeWithdrawalRate, fireTarget },
-      create: { userId, annualExpense, safeWithdrawalRate: safeWithdrawalRate || 0.04, fireTarget },
-    });
-    return reply.send(profile);
-  });
+      const profile = await prisma.fireProfile.upsert({
+        where: { userId },
+        update: { annualExpense, safeWithdrawalRate, fireTarget },
+        create: {
+          userId,
+          annualExpense,
+          safeWithdrawalRate: safeWithdrawalRate || 0.04,
+          fireTarget,
+        },
+      });
+      return reply.send(profile);
+    },
+  );
 
   app.get('/fire-progress', async (_request: FastifyRequest, reply: FastifyReply) => {
     const profile = await prisma.fireProfile.findUnique({ where: { userId } });

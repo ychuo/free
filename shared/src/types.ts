@@ -143,3 +143,65 @@ export interface ApiError {
   error: string;
   code: number;
 }
+
+export const ASSET_SCHEMA = {
+  type: 'object',
+  required: ['name', 'category', 'quantity', 'unitPrice'],
+  properties: {
+    name: { type: 'string', minLength: 1 },
+    category: { type: 'string', enum: Object.values(AssetCategory) },
+    subType: { type: 'string' },
+    quantity: { type: 'number' },
+    unitPrice: { type: 'number' },
+    currency: { type: 'string' },
+    passiveIncome: { type: 'number' },
+    properties: { type: 'object' },
+    acquiredAt: { type: 'string' },
+    notes: { type: 'string' },
+  },
+  additionalProperties: false,
+} as const;
+
+export const LIABILITY_SCHEMA = {
+  type: 'object',
+  required: ['name', 'type', 'totalAmount', 'remaining'],
+  properties: {
+    name: { type: 'string', minLength: 1 },
+    type: { type: 'string', enum: Object.values(LiabilityType) },
+    totalAmount: { type: 'number' },
+    remaining: { type: 'number' },
+    interestRate: { type: 'number' },
+    monthlyPayment: { type: 'number' },
+  },
+  additionalProperties: false,
+} as const;
+
+export const FIRE_PROFILE_SCHEMA = {
+  type: 'object',
+  required: ['annualExpense', 'safeWithdrawalRate'],
+  properties: {
+    annualExpense: { type: 'number', minimum: 0 },
+    safeWithdrawalRate: { type: 'number', minimum: 0, maximum: 1 },
+  },
+  additionalProperties: false,
+} as const;
+
+export const ALLOCATION_TARGETS_SCHEMA = {
+  type: 'object',
+  required: ['targets'],
+  properties: {
+    targets: {
+      type: 'array',
+      items: {
+        type: 'object',
+        required: ['category', 'targetRatio'],
+        properties: {
+          category: { type: 'string', enum: Object.values(AssetCategory) },
+          targetRatio: { type: 'number', minimum: 0, maximum: 100 },
+        },
+        additionalProperties: false,
+      },
+    },
+  },
+  additionalProperties: false,
+} as const;

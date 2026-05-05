@@ -1,4 +1,5 @@
 import type { AllocationAnalysis } from '@free/shared';
+import { ALLOCATION_TARGETS_SCHEMA } from '@free/shared';
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { config } from '../config';
 import { computeCategoryBreakdown, sumTotalAssets } from '../lib/calculations';
@@ -12,31 +13,35 @@ export async function allocationRoutes(app: FastifyInstance) {
     return reply.send(targets);
   });
 
-  app.put('/allocation-targets', async (request: FastifyRequest, reply: FastifyReply) => {
-    const { targets } = request.body as { targets: { category: string; targetRatio: number }[] };
+  app.put(
+    '/allocation-targets',
+    { schema: { body: ALLOCATION_TARGETS_SCHEMA } },
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      const { targets } = request.body as { targets: { category: string; targetRatio: number }[] };
 
-    // Validate total
-    const total = targets.reduce((s, t) => s + t.targetRatio, 0);
-    if (total > 100.01) {
-      return reply.status(400).send({ error: '目标比例总和不能超过 100%' });
-    }
+      // Validate total
+      const total = targets.reduce((s, t) => s + t.targetRatio, 0);
+      if (total > 100.01) {
+        return reply.status(400).send({ error: '目标比例总和不能超过 100%' });
+      }
 
-    // Filter out zero-ratio targets
-    const nonZero = targets.filter((t) => t.targetRatio > 0);
+      // Filter out zero-ratio targets
+      const nonZero = targets.filter((t) => t.targetRatio > 0);
 
-    // Delete all existing targets, then create non-zero ones
-    await prisma.$transaction([
-      prisma.allocationTarget.deleteMany({ where: { userId } }),
-      ...nonZero.map((t) =>
-        prisma.allocationTarget.create({
-          data: { userId, category: t.category, targetRatio: t.targetRatio },
-        }),
-      ),
-    ]);
+      // Delete all existing targets, then create non-zero ones
+      await prisma.$transaction([
+        prisma.allocationTarget.deleteMany({ where: { userId } }),
+        ...nonZero.map((t) =>
+          prisma.allocationTarget.create({
+            data: { userId, category: t.category, targetRatio: t.targetRatio },
+          }),
+        ),
+      ]);
 
-    const updated = await prisma.allocationTarget.findMany({ where: { userId } });
-    return reply.send(updated);
-  });
+      const updated = await prisma.allocationTarget.findMany({ where: { userId } });
+      return reply.send(updated);
+    },
+  );
 
   app.get('/allocation-analysis', async (_request: FastifyRequest, reply: FastifyReply) => {
     const assets = await prisma.asset.findMany({ where: { userId } });
