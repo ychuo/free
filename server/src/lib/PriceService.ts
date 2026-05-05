@@ -35,7 +35,12 @@ export class PriceService {
       if (!byExchange.has(key)) {
         byExchange.set(key, { adapter, symbols: [] });
       }
-      byExchange.get(key)!.symbols.push(asset.tickerSymbol!);
+      // For SH/SZ, append exchange to ticker so adapter knows the market
+      const symbol =
+        asset.exchangeCode === 'SH' || asset.exchangeCode === 'SZ'
+          ? `${asset.tickerSymbol}.${asset.exchangeCode}`
+          : asset.tickerSymbol!;
+      byExchange.get(key)!.symbols.push(symbol);
     }
 
     let updated = 0;

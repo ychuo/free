@@ -36,7 +36,7 @@ export class AStockAdapter implements PriceAdapter {
     if (!d || d.f43 === undefined) throw new Error(`No data for ${tickerSymbol}`);
 
     return {
-      tickerSymbol,
+      tickerSymbol: code,
       exchangeCode: market,
       name: d.f58 as string | undefined,
       currentPrice: d.f43 / 100,
