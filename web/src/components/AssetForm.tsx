@@ -162,7 +162,7 @@ export default function AssetForm({ asset, onSave, onClose }: Props) {
             }}
           />
           <div className="flex items-center gap-1.5 mt-1">
-            <input
+            <Input
               type="number"
               placeholder="年化率"
               step="0.01"
@@ -170,7 +170,7 @@ export default function AssetForm({ asset, onSave, onClose }: Props) {
               max="100"
               value={yieldRate}
               onChange={(e) => handleYieldRateChange(e.target.value)}
-              className="w-16 h-6 rounded border border-sand/80 bg-white px-1.5 text-[11px] text-stone placeholder:text-stone/40 focus:outline-none focus:border-sepia/50"
+              className="w-20 h-7 text-[11px]"
             />
             <span className="text-[11px] text-stone/60">%</span>
             {yieldRate && totalValue > 0 && (
