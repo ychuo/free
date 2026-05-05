@@ -2,11 +2,19 @@ import type {
   AllocationAnalysis,
   AllocationTarget,
   Asset,
+  CreateTransactionInput,
+  ExchangeRate,
   FireProfile,
   FireProgress,
   Liability,
+  MarketPrice,
   NetWorthSummary,
+  RebalanceAlertStatus,
+  ReturnAnalysis,
   Snapshot,
+  Transaction,
+  UpdateRebalanceAlertsInput,
+  UpdateTransactionInput,
 } from '../types';
 
 const BASE = '/api';
@@ -71,5 +79,60 @@ export const api = {
     list: () => request<Snapshot[]>('/snapshots'),
     delete: (id: string) => request<void>(`/snapshots/${id}`, { method: 'DELETE' }),
     clearAll: () => request<{ deleted: number }>('/snapshots', { method: 'DELETE' }),
+  },
+  prices: {
+    list: () => request<MarketPrice[]>('/prices'),
+    refresh: () =>
+      request<{ updated: number; failed: number; errors: string[] }>('/prices/refresh', {
+        method: 'POST',
+      }),
+    refreshAsset: (assetId: string) =>
+      request<{ success: boolean }>(`/prices/refresh/${assetId}`, { method: 'POST' }),
+  },
+  exchangeRates: {
+    list: () => request<ExchangeRate[]>('/exchange-rates'),
+    refresh: () =>
+      request<{ updated: number; errors: string[] }>('/exchange-rates/refresh', {
+        method: 'POST',
+      }),
+  },
+  transactions: {
+    list: (assetId?: string) =>
+      request<Transaction[]>(`/transactions${assetId ? `?assetId=${assetId}` : ''}`),
+    create: (data: CreateTransactionInput) =>
+      request<Transaction>('/transactions', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }),
+    update: (id: string, data: UpdateTransactionInput) =>
+      request<Transaction>(`/transactions/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(data),
+      }),
+    delete: (id: string) => request<void>(`/transactions/${id}`, { method: 'DELETE' }),
+  },
+  returns: {
+    analysis: (from?: string, to?: string) => {
+      const params = new URLSearchParams();
+      if (from) params.set('from', from);
+      if (to) params.set('to', to);
+      const qs = params.toString();
+      return request<ReturnAnalysis>(`/returns${qs ? `?${qs}` : ''}`);
+    },
+    assetReturn: (assetId: string) =>
+      request<{
+        costBasis: number;
+        currentValue: number;
+        totalReturn: number;
+        totalReturnPercent: number;
+      }>(`/returns/${assetId}`),
+  },
+  rebalanceAlerts: {
+    status: () => request<RebalanceAlertStatus[]>('/rebalance-alerts'),
+    update: (data: UpdateRebalanceAlertsInput) =>
+      request<RebalanceAlertStatus[]>('/rebalance-alerts', {
+        method: 'PUT',
+        body: JSON.stringify(data),
+      }),
   },
 };
