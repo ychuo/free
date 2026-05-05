@@ -1,10 +1,14 @@
-import { X } from 'lucide-react';
+import { format } from 'date-fns';
+import { zhCN } from 'date-fns/locale/zh-CN';
+import { ChevronDownIcon, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import type { Asset, CreateTransactionInput, Transaction, UpdateTransactionInput } from '../types';
 import { TRANSACTION_TYPE_LABELS, TransactionType } from '../types';
 import Modal from './Modal';
 import { Button } from './ui/button';
+import { Calendar } from './ui/calendar';
 import { Input } from './ui/input';
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
 interface TransactionFormProps {
@@ -112,12 +116,31 @@ export default function TransactionForm({
 
         <div>
           <label className="text-[12px] text-stone">日期</label>
-          <Input
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            className="h-8 text-[13px]"
-          />
+          <Popover>
+            <PopoverTrigger
+              render={
+                <Button
+                  variant="outline"
+                  data-empty={!date}
+                  className="w-full h-8 justify-between text-left text-[13px] font-normal data-[empty=true]:text-stone/60"
+                >
+                  {date ? format(new Date(date), 'PPP', { locale: zhCN }) : '选择日期'}
+                  <ChevronDownIcon data-icon="inline-end" />
+                </Button>
+              }
+            />
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                mode="single"
+                selected={date ? new Date(date) : undefined}
+                onSelect={(d) => {
+                  if (d) setDate(format(d, 'yyyy-MM-dd'));
+                }}
+                defaultMonth={date ? new Date(date) : new Date()}
+                locale={zhCN}
+              />
+            </PopoverContent>
+          </Popover>
         </div>
 
         <div className="grid grid-cols-2 gap-2">
