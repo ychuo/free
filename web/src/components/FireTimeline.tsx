@@ -3,10 +3,9 @@ import type { FireProgress } from '../types';
 export default function FireTimeline({ progress }: { progress: FireProgress | null }) {
   if (!progress) return null;
 
-  const pct =
-    progress.gap <= 0
-      ? 100
-      : Math.min(((progress.fireTarget - progress.gap) / progress.fireTarget) * 100, 99.5);
+  const pct = progress.gap <= 0
+    ? 100
+    : Math.min((progress.netWorth / progress.fireTarget) * 100, 100);
 
   return (
     <div className="rounded-lg border border-sand bg-ivory p-5 animate-fade-up stagger-1">
