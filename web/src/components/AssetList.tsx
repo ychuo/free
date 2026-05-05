@@ -1,14 +1,19 @@
+import { Pencil, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
-import { Plus, Pencil, Trash2 } from 'lucide-react';
 import type { Asset, CreateAssetInput } from '../types';
 import AssetForm from './AssetForm';
-import Modal from './Modal';
 import ConfirmDialog from './ConfirmDialog';
+import Modal from './Modal';
 import { Button } from './ui/button';
 
 const CATEGORY_LABELS: Record<string, string> = {
-  cash: '现金', fixed_income: '固收', equity: '权益', real_estate: '不动产',
-  crypto: '数字货币', precious: '贵金属', other: '其他',
+  cash: '现金',
+  fixed_income: '固收',
+  equity: '权益',
+  real_estate: '不动产',
+  crypto: '数字货币',
+  precious: '贵金属',
+  other: '其他',
 };
 
 interface Props {
@@ -24,13 +29,22 @@ export default function AssetList({ assets, onCreate, onUpdate, onDelete }: Prop
   const [deleting, setDeleting] = useState<Asset | null>(null);
 
   const grouped: Record<string, Asset[]> = {};
-  for (const a of assets) { (grouped[a.category] ||= []).push(a); }
+  for (const a of assets) {
+    if (!grouped[a.category]) grouped[a.category] = [];
+    grouped[a.category].push(a);
+  }
 
   return (
     <div className="rounded-lg border border-sand bg-ivory p-5 animate-fade-up stagger-1">
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-sm font-serif font-medium text-deep">资产明细</h3>
-        <Button size="sm" onClick={() => { setEditing(null); setShowForm(true); }}>
+        <Button
+          size="sm"
+          onClick={() => {
+            setEditing(null);
+            setShowForm(true);
+          }}
+        >
           <Plus className="h-3 w-3 mr-1" /> 新增
         </Button>
       </div>
@@ -55,27 +69,43 @@ export default function AssetList({ assets, onCreate, onUpdate, onDelete }: Prop
                       <p className="text-[13px] text-deep truncate">
                         {a.name}
                         {a.subType && (
-                          <span className="ml-1.5 inline-block px-1 py-px rounded border border-sand bg-ivory text-[10px] text-stone align-middle">{a.subType}</span>
+                          <span className="ml-1.5 inline-block px-1 py-px rounded border border-sand bg-ivory text-[10px] text-stone align-middle">
+                            {a.subType}
+                          </span>
                         )}
                       </p>
                       <p className="text-[11px] text-stone mt-0.5">
-                        {a.quantity} × {a.unitPrice.toLocaleString()} = {(a.totalValue / 1e4).toFixed(2)} 万
+                        {a.quantity} × {a.unitPrice.toLocaleString()} ={' '}
+                        {(a.totalValue / 1e4).toFixed(2)} 万
                       </p>
                     </div>
                     <div className="flex items-center gap-2 ml-3">
                       <div className="text-right">
-                        <span className="text-[13px] font-medium text-deep">{a.totalValue.toLocaleString()}</span>
+                        <span className="text-[13px] font-medium text-deep">
+                          {a.totalValue.toLocaleString()}
+                        </span>
                         {a.passiveIncome != null && a.passiveIncome > 0 && (
-                          <p className="text-[10px] text-stone">被动收入 {(a.passiveIncome / 1e4).toFixed(2)} 万/年</p>
+                          <p className="text-[10px] text-stone">
+                            被动收入 {(a.passiveIncome / 1e4).toFixed(2)} 万/年
+                          </p>
                         )}
                       </div>
                       <div className="flex opacity-0 group-hover:opacity-100 transition-opacity -mr-1">
-                        <button onClick={() => { setEditing(a); setShowForm(true); }}
-                          className="p-0.5 rounded text-stone/50 hover:text-stone transition-colors">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEditing(a);
+                            setShowForm(true);
+                          }}
+                          className="p-0.5 rounded text-stone/50 hover:text-stone transition-colors"
+                        >
                           <Pencil className="h-3 w-3" />
                         </button>
-                        <button onClick={() => setDeleting(a)}
-                          className="p-0.5 rounded text-stone/50 hover:text-destructive transition-colors">
+                        <button
+                          type="button"
+                          onClick={() => setDeleting(a)}
+                          className="p-0.5 rounded text-stone/50 hover:text-destructive transition-colors"
+                        >
                           <Trash2 className="h-3 w-3" />
                         </button>
                       </div>
@@ -88,15 +118,25 @@ export default function AssetList({ assets, onCreate, onUpdate, onDelete }: Prop
         </div>
       )}
 
-      <Modal open={showForm} onClose={() => { setShowForm(false); setEditing(null); }}>
+      <Modal
+        open={showForm}
+        onClose={() => {
+          setShowForm(false);
+          setEditing(null);
+        }}
+      >
         <AssetForm
           asset={editing || undefined}
           onSave={async (data) => {
             if (editing) await onUpdate(editing.id, data);
             else await onCreate(data);
-            setShowForm(false); setEditing(null);
+            setShowForm(false);
+            setEditing(null);
           }}
-          onClose={() => { setShowForm(false); setEditing(null); }}
+          onClose={() => {
+            setShowForm(false);
+            setEditing(null);
+          }}
         />
       </Modal>
 
@@ -104,7 +144,12 @@ export default function AssetList({ assets, onCreate, onUpdate, onDelete }: Prop
         open={deleting != null}
         title="确认删除"
         description={`确定要删除「${deleting?.name}」吗？此操作不可撤销。`}
-        onConfirm={async () => { if (deleting) { await onDelete(deleting.id); setDeleting(null); } }}
+        onConfirm={async () => {
+          if (deleting) {
+            await onDelete(deleting.id);
+            setDeleting(null);
+          }
+        }}
         onCancel={() => setDeleting(null)}
       />
     </div>

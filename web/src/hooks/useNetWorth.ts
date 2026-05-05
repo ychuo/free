@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { api } from '../lib/api';
 import type { NetWorthSummary, Snapshot } from '../types';
 
@@ -10,18 +10,38 @@ export function useNetWorth() {
   const fetch = useCallback(async () => {
     setLoading(true);
     const [summaryData, snapshotData] = await Promise.all([
-      api.netWorth.get(), api.snapshots.list(),
+      api.netWorth.get(),
+      api.snapshots.list(),
     ]);
     setSummary(summaryData);
     setSnapshots(snapshotData);
     setLoading(false);
   }, []);
 
-  useEffect(() => { fetch(); }, [fetch]);
+  useEffect(() => {
+    fetch();
+  }, [fetch]);
 
-  const createSnapshot = async () => { await api.snapshots.create(); await fetch(); };
-  const deleteSnapshot = async (id: string) => { await api.snapshots.delete(id); await fetch(); };
-  const clearSnapshots = async () => { await api.snapshots.clearAll(); await fetch(); };
+  const createSnapshot = async () => {
+    await api.snapshots.create();
+    await fetch();
+  };
+  const deleteSnapshot = async (id: string) => {
+    await api.snapshots.delete(id);
+    await fetch();
+  };
+  const clearSnapshots = async () => {
+    await api.snapshots.clearAll();
+    await fetch();
+  };
 
-  return { summary, snapshots, loading, createSnapshot, deleteSnapshot, clearSnapshots, refetch: fetch };
+  return {
+    summary,
+    snapshots,
+    loading,
+    createSnapshot,
+    deleteSnapshot,
+    clearSnapshots,
+    refetch: fetch,
+  };
 }

@@ -1,6 +1,6 @@
-import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
-import { prisma } from '../lib/prisma';
+import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { config } from '../config';
+import { prisma } from '../lib/prisma';
 
 const userId = config.userId;
 
@@ -26,7 +26,9 @@ export async function snapshotRoutes(app: FastifyInstance) {
 
   app.get('/', async (_request: FastifyRequest, reply: FastifyReply) => {
     const snapshots = await prisma.snapshot.findMany({
-      where: { userId }, orderBy: { snapshotDate: 'desc' }, take: 30,
+      where: { userId },
+      orderBy: { snapshotDate: 'desc' },
+      take: 30,
     });
     return reply.send(snapshots);
   });

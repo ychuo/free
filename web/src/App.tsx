@@ -1,8 +1,8 @@
-import { Routes, Route } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import Layout from './components/Layout';
+import AllocationAnalysis from './pages/AllocationAnalysis';
 import AssetOverview from './pages/AssetOverview';
 import FireTracking from './pages/FireTracking';
-import AllocationAnalysis from './pages/AllocationAnalysis';
 
 export default function App() {
   return (

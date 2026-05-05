@@ -1,9 +1,9 @@
+import { Pencil, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
-import { Plus, Pencil, Trash2 } from 'lucide-react';
-import type { Liability, CreateLiabilityInput } from '../types';
+import type { CreateLiabilityInput, Liability } from '../types';
+import ConfirmDialog from './ConfirmDialog';
 import LiabilityForm from './LiabilityForm';
 import Modal from './Modal';
-import ConfirmDialog from './ConfirmDialog';
 import { Button } from './ui/button';
 
 const TYPE_LABELS: Record<string, string> = { mortgage: '房贷', consumer: '消费贷', other: '其他' };
@@ -24,7 +24,13 @@ export default function LiabilityList({ liabilities, onCreate, onUpdate, onDelet
     <div className="rounded-lg border border-sand bg-ivory p-5 animate-fade-up stagger-2">
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-sm font-serif font-medium text-deep">负债明细</h3>
-        <Button size="sm" onClick={() => { setEditing(null); setShowForm(true); }}>
+        <Button
+          size="sm"
+          onClick={() => {
+            setEditing(null);
+            setShowForm(true);
+          }}
+        >
           <Plus className="h-3 w-3 mr-1" /> 新增
         </Button>
       </div>
@@ -52,16 +58,27 @@ export default function LiabilityList({ liabilities, onCreate, onUpdate, onDelet
               </div>
               <div className="flex items-center gap-2 ml-3">
                 <div className="text-right">
-                  <span className="text-[13px] font-medium text-[#b91c1c]">{l.remaining.toLocaleString()}</span>
+                  <span className="text-[13px] font-medium text-[#b91c1c]">
+                    {l.remaining.toLocaleString()}
+                  </span>
                   <p className="text-[10px] text-stone">剩余 / {l.totalAmount.toLocaleString()}</p>
                 </div>
                 <div className="flex opacity-0 group-hover:opacity-100 transition-opacity -mr-1">
-                  <button onClick={() => { setEditing(l); setShowForm(true); }}
-                    className="p-0.5 rounded text-stone/50 hover:text-stone transition-colors">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditing(l);
+                      setShowForm(true);
+                    }}
+                    className="p-0.5 rounded text-stone/50 hover:text-stone transition-colors"
+                  >
                     <Pencil className="h-3 w-3" />
                   </button>
-                  <button onClick={() => setDeleting(l)}
-                    className="p-0.5 rounded text-stone/50 hover:text-destructive transition-colors">
+                  <button
+                    type="button"
+                    onClick={() => setDeleting(l)}
+                    className="p-0.5 rounded text-stone/50 hover:text-destructive transition-colors"
+                  >
                     <Trash2 className="h-3 w-3" />
                   </button>
                 </div>
@@ -71,15 +88,25 @@ export default function LiabilityList({ liabilities, onCreate, onUpdate, onDelet
         </div>
       )}
 
-      <Modal open={showForm} onClose={() => { setShowForm(false); setEditing(null); }}>
+      <Modal
+        open={showForm}
+        onClose={() => {
+          setShowForm(false);
+          setEditing(null);
+        }}
+      >
         <LiabilityForm
           liability={editing || undefined}
           onSave={async (data) => {
             if (editing) await onUpdate(editing.id, data);
             else await onCreate(data);
-            setShowForm(false); setEditing(null);
+            setShowForm(false);
+            setEditing(null);
           }}
-          onClose={() => { setShowForm(false); setEditing(null); }}
+          onClose={() => {
+            setShowForm(false);
+            setEditing(null);
+          }}
         />
       </Modal>
 
@@ -87,7 +114,12 @@ export default function LiabilityList({ liabilities, onCreate, onUpdate, onDelet
         open={deleting != null}
         title="确认删除"
         description={`确定要删除「${deleting?.name}」吗？此操作不可撤销。`}
-        onConfirm={async () => { if (deleting) { await onDelete(deleting.id); setDeleting(null); } }}
+        onConfirm={async () => {
+          if (deleting) {
+            await onDelete(deleting.id);
+            setDeleting(null);
+          }
+        }}
         onCancel={() => setDeleting(null)}
       />
     </div>

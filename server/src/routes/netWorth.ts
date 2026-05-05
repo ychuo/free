@@ -1,7 +1,7 @@
-import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
-import { prisma } from '../lib/prisma';
-import { config } from '../config';
 import type { NetWorthSummary } from '@free/shared';
+import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import { config } from '../config';
+import { prisma } from '../lib/prisma';
 
 const userId = config.userId;
 
@@ -20,7 +20,8 @@ export async function netWorthRoutes(app: FastifyInstance) {
     }
 
     const prevSnapshot = await prisma.snapshot.findFirst({
-      where: { userId }, orderBy: { snapshotDate: 'desc' },
+      where: { userId },
+      orderBy: { snapshotDate: 'desc' },
     });
 
     let previousNetWorth: number | null = null;
@@ -34,15 +35,22 @@ export async function netWorthRoutes(app: FastifyInstance) {
     }
 
     const summary: NetWorthSummary = {
-      totalAssets, totalLiabilities, netWorth,
-      previousNetWorth, change, changePercent, categoryBreakdown,
+      totalAssets,
+      totalLiabilities,
+      netWorth,
+      previousNetWorth,
+      change,
+      changePercent,
+      categoryBreakdown,
     };
     return reply.send(summary);
   });
 
   app.get('/history', async (_request: FastifyRequest, reply: FastifyReply) => {
     const snapshots = await prisma.snapshot.findMany({
-      where: { userId }, orderBy: { snapshotDate: 'desc' }, take: 30,
+      where: { userId },
+      orderBy: { snapshotDate: 'desc' },
+      take: 30,
     });
     return reply.send(snapshots);
   });

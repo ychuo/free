@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { api } from '../lib/api';
 import type { FireProfile, FireProgress, UpdateFireProfileInput } from '../types';
 
@@ -11,14 +11,23 @@ export function useFireProfile() {
     setLoading(true);
     try {
       const [p, pg] = await Promise.all([api.fireProfile.get(), api.fireProfile.progress()]);
-      setProfile(p); setProgress(pg);
-    } catch { setProfile(null); setProgress(null); }
+      setProfile(p);
+      setProgress(pg);
+    } catch {
+      setProfile(null);
+      setProgress(null);
+    }
     setLoading(false);
   }, []);
 
-  useEffect(() => { fetch(); }, [fetch]);
+  useEffect(() => {
+    fetch();
+  }, [fetch]);
 
-  const update = async (input: UpdateFireProfileInput) => { await api.fireProfile.update(input); await fetch(); };
+  const update = async (input: UpdateFireProfileInput) => {
+    await api.fireProfile.update(input);
+    await fetch();
+  };
 
   return { profile, progress, loading, update, refetch: fetch };
 }

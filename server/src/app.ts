@@ -1,10 +1,10 @@
-import Fastify from 'fastify';
 import cors from '@fastify/cors';
+import Fastify from 'fastify';
+import { allocationRoutes } from './routes/allocation';
 import { assetRoutes } from './routes/assets';
+import { fireProfileRoutes } from './routes/fireProfile';
 import { liabilityRoutes } from './routes/liabilities';
 import { netWorthRoutes } from './routes/netWorth';
-import { fireProfileRoutes } from './routes/fireProfile';
-import { allocationRoutes } from './routes/allocation';
 import { snapshotRoutes } from './routes/snapshots';
 
 export async function createApp() {

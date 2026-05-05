@@ -1,5 +1,5 @@
-import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
+import { PrismaClient } from '@prisma/client';
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
 const prisma = new PrismaClient({ adapter });
@@ -15,7 +15,15 @@ async function main() {
     },
   });
 
-  const categories = ['cash', 'fixed_income', 'equity', 'real_estate', 'crypto', 'precious', 'other'];
+  const categories = [
+    'cash',
+    'fixed_income',
+    'equity',
+    'real_estate',
+    'crypto',
+    'precious',
+    'other',
+  ];
   for (const category of categories) {
     await prisma.allocationTarget.upsert({
       where: { userId_category: { userId: 'default', category } },
@@ -28,5 +36,8 @@ async function main() {
 }
 
 main()
-  .catch((e) => { console.error(e); process.exit(1); })
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
   .finally(() => prisma.$disconnect());

@@ -1,13 +1,23 @@
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
 import type { NetWorthSummary } from '../types';
 
 const COLORS = [
-  'var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)',
-  'var(--chart-4)', 'var(--chart-5)', 'var(--chart-1)', 'var(--chart-2)',
+  'var(--chart-1)',
+  'var(--chart-2)',
+  'var(--chart-3)',
+  'var(--chart-4)',
+  'var(--chart-5)',
+  'var(--chart-1)',
+  'var(--chart-2)',
 ];
 const LABELS: Record<string, string> = {
-  cash: '现金', fixed_income: '固收', equity: '权益', real_estate: '不动产',
-  crypto: '数字货币', precious: '贵金属', other: '其他',
+  cash: '现金',
+  fixed_income: '固收',
+  equity: '权益',
+  real_estate: '不动产',
+  crypto: '数字货币',
+  precious: '贵金属',
+  other: '其他',
 };
 
 export default function AssetPieChart({ summary }: { summary: NetWorthSummary | null }) {
@@ -36,9 +46,17 @@ export default function AssetPieChart({ summary }: { summary: NetWorthSummary | 
       <h3 className="text-sm font-serif font-medium mb-3 text-deep">资产分布</h3>
       <ResponsiveContainer width="100%" height={220}>
         <PieChart>
-          <Pie data={data} cx="50%" cy="50%" innerRadius={50} outerRadius={88} dataKey="value" stroke="none">
-            {data.map((entry, i) => (
-              <Cell key={i} fill={entry.color} />
+          <Pie
+            data={data}
+            cx="50%"
+            cy="50%"
+            innerRadius={50}
+            outerRadius={88}
+            dataKey="value"
+            stroke="none"
+          >
+            {data.map((entry) => (
+              <Cell key={entry.name} fill={entry.color} />
             ))}
           </Pie>
           <Tooltip
@@ -49,7 +67,7 @@ export default function AssetPieChart({ summary }: { summary: NetWorthSummary | 
               fontSize: '12px',
               fontFamily: 'var(--font-serif)',
             }}
-            formatter={(value: number) => [`${(value / 1e4).toFixed(1)} 万`, '']}
+            formatter={(value) => [`${(Number(value) / 1e4).toFixed(1)} 万`, '']}
           />
         </PieChart>
       </ResponsiveContainer>

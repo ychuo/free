@@ -1,7 +1,7 @@
-import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
-import { prisma } from '../lib/prisma';
-import { config } from '../config';
 import type { FireProgress } from '@free/shared';
+import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import { config } from '../config';
+import { prisma } from '../lib/prisma';
 
 const userId = config.userId;
 
@@ -41,7 +41,8 @@ export async function fireProfileRoutes(app: FastifyInstance) {
       safeWithdrawalRate: profile.safeWithdrawalRate,
       fireTarget: profile.fireTarget,
       annualPassiveIncome,
-      coverageRate: profile.annualExpense > 0 ? (annualPassiveIncome / profile.annualExpense) * 100 : 0,
+      coverageRate:
+        profile.annualExpense > 0 ? (annualPassiveIncome / profile.annualExpense) * 100 : 0,
       netWorth,
       gap: profile.fireTarget - netWorth,
     };

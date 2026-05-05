@@ -1,6 +1,6 @@
-import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
-import { prisma } from '../lib/prisma';
+import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { config } from '../config';
+import { prisma } from '../lib/prisma';
 
 const userId = config.userId;
 
@@ -15,14 +15,34 @@ export async function assetRoutes(app: FastifyInstance) {
   });
 
   app.post('/', async (request: FastifyRequest, reply: FastifyReply) => {
-    const { name, category, subType, quantity, unitPrice, currency, passiveIncome, properties, acquiredAt, notes } = request.body as any;
+    const {
+      name,
+      category,
+      subType,
+      quantity,
+      unitPrice,
+      currency,
+      passiveIncome,
+      properties,
+      acquiredAt,
+      notes,
+    } = request.body as any;
     const totalValue = quantity * unitPrice;
 
     const asset = await prisma.asset.create({
       data: {
-        userId, name, category, subType, quantity, unitPrice, totalValue,
-        currency: currency || 'CNY', passiveIncome, properties,
-        acquiredAt: acquiredAt ? new Date(acquiredAt) : null, notes,
+        userId,
+        name,
+        category,
+        subType,
+        quantity,
+        unitPrice,
+        totalValue,
+        currency: currency || 'CNY',
+        passiveIncome,
+        properties,
+        acquiredAt: acquiredAt ? new Date(acquiredAt) : null,
+        notes,
       },
     });
     return reply.status(201).send(asset);
@@ -33,7 +53,17 @@ export async function assetRoutes(app: FastifyInstance) {
     const body = request.body as Record<string, any>;
     const data: Record<string, unknown> = {};
 
-    const fields = ['name', 'category', 'subType', 'quantity', 'unitPrice', 'currency', 'passiveIncome', 'properties', 'notes'];
+    const fields = [
+      'name',
+      'category',
+      'subType',
+      'quantity',
+      'unitPrice',
+      'currency',
+      'passiveIncome',
+      'properties',
+      'notes',
+    ];
     for (const f of fields) {
       if (body[f] !== undefined) data[f] = body[f];
     }
@@ -45,7 +75,9 @@ export async function assetRoutes(app: FastifyInstance) {
     if (body.quantity !== undefined || body.unitPrice !== undefined) {
       const existing = await prisma.asset.findFirst({ where: { id, userId } });
       if (!existing) return reply.status(404).send({ error: 'Asset not found', code: 404 });
-      data.totalValue = ((body.quantity ?? existing.quantity) as number) * ((body.unitPrice ?? existing.unitPrice) as number);
+      data.totalValue =
+        ((body.quantity ?? existing.quantity) as number) *
+        ((body.unitPrice ?? existing.unitPrice) as number);
     }
 
     const asset = await prisma.asset.update({ where: { id }, data });

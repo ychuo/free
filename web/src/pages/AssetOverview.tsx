@@ -1,13 +1,13 @@
 import { useState } from 'react';
+import AssetList from '../components/AssetList';
+import AssetPieChart from '../components/AssetPieChart';
+import ConfirmDialog from '../components/ConfirmDialog';
+import LiabilityList from '../components/LiabilityList';
+import NetWorthCard from '../components/NetWorthCard';
+import { Button } from '../components/ui/button';
 import { useAssets } from '../hooks/useAssets';
 import { useLiabilities } from '../hooks/useLiabilities';
 import { useNetWorth } from '../hooks/useNetWorth';
-import NetWorthCard from '../components/NetWorthCard';
-import AssetPieChart from '../components/AssetPieChart';
-import AssetList from '../components/AssetList';
-import LiabilityList from '../components/LiabilityList';
-import ConfirmDialog from '../components/ConfirmDialog';
-import { Button } from '../components/ui/button';
 
 export default function AssetOverview() {
   const { assets, create, update, remove } = useAssets();
@@ -28,17 +28,29 @@ export default function AssetOverview() {
           <h1 className="text-lg font-serif font-medium tracking-wide text-deep">概览</h1>
           <p className="text-[12px] text-stone mt-0.5">你的资产全景</p>
         </div>
-        <Button onClick={() => setSnapshotConfirmOpen(true)} variant="outline" size="sm">记录快照</Button>
+        <Button onClick={() => setSnapshotConfirmOpen(true)} variant="outline" size="sm">
+          记录快照
+        </Button>
       </div>
 
       <NetWorthCard summary={summary} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         <AssetPieChart summary={summary} />
-        <AssetList assets={assets} onCreate={withRefresh(create)} onUpdate={withRefresh(update)} onDelete={withRefresh(remove)} />
+        <AssetList
+          assets={assets}
+          onCreate={withRefresh(create)}
+          onUpdate={withRefresh(update)}
+          onDelete={withRefresh(remove)}
+        />
       </div>
 
-      <LiabilityList liabilities={liabilities} onCreate={withRefresh(createL)} onUpdate={withRefresh(updateL)} onDelete={withRefresh(removeL)} />
+      <LiabilityList
+        liabilities={liabilities}
+        onCreate={withRefresh(createL)}
+        onUpdate={withRefresh(updateL)}
+        onDelete={withRefresh(removeL)}
+      />
 
       <ConfirmDialog
         open={snapshotConfirmOpen}
@@ -46,7 +58,10 @@ export default function AssetOverview() {
         description="将当前资产和负债状态保存为一条快照记录，用于后续追踪净值变化趋势。"
         confirmLabel="记录"
         variant="default"
-        onConfirm={async () => { await createSnapshot(); setSnapshotConfirmOpen(false); }}
+        onConfirm={async () => {
+          await createSnapshot();
+          setSnapshotConfirmOpen(false);
+        }}
         onCancel={() => setSnapshotConfirmOpen(false)}
       />
     </div>

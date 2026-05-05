@@ -1,6 +1,6 @@
-import { TrendingUp, TrendingDown } from 'lucide-react';
-import type { NetWorthSummary } from '../types';
+import { TrendingDown, TrendingUp } from 'lucide-react';
 import { cn } from '../lib/utils';
+import type { NetWorthSummary } from '../types';
 
 function fmt(n: number): string {
   const abs = Math.abs(n);
@@ -31,7 +31,7 @@ export default function NetWorthCard({ summary }: { summary: NetWorthSummary | n
             key={key}
             className={cn(
               'rounded-lg border border-sand bg-ivory px-4 py-3 animate-fade-up',
-              `stagger-${i + 1}`
+              `stagger-${i + 1}`,
             )}
           >
             <p className="text-xs text-stone mb-1">{label}</p>
@@ -49,8 +49,15 @@ export default function NetWorthCard({ summary }: { summary: NetWorthSummary | n
             <TrendingDown className="h-3 w-3 text-destructive" />
           )}
           <span>较上次快照</span>
-          <span className={cn('font-medium', summary.change != null && summary.change >= 0 ? 'text-chart-1' : 'text-destructive')}>
-            {summary.changePercent != null ? `${summary.changePercent >= 0 ? '+' : ''}${summary.changePercent.toFixed(2)}%` : '—'}
+          <span
+            className={cn(
+              'font-medium',
+              summary.change != null && summary.change >= 0 ? 'text-chart-1' : 'text-destructive',
+            )}
+          >
+            {summary.changePercent != null
+              ? `${summary.changePercent >= 0 ? '+' : ''}${summary.changePercent.toFixed(2)}%`
+              : '—'}
           </span>
         </div>
       )}

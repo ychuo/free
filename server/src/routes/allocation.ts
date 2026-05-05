@@ -1,7 +1,7 @@
-import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
-import { prisma } from '../lib/prisma';
-import { config } from '../config';
 import type { AllocationAnalysis } from '@free/shared';
+import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import { config } from '../config';
+import { prisma } from '../lib/prisma';
 
 const userId = config.userId;
 
@@ -22,7 +22,7 @@ export async function allocationRoutes(app: FastifyInstance) {
         where: { userId_category: { userId, category: t.category } },
         update: { targetRatio: t.targetRatio },
         create: { userId, category: t.category, targetRatio: t.targetRatio },
-      })
+      }),
     );
     await prisma.$transaction(ops);
     const updated = await prisma.allocationTarget.findMany({ where: { userId } });
