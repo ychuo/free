@@ -1,5 +1,11 @@
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { config } from '../config';
+import {
+  computeCategoryBreakdown,
+  computeNetWorth,
+  sumTotalAssets,
+  sumTotalLiabilities,
+} from '../lib/calculations';
 import { prisma } from '../lib/prisma';
 
 const userId = config.userId;
@@ -9,14 +15,10 @@ export async function snapshotRoutes(app: FastifyInstance) {
     const assets = await prisma.asset.findMany({ where: { userId } });
     const liabilities = await prisma.liability.findMany({ where: { userId } });
 
-    const totalAssets = assets.reduce((sum, a) => sum + a.totalValue, 0);
-    const totalLiabilities = liabilities.reduce((sum, l) => sum + l.remaining, 0);
-    const netWorth = totalAssets - totalLiabilities;
-
-    const breakdown: Record<string, number> = {};
-    for (const a of assets) {
-      breakdown[a.category] = (breakdown[a.category] || 0) + a.totalValue;
-    }
+    const totalAssets = sumTotalAssets(assets);
+    const totalLiabilities = sumTotalLiabilities(liabilities);
+    const netWorth = computeNetWorth(assets, liabilities);
+    const breakdown = computeCategoryBreakdown(assets);
 
     const snapshot = await prisma.snapshot.create({
       data: { userId, totalAssets, totalLiabilities, netWorth, breakdown },

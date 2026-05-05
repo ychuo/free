@@ -1,6 +1,7 @@
 import type { AllocationAnalysis } from '@free/shared';
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { config } from '../config';
+import { computeCategoryBreakdown, sumTotalAssets } from '../lib/calculations';
 import { prisma } from '../lib/prisma';
 
 const userId = config.userId;
@@ -32,12 +33,8 @@ export async function allocationRoutes(app: FastifyInstance) {
   app.get('/allocation-analysis', async (_request: FastifyRequest, reply: FastifyReply) => {
     const assets = await prisma.asset.findMany({ where: { userId } });
     const targets = await prisma.allocationTarget.findMany({ where: { userId } });
-    const totalValue = assets.reduce((sum, a) => sum + a.totalValue, 0);
-
-    const currentByCategory: Record<string, number> = {};
-    for (const a of assets) {
-      currentByCategory[a.category] = (currentByCategory[a.category] || 0) + a.totalValue;
-    }
+    const totalValue = sumTotalAssets(assets);
+    const currentByCategory = computeCategoryBreakdown(assets);
 
     const analysis: AllocationAnalysis[] = targets.map((t) => {
       const currentValue = currentByCategory[t.category] || 0;
