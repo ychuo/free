@@ -5,6 +5,7 @@ import AllocationAnalysis from './pages/AllocationAnalysis';
 import AssetOverview from './pages/AssetOverview';
 import FireTracking from './pages/FireTracking';
 import ReturnAttribution from './pages/ReturnAttribution';
+import MarketPulse from './pages/MarketPulse';
 import StrategyExplorer from './pages/StrategyExplorer';
 import TransactionList from './pages/TransactionList';
 import UserGuide from './pages/UserGuide';
@@ -19,6 +20,7 @@ export default function App() {
           <Route path="/allocation" element={<AllocationAnalysis />} />
           <Route path="/returns" element={<ReturnAttribution />} />
           <Route path="/transactions" element={<TransactionList />} />
+          <Route path="/market-pulse" element={<MarketPulse />} />
           <Route path="/strategies" element={<StrategyExplorer />} />
           <Route path="/guide" element={<UserGuide />} />
         </Route>
