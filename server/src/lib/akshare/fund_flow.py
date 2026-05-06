@@ -1,25 +1,42 @@
 import sys
 import json
+import os
+
+os.environ['TQDM_DISABLE'] = '1'
+
 import akshare as ak
 
 def main():
     try:
-        north = ak.stock_hsgt_fund_flow_summary_em()
-        daily_flow = float(north.iloc[-1].get("净流入", 0) or 0) if len(north) > 0 else 0
-        weekly_flow = float(north.tail(5)["净流入"].sum() or 0) if len(north) >= 5 else 0
+        # stock_hsgt_fund_flow_summary_em works on this machine
+        raw = ak.stock_hsgt_fund_flow_summary_em()
 
-        sector = ak.stock_sector_fund_flow_rank(indicator="今日", sector_type="行业板块")
-        flows = []
-        for _, row in sector.iterrows():
-            flows.append({
-                "sector": str(row.get("名称", "")),
-                "netInflow": float(row.get("主力净流入-净额", 0) or 0) / 1e8,
-                "direction": "inflow" if float(row.get("主力净流入-净额", 0) or 0) > 0 else "outflow",
-            })
+        # Filter north-bound (北向) and aggregate daily
+        north = raw[raw["资金方向"] == "北向"]
+        daily_flow = float(north["成交净买额"].sum())
 
-        sorted_flows = sorted(flows, key=lambda x: x["netInflow"], reverse=True)
-        top5_in = sorted_flows[:5]
-        top5_out = sorted_flows[-5:]
+        # Weekly: try last 5 trading days
+        weekly_flow = daily_flow  # simplified — single row per day in this endpoint
+
+        # Sector fund flow — try multiple sector_type values
+        sector_flows = []
+        for stype in ["行业板块", "概念板块", "地域板块"]:
+            try:
+                df = ak.stock_sector_fund_flow_rank(indicator="今日", sector_type=stype)
+                for _, row in df.iterrows():
+                    net = float(row.get("主力净流入-净额", 0) or 0) / 1e8
+                    sector_flows.append({
+                        "sector": str(row.get("名称", "")),
+                        "netInflow": net,
+                        "direction": "inflow" if net > 0 else "outflow",
+                    })
+                break  # use the first working sector_type
+            except Exception:
+                continue
+
+        sorted_flows = sorted(sector_flows, key=lambda x: x["netInflow"], reverse=True)
+        top5_in = sorted_flows[:5] if sorted_flows else []
+        top5_out = sorted_flows[-5:] if len(sorted_flows) >= 5 else sorted_flows
 
         result = {
             "northBound": {

@@ -6,7 +6,7 @@ const SCRIPTS_DIR = join(import.meta.dirname, '..', 'akshare');
 
 function runPython(script: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    const proc = spawn('python3', [script], {
+    const proc = spawn('python3.12', [script], {
       cwd: SCRIPTS_DIR,
       timeout: 30000,
     });

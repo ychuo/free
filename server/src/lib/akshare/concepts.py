@@ -1,5 +1,9 @@
 import sys
 import json
+import os
+
+os.environ['TQDM_DISABLE'] = '1'
+
 import akshare as ak
 
 def fund_flow_direction(change: float) -> str:
