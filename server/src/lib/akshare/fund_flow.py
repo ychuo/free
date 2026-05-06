@@ -3,47 +3,48 @@ import json
 import os
 
 os.environ['TQDM_DISABLE'] = '1'
-
 import akshare as ak
 
 def main():
     try:
-        # stock_hsgt_fund_flow_summary_em works on this machine
-        raw = ak.stock_hsgt_fund_flow_summary_em()
+        # North-bound data from EastMoney (works via THS fallback path)
+        north_raw = ak.stock_hsgt_fund_flow_summary_em()
+        north_data = north_raw[north_raw["资金方向"] == "北向"]
+        daily_north = float(north_data["成交净买额"].sum())
+        weekly_north = daily_north  # single day in this endpoint
 
-        # Filter north-bound (北向) and aggregate daily
-        north = raw[raw["资金方向"] == "北向"]
-        daily_flow = float(north["成交净买额"].sum())
-
-        # Weekly: try last 5 trading days
-        weekly_flow = daily_flow  # simplified — single row per day in this endpoint
-
-        # Sector fund flow — try multiple sector_type values
-        sector_flows = []
-        for stype in ["行业板块", "概念板块", "地域板块"]:
-            try:
-                df = ak.stock_sector_fund_flow_rank(indicator="今日", sector_type=stype)
-                for _, row in df.iterrows():
-                    net = float(row.get("主力净流入-净额", 0) or 0) / 1e8
-                    sector_flows.append({
-                        "sector": str(row.get("名称", "")),
-                        "netInflow": net,
-                        "direction": "inflow" if net > 0 else "outflow",
-                    })
-                break  # use the first working sector_type
-            except Exception:
-                continue
-
-        sorted_flows = sorted(sector_flows, key=lambda x: x["netInflow"], reverse=True)
-        top5_in = sorted_flows[:5] if sorted_flows else []
-        top5_out = sorted_flows[-5:] if len(sorted_flows) >= 5 else sorted_flows
+        # Market-level fund flow from 同花顺
+        market_flow = ak.stock_market_fund_flow()
+        latest = market_flow.iloc[-1]  # most recent row
+        main_net = float(latest.get("主力净流入-净额", 0) or 0)
+        main_pct = float(latest.get("主力净流入-净占比", 0) or 0)
+        super_large = float(latest.get("超大单净流入-净额", 0) or 0)
+        large = float(latest.get("大单净流入-净额", 0) or 0)
+        medium = float(latest.get("中单净流入-净额", 0) or 0)
+        small = float(latest.get("小单净流入-净额", 0) or 0)
+        sh_close = float(latest.get("上证-收盘价", 0) or 0)
+        sh_change = float(latest.get("上证-涨跌幅", 0) or 0)
+        sz_close = float(latest.get("深证-收盘价", 0) or 0)
+        sz_change = float(latest.get("深证-涨跌幅", 0) or 0)
 
         result = {
             "northBound": {
-                "daily": daily_flow,
-                "weekly": weekly_flow,
+                "daily": round(daily_north, 2),
+                "weekly": round(weekly_north, 2),
             },
-            "sectorFlow": top5_in + top5_out,
+            "marketFlow": {
+                "mainNetInflow": round(main_net / 1e8, 2),
+                "mainNetPct": round(main_pct, 2),
+                "superLarge": round(super_large / 1e8, 2),
+                "large": round(large / 1e8, 2),
+                "medium": round(medium / 1e8, 2),
+                "small": round(small / 1e8, 2),
+                "shIndex": round(sh_close, 2),
+                "shChange": round(sh_change, 2),
+                "szIndex": round(sz_close, 2),
+                "szChange": round(sz_change, 2),
+            },
+            "sectorFlow": [],  # requires EastMoney push2, unavailable
         }
         print(json.dumps(result, ensure_ascii=False))
     except Exception as e:

@@ -469,6 +469,18 @@ export interface FundFlowData {
     daily: number;
     weekly: number;
   };
+  marketFlow: {
+    mainNetInflow: number;
+    mainNetPct: number;
+    superLarge: number;
+    large: number;
+    medium: number;
+    small: number;
+    shIndex: number;
+    shChange: number;
+    szIndex: number;
+    szChange: number;
+  };
   sectorFlow: Array<{
     sector: string;
     netInflow: number;
