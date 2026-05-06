@@ -448,11 +448,12 @@ export interface StrategyTemplate {
 
 export interface ValuationItem {
   sector: string;
-  currentPE: number;
-  pePercentile: number;
-  currentPB: number;
-  pbPercentile: number;
-  sampleCount: number;
+  changePercent: number;
+  netInflow: number;
+  upCount: number;
+  downCount: number;
+  leadingStock: string;
+  leadingStockChange: number;
   updatedAt: string;
 }
 

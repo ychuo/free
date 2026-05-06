@@ -4,28 +4,31 @@ import os
 from datetime import datetime
 
 os.environ['TQDM_DISABLE'] = '1'
-
 import akshare as ak
 
 def main():
     try:
-        # Use Sina index spot data (works without EastMoney push2)
-        df = ak.stock_zh_index_spot_sina()
+        df = ak.stock_board_industry_summary_ths()
         now = datetime.now().isoformat()
         result = []
         for _, row in df.iterrows():
-            name = str(row.get("名称", ""))
-            # Filter to major indices for a manageable overview
-            if any(k in name for k in ["上证", "深证", "沪深", "创业", "科创"]):
-                result.append({
-                    "sector": name,
-                    "currentPE": float(row.get("最新价", 0) or 0),
-                    "pePercentile": float(row.get("涨跌幅", 0) or 0),
-                    "currentPB": float(row.get("昨收", 0) or 0),
-                    "pbPercentile": float(row.get("今开", 0) or 0),
-                    "sampleCount": int(row.get("成交量", 0) or 0),
-                    "updatedAt": now,
-                })
+            change_pct = float(row.get("涨跌幅", 0) or 0)
+            inflow = float(row.get("净流入", 0) or 0)
+            up_count = int(row.get("上涨家数", 0) or 0)
+            down_count = int(row.get("下跌家数", 0) or 0)
+            leading = str(row.get("领涨股", "") or "")
+            leading_chg = float(row.get("领涨股-涨跌幅", 0) or 0)
+
+            result.append({
+                "sector": str(row.get("板块", "")),
+                "changePercent": change_pct,
+                "netInflow": inflow,
+                "upCount": up_count,
+                "downCount": down_count,
+                "leadingStock": leading,
+                "leadingStockChange": leading_chg,
+                "updatedAt": now,
+            })
         print(json.dumps(result, ensure_ascii=False))
     except Exception as e:
         print(json.dumps({"error": str(e)}, ensure_ascii=False), file=sys.stderr)

@@ -6,22 +6,24 @@ interface Props {
   loading: boolean;
 }
 
-function getColorClass(percentile: number): string {
-  if (percentile < 20) return 'bg-emerald-50 text-emerald-700';
-  if (percentile > 80) return 'bg-red-50 text-red-600';
-  return 'bg-amber-50 text-amber-700';
+function getChangeClass(change: number): string {
+  if (change > 2) return 'text-red-500 font-medium';
+  if (change < -2) return 'text-emerald-600 font-medium';
+  if (change > 0) return 'text-red-400';
+  if (change < 0) return 'text-emerald-500';
+  return 'text-stone';
 }
 
-function getLabel(percentile: number): string {
-  if (percentile < 20) return '低估';
-  if (percentile > 80) return '高估';
-  return '合理';
+function getFlowClass(flow: number): string {
+  if (flow > 5) return 'bg-red-50 text-red-600';
+  if (flow < -5) return 'bg-emerald-50 text-emerald-700';
+  return 'bg-amber-50 text-amber-700';
 }
 
 export default function ValuationHeatmap({ data, loading }: Props) {
   return (
     <div className="rounded-lg border border-sand bg-ivory p-5">
-      <h3 className="text-sm font-serif font-medium text-deep mb-3">估值水位</h3>
+      <h3 className="text-sm font-serif font-medium text-deep mb-3">行业板块</h3>
       {loading ? (
         <div className="h-64 animate-pulse bg-sand/20 rounded" />
       ) : data.length === 0 ? (
@@ -32,50 +34,61 @@ export default function ValuationHeatmap({ data, loading }: Props) {
             <thead>
               <tr className="border-b border-sand/60 text-left text-stone">
                 <th className="py-2 pr-4 font-normal">行业</th>
-                <th className="py-2 pr-4 font-normal text-right">当前 PE</th>
-                <th className="py-2 pr-4 font-normal text-right">PE 分位</th>
-                <th className="py-2 pr-4 font-normal text-right">当前 PB</th>
-                <th className="py-2 pr-4 font-normal text-right">PB 分位</th>
-                <th className="py-2 font-normal text-right">判断</th>
+                <th className="py-2 pr-4 font-normal text-right">涨跌幅</th>
+                <th className="py-2 pr-4 font-normal text-right">净流入(亿)</th>
+                <th className="py-2 pr-4 font-normal text-right">上涨</th>
+                <th className="py-2 pr-4 font-normal text-right">下跌</th>
+                <th className="py-2 pr-4 font-normal">领涨股</th>
               </tr>
             </thead>
             <tbody>
               {data
-                .sort((a, b) => a.pePercentile - b.pePercentile)
+                .sort((a, b) => b.changePercent - a.changePercent)
                 .map((item) => (
                   <tr
                     key={item.sector}
                     className="border-b border-sand/30 hover:bg-parchment/50 transition-colors"
                   >
                     <td className="py-2 pr-4 text-deep font-medium">{item.sector}</td>
-                    <td className="py-2 pr-4 text-right tabular-nums">
-                      {item.currentPE > 0 ? item.currentPE.toFixed(1) : '-'}
+                    <td
+                      className={cn(
+                        'py-2 pr-4 text-right tabular-nums',
+                        getChangeClass(item.changePercent),
+                      )}
+                    >
+                      {item.changePercent > 0 ? '+' : ''}
+                      {item.changePercent.toFixed(2)}%
                     </td>
                     <td className="py-2 pr-4 text-right tabular-nums">
                       <span
                         className={cn(
                           'inline-block px-1.5 py-0.5 rounded text-[10px] font-medium',
-                          getColorClass(item.pePercentile),
+                          getFlowClass(item.netInflow),
                         )}
                       >
-                        {item.pePercentile.toFixed(0)}%
+                        {item.netInflow > 0 ? '+' : ''}
+                        {item.netInflow.toFixed(1)}
                       </span>
                     </td>
-                    <td className="py-2 pr-4 text-right tabular-nums">
-                      {item.currentPB > 0 ? item.currentPB.toFixed(2) : '-'}
+                    <td className="py-2 pr-4 text-right tabular-nums text-red-500">
+                      {item.upCount}
                     </td>
-                    <td className="py-2 pr-4 text-right tabular-nums">
-                      {item.pbPercentile.toFixed(0)}%
+                    <td className="py-2 pr-4 text-right tabular-nums text-emerald-600">
+                      {item.downCount}
                     </td>
-                    <td className="py-2 text-right">
-                      <span
-                        className={cn(
-                          'inline-block px-1.5 py-0.5 rounded text-[10px] font-medium',
-                          getColorClass(item.pePercentile),
-                        )}
-                      >
-                        {getLabel(item.pePercentile)}
-                      </span>
+                    <td className="py-2 pr-4">
+                      {item.leadingStock}
+                      {item.leadingStockChange !== 0 && (
+                        <span
+                          className={cn(
+                            'ml-1.5 text-[10px]',
+                            item.leadingStockChange > 0 ? 'text-red-500' : 'text-emerald-600',
+                          )}
+                        >
+                          {item.leadingStockChange > 0 ? '+' : ''}
+                          {item.leadingStockChange.toFixed(1)}%
+                        </span>
+                      )}
                     </td>
                   </tr>
                 ))}

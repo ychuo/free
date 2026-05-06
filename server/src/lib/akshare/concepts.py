@@ -3,29 +3,20 @@ import json
 import os
 
 os.environ['TQDM_DISABLE'] = '1'
-
 import akshare as ak
-
-def fund_flow_direction(change: float) -> str:
-    if change > 0:
-        return "inflow"
-    if change < 0:
-        return "outflow"
-    return "neutral"
 
 def main():
     try:
-        df = ak.stock_board_concept_name_em()
+        df = ak.stock_board_concept_summary_ths()
         result = []
         for _, row in df.iterrows():
-            change = float(row.get("涨跌幅", 0) or 0)
             result.append({
-                "name": str(row.get("板块名称", "")),
-                "changePercent": change,
-                "leadingStock": str(row.get("领涨股票", "")),
-                "leadingStockChange": float(row.get("领涨股票-涨跌幅", 0) or 0),
-                "turnover": float(row.get("换手率", 0) or 0),
-                "fundFlowDirection": fund_flow_direction(change),
+                "name": str(row.get("概念名称", "")),
+                "changePercent": 0.0,  # not available in summary
+                "leadingStock": str(row.get("龙头股", "--") or ""),
+                "leadingStockChange": 0.0,
+                "turnover": float(row.get("成分股数量", 0) or 0),
+                "fundFlowDirection": "neutral",
             })
         print(json.dumps(result, ensure_ascii=False))
     except Exception as e:

@@ -7,6 +7,10 @@ export class MarketDataService {
 
   async refreshValuation(): Promise<{ count: number }> {
     const data = await aStockMarketAdapter.fetchValuation();
+    // Clear old valuation data before inserting new
+    await prisma.marketIndicator.deleteMany({
+      where: { market: 'A_STOCK', indicatorType: 'valuation' },
+    });
     for (const item of data) {
       await prisma.marketIndicator.upsert({
         where: {
@@ -33,6 +37,9 @@ export class MarketDataService {
 
   async refreshConcepts(): Promise<{ count: number }> {
     const data = await aStockMarketAdapter.fetchConcepts();
+    await prisma.marketIndicator.deleteMany({
+      where: { market: 'A_STOCK', indicatorType: 'concept' },
+    });
     for (const item of data) {
       await prisma.marketIndicator.upsert({
         where: {
