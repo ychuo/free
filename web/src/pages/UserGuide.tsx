@@ -218,7 +218,181 @@ export default function UserGuide() {
         </p>
       </Section>
 
-      <Section title="数据导入导出" icon="9">
+      <Section title="市场脉搏" icon="9">
+        <p>「脉搏」页面展示当前市场状态，包含三个模块：</p>
+
+        <h4 className="text-[13px] font-medium text-deep mt-3 mb-1">行业板块</h4>
+        <p>展示 A 股 90 个行业的实时数据，按涨跌幅排序：</p>
+        <ul className="list-disc list-outside ml-4 space-y-1 text-[13px] mt-1">
+          <li>
+            <strong>涨跌幅</strong>：行业板块当日涨跌百分比
+          </li>
+          <li>
+            <strong>净流入</strong>：主力资金净流入金额（亿元），正数=流入，负数=流出
+          </li>
+          <li>
+            <strong>上涨/下跌家数</strong>：该行业成分股涨跌统计
+          </li>
+          <li>
+            <strong>领涨股</strong>：当日涨幅最大的成分股及涨幅
+          </li>
+        </ul>
+        <p className="mt-1.5 text-[12px] text-stone/70">
+          数据来源：同花顺，每小时自动刷新，也可点击右上角手动刷新。
+        </p>
+
+        <h4 className="text-[13px] font-medium text-deep mt-3 mb-1">市场热点</h4>
+        <p>展示近期市场关注的概念主题，以卡片形式呈现：</p>
+        <ul className="list-disc list-outside ml-4 space-y-1 text-[13px] mt-1">
+          <li>
+            <strong>概念名称</strong>：当前热门概念或主题
+          </li>
+          <li>
+            <strong>驱动事件</strong>：触发该概念升温的具体原因（如政策发布、行业催化）
+          </li>
+          <li>
+            <strong>龙头股</strong>：该概念中市场关注度最高的代表性标的
+          </li>
+          <li>
+            <strong>成分股数量</strong>：该概念包含的股票数量
+          </li>
+        </ul>
+        <p className="mt-1.5 text-[12px] text-stone/70">
+          注意：概念板块没有实时涨跌幅数据（需东方财富接口，当前不可用），驱动事件来自同花顺。
+        </p>
+
+        <h4 className="text-[13px] font-medium text-deep mt-3 mb-1">资金流向</h4>
+        <p>展示全市场资金流向拆解：</p>
+        <ul className="list-disc list-outside ml-4 space-y-1 text-[13px] mt-1">
+          <li>
+            <strong>北向资金</strong>：沪/深港通外资日度和周度净流入（数据可能为 0，偶有延迟）
+          </li>
+          <li>
+            <strong>主力资金</strong>：超大单、大单、中单、小单的净流入拆解
+          </li>
+          <li>
+            <strong>指数行情</strong>：上证指数和深证成指的当前点位和涨跌幅
+          </li>
+        </ul>
+      </Section>
+
+      <Section title="信号发现与复盘" icon="10">
+        <p>「信号」页面是系统的核心决策辅助功能，分为两个视图：</p>
+
+        <h4 className="text-[13px] font-medium text-deep mt-3 mb-1">价值发现（ValueScore）</h4>
+        <p>基于已有市场数据，对每个行业进行四因子加权评分（0-100 分）：</p>
+        <div className="mt-2 overflow-x-auto">
+          <table className="w-full text-[12px] border-collapse">
+            <thead>
+              <tr className="border-b border-sand/60 text-left text-stone">
+                <th className="py-1 pr-4 font-normal">因子</th>
+                <th className="py-1 pr-4 font-normal">权重</th>
+                <th className="py-1 pr-4 font-normal">计算方法</th>
+                <th className="py-1 font-normal">局限性</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="border-b border-sand/30">
+                <td className="py-1 pr-4 font-medium">估值安全边际</td>
+                <td className="py-1 pr-4">35%</td>
+                <td className="py-1 pr-4 text-[11px]">50 - 涨跌幅 × 5</td>
+                <td className="py-1 text-[11px] text-stone/70">
+                  用涨跌幅代替 PE 分位，跌了不等于低估
+                </td>
+              </tr>
+              <tr className="border-b border-sand/30">
+                <td className="py-1 pr-4 font-medium">生意质量</td>
+                <td className="py-1 pr-4">30%</td>
+                <td className="py-1 pr-4 text-[11px]">上涨家数占比 × 100</td>
+                <td className="py-1 text-[11px] text-stone/70">
+                  用涨跌比代替 ROE，全涨不等于生意好
+                </td>
+              </tr>
+              <tr className="border-b border-sand/30">
+                <td className="py-1 pr-4 font-medium">护城河信号</td>
+                <td className="py-1 pr-4">20%</td>
+                <td className="py-1 pr-4 text-[11px]">50 + 净流入 × 2</td>
+                <td className="py-1 text-[11px] text-stone/70">用资金流代替护城河</td>
+              </tr>
+              <tr>
+                <td className="py-1 pr-4 font-medium">催化剂</td>
+                <td className="py-1 pr-4">15%</td>
+                <td className="py-1 pr-4 text-[11px]">|涨跌幅| × 10 + 40</td>
+                <td className="py-1 text-[11px] text-stone/70">波动大不等于有催化剂</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4 className="text-[13px] font-medium text-deep mt-3 mb-1">热点信号（HotScore）</h4>
+        <p>对概念板块进行四因子评分（0-100 分）：</p>
+        <div className="mt-2 overflow-x-auto">
+          <table className="w-full text-[12px] border-collapse">
+            <thead>
+              <tr className="border-b border-sand/60 text-left text-stone">
+                <th className="py-1 pr-4 font-normal">因子</th>
+                <th className="py-1 pr-4 font-normal">权重</th>
+                <th className="py-1 pr-4 font-normal">计算方法</th>
+                <th className="py-1 font-normal">局限性</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="border-b border-sand/30">
+                <td className="py-1 pr-4 font-medium">概念热度</td>
+                <td className="py-1 pr-4">30%</td>
+                <td className="py-1 pr-4 text-[11px]">成分股数量 × 0.2 + 有驱动事件 +30</td>
+                <td className="py-1 text-[11px] text-stone/70">大板块天然得分高</td>
+              </tr>
+              <tr className="border-b border-sand/30">
+                <td className="py-1 pr-4 font-medium">资金信号</td>
+                <td className="py-1 pr-4">30%</td>
+                <td className="py-1 pr-4 text-[11px]">固定 50</td>
+                <td className="py-1 text-[11px] text-stone/70">概念板块暂无实时资金数据</td>
+              </tr>
+              <tr className="border-b border-sand/30">
+                <td className="py-1 pr-4 font-medium">趋势强度</td>
+                <td className="py-1 pr-4">20%</td>
+                <td className="py-1 pr-4 text-[11px]">固定 50</td>
+                <td className="py-1 text-[11px] text-stone/70">同上</td>
+              </tr>
+              <tr>
+                <td className="py-1 pr-4 font-medium">情绪信号</td>
+                <td className="py-1 pr-4">20%</td>
+                <td className="py-1 pr-4 text-[11px]">有驱动事件 60 / 无 40</td>
+                <td className="py-1 text-[11px] text-stone/70">过于简化</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h4 className="text-[13px] font-medium text-deep mt-3 mb-1">如何使用信号</h4>
+        <ul className="list-disc list-outside ml-4 space-y-1 text-[13px] mt-1">
+          <li>
+            点击信号卡片展开：查看<strong>因子拆解</strong>，了解每个因子的得分和贡献度
+          </li>
+          <li>
+            在每个信号下方记录你的<strong>判断</strong>（跟进/忽略/观望 + 笔记），积累决策经验
+          </li>
+          <li>
+            到「信号」→「信号复盘」查看<strong>历史记录</strong>：对比信号触发时和当前的变化，
+            回顾自己的判断，建立模式识别能力
+          </li>
+          <li>
+            仓位建议卡片会根据市场整体涨跌动态调整建议比例：
+            市场偏热时建议提高核心仓，偏弱时建议关注低估机会
+          </li>
+        </ul>
+
+        <h4 className="text-[13px] font-medium text-deep mt-3 mb-1">重要提醒</h4>
+        <p className="text-[12px] text-stone/70">
+          当前评分使用的是代理指标而非真实基本面数据（PE、PB、ROE 等），
+          信号仅供参考，不能替代独立判断。系统没有历史回测数据，
+          不支持"这个信号历史上准确率多少"的查询。 随着 v4
+          引入更完整的基本面数据后，评分准确度会逐步提高。
+        </p>
+      </Section>
+
+      <Section title="数据导入导出" icon="11">
         <p>
           概览页的「导出」按钮将全部数据（资产/负债/FIRE 设定/配置目标）导出为 JSON 文件。
           「导入」可将之前导出的数据恢复。建议定期导出备份。
