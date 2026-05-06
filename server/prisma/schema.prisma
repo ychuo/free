@@ -15,6 +15,7 @@ model Asset {
   tickerSymbol  String?
   exchangeCode  String?
   priceSource   String   @default("MANUAL")
+  track         String   @default("unclassified")
   quantity      Float
   unitPrice     Float
   totalValue    Float
@@ -129,4 +130,17 @@ model RebalanceAlert {
   enabled   Boolean @default(true)
 
   @@id([userId, category])
+}
+
+model StrategyTemplate {
+  id          String   @id @default(uuid())
+  name        String
+  type        String
+  description String
+  suitableFor String
+  indicators  Json
+  allocation  Json
+  examples    Json?
+  riskLevel   String
+  createdAt   DateTime @default(now())
 }
