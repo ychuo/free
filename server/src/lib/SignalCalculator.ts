@@ -96,8 +96,8 @@ export class SignalCalculator {
   }
 
   async computeAll(): Promise<{ valueCount: number; momentumCount: number }> {
-    const cutoff = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-    await prisma.signalRecord.deleteMany({ where: { triggeredAt: { lt: cutoff } } });
+    // Clear all existing records before recomputing (idempotent refresh)
+    await prisma.signalRecord.deleteMany({});
 
     let valueCount = 0;
     let momentumCount = 0;
