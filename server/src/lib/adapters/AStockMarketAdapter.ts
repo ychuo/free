@@ -4,27 +4,39 @@ import type { ConceptItem, FundFlowData, ValuationItem } from '@free/shared';
 
 const SCRIPTS_DIR = join(import.meta.dirname, '..', 'akshare');
 
-function runPython(script: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const proc = spawn('python3.12', [script], {
-      cwd: SCRIPTS_DIR,
-      timeout: 30000,
-    });
-    let stdout = '';
-    let stderr = '';
+async function runPython(script: string, retries = 2): Promise<string> {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const result = await new Promise<string>((resolve, reject) => {
+        const proc = spawn('python3.12', [script], {
+          cwd: SCRIPTS_DIR,
+          timeout: 30000,
+        });
+        let stdout = '';
+        let stderr = '';
 
-    proc.stdout.on('data', (chunk: Buffer) => {
-      stdout += chunk.toString();
-    });
-    proc.stderr.on('data', (chunk: Buffer) => {
-      stderr += chunk.toString();
-    });
-    proc.on('close', (code: number | null) => {
-      if (code === 0) resolve(stdout.trim());
-      else reject(new Error(stderr || `Python exit code ${code}`));
-    });
-    proc.on('error', reject);
-  });
+        proc.stdout.on('data', (chunk: Buffer) => {
+          stdout += chunk.toString();
+        });
+        proc.stderr.on('data', (chunk: Buffer) => {
+          stderr += chunk.toString();
+        });
+        proc.on('close', (code: number | null) => {
+          if (code === 0) resolve(stdout.trim());
+          else reject(new Error(stderr || `Python exit code ${code}`));
+        });
+        proc.on('error', reject);
+      });
+      // Validate JSON before returning
+      JSON.parse(result);
+      return result;
+    } catch (e) {
+      if (attempt === retries) throw e;
+      // Wait before retry: 1s, then 3s
+      await new Promise((r) => setTimeout(r, 1000 * (attempt + 1)));
+    }
+  }
+  throw new Error('unreachable');
 }
 
 export class AStockMarketAdapter {
