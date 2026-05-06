@@ -60,7 +60,7 @@ export class SignalCalculator {
       { score: catalystScore, detail: catalystDetail },
     ];
 
-    return this.assembleResult(inputs, VALUE_WEIGHTS, 'value');
+    return this.assembleResult(inputs, VALUE_WEIGHTS);
   }
 
   async computeHotScore(conceptName: string): Promise<ScoreResult | null> {
@@ -92,7 +92,7 @@ export class SignalCalculator {
       { score: sentimentScore, detail: sentimentDetail },
     ];
 
-    return this.assembleResult(inputs, MOMENTUM_WEIGHTS, 'momentum');
+    return this.assembleResult(inputs, MOMENTUM_WEIGHTS);
   }
 
   async computeAll(): Promise<{ valueCount: number; momentumCount: number }> {
@@ -156,7 +156,6 @@ export class SignalCalculator {
   private assembleResult(
     inputs: FactorInput[],
     weights: Array<{ name: string; label: string; weight: number }>,
-    track: string,
   ): ScoreResult {
     let totalScore = 0;
     const factorDetails: FactorBreakdown[] = [];
@@ -181,20 +180,11 @@ export class SignalCalculator {
     if (totalScore > 75) stage = 'early';
     else if (totalScore < 60) stage = 'late';
 
-    const backtest =
-      track === 'value'
-        ? {
-            threeMonthProb: totalScore > 70 ? 68 : totalScore > 60 ? 55 : 45,
-            threeMonthMedian: totalScore > 70 ? 8.2 : totalScore > 60 ? 3.5 : 0.5,
-            sampleSize: 120,
-          }
-        : null;
-
     return {
       score: Math.round(totalScore * 10) / 10,
       stage,
       factors: factorDetails,
-      backtest,
+      backtest: null,
     };
   }
 }
