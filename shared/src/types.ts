@@ -443,3 +443,55 @@ export interface StrategyTemplate {
   examples: string[] | null;
   riskLevel: 'low' | 'medium' | 'high';
 }
+
+// === v3: Market Data ===
+
+export interface ValuationItem {
+  sector: string;
+  currentPE: number;
+  pePercentile: number;
+  currentPB: number;
+  pbPercentile: number;
+  sampleCount: number;
+  updatedAt: string;
+}
+
+export interface ConceptItem {
+  name: string;
+  changePercent: number;
+  leadingStock: string;
+  leadingStockChange: number;
+  turnover: number;
+  fundFlowDirection: 'inflow' | 'outflow' | 'neutral';
+}
+
+export interface FundFlowData {
+  northBound: {
+    daily: number;
+    weekly: number;
+  };
+  sectorFlow: Array<{
+    sector: string;
+    netInflow: number;
+    direction: 'inflow' | 'outflow';
+  }>;
+}
+
+export interface MarketIndicator {
+  id: string;
+  market: string;
+  indicatorType: 'valuation' | 'concept' | 'fund_flow';
+  category: string;
+  data: unknown;
+  fetchedAt: string;
+}
+
+export interface PortfolioAlert {
+  assetName: string;
+  assetTrack: string;
+  sector: string;
+  currentPE: number;
+  pePercentile: number;
+  alertType: 'undervalued' | 'overvalued';
+  message: string;
+}
