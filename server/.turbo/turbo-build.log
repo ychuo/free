@@ -1,16 +1,11 @@
 $ bun build src/index.ts --outdir dist
-1 | const prisma = require('.prisma/client/index-browser')
-                           ^
-error: Could not resolve: ".prisma/client/index-browser". Maybe you need to "bun install"?
-    at /Users/chao/workspace/free/.worktrees/v2-intelligence/node_modules/.bun/@prisma+client@7.8.0+04c7774342d37870/node_modules/@prisma/client/index-browser.js:1:24
-
 27 |     const tls = require('tls')
                              ^
 error: Browser build cannot require() Node.js builtin: "tls". To use Node.js builtins, set target to 'node' or 'bun'
-    at /Users/chao/workspace/free/.worktrees/v2-intelligence/node_modules/.bun/pg@8.20.0+52bd52a0bccfa6a2/node_modules/pg/lib/stream.js:27:25
+    at /Users/chao/workspace/free/node_modules/.bun/pg@8.20.0+52bd52a0bccfa6a2/node_modules/pg/lib/stream.js:27:25
 
 3 | const dns = require('dns')
                         ^
 error: Browser build cannot require() Node.js builtin: "dns". To use Node.js builtins, set target to 'node' or 'bun'
-    at /Users/chao/workspace/free/.worktrees/v2-intelligence/node_modules/.bun/pg@8.20.0+52bd52a0bccfa6a2/node_modules/pg/lib/connection-parameters.js:3:21
+    at /Users/chao/workspace/free/node_modules/.bun/pg@8.20.0+52bd52a0bccfa6a2/node_modules/pg/lib/connection-parameters.js:3:21
 error: script "build" exited with code 1
