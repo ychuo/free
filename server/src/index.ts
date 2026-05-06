@@ -8,6 +8,7 @@ import { UStockAdapter } from './lib/adapters/UStockAdapter';
 import { exchangeRateService } from './lib/ExchangeRateService';
 import { marketDataService } from './lib/MarketDataService';
 import { priceService } from './lib/PriceService';
+import { signalCalculator } from './lib/SignalCalculator';
 
 priceService.register(new AStockAdapter());
 priceService.register(new HStockAdapter());
@@ -24,6 +25,19 @@ try {
   priceService.startScheduler();
   exchangeRateService.startScheduler();
   marketDataService.startScheduler();
+
+  // Signal computation: every 2 hours, offset from market data refresh
+  const signalInterval = setInterval(() => {
+    signalCalculator.computeAll().catch((e) =>
+      console.error('[SignalCalculator] Compute error:', e),
+    );
+  }, 2 * 60 * 60 * 1000);
+  // Initial computation after 30s (wait for market data to load)
+  setTimeout(() => {
+    signalCalculator.computeAll().catch((e) =>
+      console.error('[SignalCalculator] Initial compute error:', e),
+    );
+  }, 30000);
 } catch (err) {
   app.log.error(err);
   process.exit(1);
