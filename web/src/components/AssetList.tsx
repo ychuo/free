@@ -1,11 +1,12 @@
 import { Pencil, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import type { Asset, CreateAssetInput, MarketPrice } from '../types';
-import { type AssetCategory, CATEGORY_LABELS } from '../types';
+import { type AssetCategory, CATEGORY_LABELS, type TrackType, TRACK_LABELS } from '../types';
 import AssetForm from './AssetForm';
 import ConfirmDialog from './ConfirmDialog';
 import Modal from './Modal';
 import { PriceBadge } from './PriceBadge';
+import TrackBadge from './TrackBadge';
 import { Button } from './ui/button';
 
 interface Props {
@@ -23,8 +24,9 @@ export default function AssetList({ assets, prices, onCreate, onUpdate, onDelete
 
   const grouped: Record<string, Asset[]> = {};
   for (const a of assets) {
-    if (!grouped[a.category]) grouped[a.category] = [];
-    grouped[a.category].push(a);
+    const key = a.track || 'unclassified';
+    if (!grouped[key]) grouped[key] = [];
+    grouped[key].push(a);
   }
 
   return (
@@ -49,7 +51,7 @@ export default function AssetList({ assets, prices, onCreate, onUpdate, onDelete
           {Object.entries(grouped).map(([cat, items]) => (
             <div key={cat}>
               <h4 className="text-[11px] font-medium text-stone mb-1.5 px-0.5">
-                {CATEGORY_LABELS[cat as AssetCategory] || cat}
+                {TRACK_LABELS[key as TrackType] || key}
                 <span className="ml-1.5 text-stone/60">{items.length}</span>
               </h4>
               <div className="space-y-1">
@@ -61,6 +63,7 @@ export default function AssetList({ assets, prices, onCreate, onUpdate, onDelete
                     <div className="min-w-0 flex-1">
                       <p className="text-[13px] text-deep truncate">
                         {a.name}
+                        <TrackBadge track={a.track} className="ml-1.5 align-middle" />
                         {a.subType && (
                           <span className="ml-1.5 inline-block px-1 py-px rounded border border-sand bg-ivory text-[10px] text-stone align-middle">
                             {a.subType}
