@@ -23,6 +23,18 @@ export enum PriceSource {
   AUTO = 'AUTO',
 }
 
+export enum TrackType {
+  VALUE = 'value',
+  MOMENTUM = 'momentum',
+  UNCLASSIFIED = 'unclassified',
+}
+
+export const TRACK_LABELS: Record<TrackType, string> = {
+  [TrackType.VALUE]: '价值仓',
+  [TrackType.MOMENTUM]: '卫星仓',
+  [TrackType.UNCLASSIFIED]: '未分类',
+};
+
 export const EXCHANGE_CODES = ['SH', 'SZ', 'HKEX', 'NYSE', 'NASDAQ', 'FUND', 'CRYPTO'] as const;
 export type ExchangeCode = (typeof EXCHANGE_CODES)[number];
 
@@ -34,6 +46,7 @@ export interface Asset {
   tickerSymbol: string | null;
   exchangeCode: string | null;
   priceSource: PriceSource;
+  track: TrackType;
   quantity: number;
   unitPrice: number;
   totalValue: number;
@@ -54,6 +67,7 @@ export interface CreateAssetInput {
   subType?: string;
   tickerSymbol?: string;
   exchangeCode?: string;
+  track?: TrackType;
   quantity: number;
   unitPrice: number;
   currency?: string;
@@ -169,6 +183,7 @@ export const ASSET_SCHEMA = {
     tickerSymbol: { type: 'string' },
     exchangeCode: { type: 'string' },
     priceSource: { type: 'string' },
+    track: { type: 'string', enum: Object.values(TrackType) },
     quantity: { type: 'number' },
     unitPrice: { type: 'number' },
     currency: { type: 'string' },
@@ -415,3 +430,15 @@ export const REBALANCE_ALERTS_SCHEMA = {
   },
   additionalProperties: false,
 } as const;
+
+export interface StrategyTemplate {
+  id: string;
+  name: string;
+  type: 'value' | 'momentum';
+  description: string;
+  suitableFor: string;
+  indicators: string[];
+  allocation: Record<string, number>;
+  examples: string[] | null;
+  riskLevel: 'low' | 'medium' | 'high';
+}
