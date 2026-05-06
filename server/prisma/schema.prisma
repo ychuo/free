@@ -156,3 +156,36 @@ model MarketIndicator {
   @@unique([market, indicatorType, category])
   @@index([fetchedAt])
 }
+
+model SignalRecord {
+  id          String   @id @default(uuid())
+  market      String   @default("A_STOCK")
+  track       String
+  targetCode  String
+  targetName  String
+  score       Float
+  factors     Json
+  stage       String   @default("mid")
+  backtest    Json?
+  triggeredAt DateTime @default(now())
+
+  journals    SignalJournal[]
+
+  @@index([market, track])
+  @@index([triggeredAt])
+}
+
+model SignalJournal {
+  id        String   @id @default(uuid())
+  userId    String   @default("default")
+  signalId  String
+  signal    SignalRecord @relation(fields: [signalId], references: [id], onDelete: Cascade)
+  note      String   @default("")
+  action    String   @default("watched")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([signalId])
+  @@unique([userId, signalId])
+}
