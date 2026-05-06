@@ -237,6 +237,7 @@ export interface ExportData {
     name: string;
     category: string;
     subType?: string;
+    track?: string;
     quantity: number;
     unitPrice: number;
     currency: string;
