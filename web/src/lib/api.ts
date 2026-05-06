@@ -2,13 +2,16 @@ import type {
   AllocationAnalysis,
   AllocationTarget,
   Asset,
+  ConceptItem,
   CreateTransactionInput,
   ExchangeRate,
   FireProfile,
   FireProgress,
+  FundFlowData,
   Liability,
   MarketPrice,
   NetWorthSummary,
+  PortfolioAlert,
   RebalanceAlertStatus,
   ReturnAnalysis,
   Snapshot,
@@ -16,6 +19,7 @@ import type {
   Transaction,
   UpdateRebalanceAlertsInput,
   UpdateTransactionInput,
+  ValuationItem,
 } from '../types';
 
 const BASE = '/api';
@@ -140,5 +144,12 @@ export const api = {
     list: (type?: string) =>
       request<StrategyTemplate[]>(`/strategies${type ? `?type=${type}` : ''}`),
     get: (id: string) => request<StrategyTemplate>(`/strategies/${id}`),
+  },
+  marketData: {
+    valuation: () => request<ValuationItem[]>('/market-data/valuation'),
+    concepts: () => request<ConceptItem[]>('/market-data/concepts'),
+    fundFlow: () => request<FundFlowData | null>('/market-data/fund-flow'),
+    portfolioAlerts: () => request<PortfolioAlert[]>('/market-data/portfolio-alerts'),
+    refresh: () => request<{ valuation: number; concepts: number }>('/market-data/refresh', { method: 'POST' }),
   },
 };
