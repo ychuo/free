@@ -27,6 +27,9 @@ export default function UserGuide() {
           <li>
             到「<strong>收益</strong>」查看组合收益率、TWR 和各资产贡献度
           </li>
+          <li>
+            到「<strong>策略</strong>」选择投资策略模板，一键导入配置比例
+          </li>
         </ul>
       </Section>
 
@@ -36,6 +39,10 @@ export default function UserGuide() {
           在概览页点「新增」，填写名称、类别（现金/固收/权益/不动产/数字货币/贵金属/其他）、数量、单价即可。系统自动计算市值。
         </p>
         <p className="mt-1.5">
+          <strong>仓位轨道</strong>
+          ：每项资产可标记为"价值仓"（长期持有核心仓位）或"卫星仓"（短期交易机会）。概览页的仓位分配卡片会展示两条轨道的占比，对比目标比例
+          75/25。
+          <br />
           <strong>子类型</strong>：可选填 A股/港股/美股/基金等，用于更细粒度的分类。
           <br />
           <strong>被动收入</strong>：该资产每年产生的股息、租金、利息等，用于 FIRE 覆盖度计算。
@@ -176,7 +183,42 @@ export default function UserGuide() {
         </ul>
       </Section>
 
-      <Section title="数据导入导出" icon="8">
+      <Section title="策略探索与仓位轨道" icon="8">
+        <h4 className="text-[13px] font-medium text-deep mb-1">策略模板</h4>
+        <p>在「策略」页面浏览预置的投资策略模板。分为两类：</p>
+        <ul className="list-disc list-outside ml-4 space-y-1 text-[13px] mt-1">
+          <li>
+            <strong>价值轨道</strong>（深度价值 / GARP / 红利增长 /
+            质量护城河）：长期复利，以估值+质量+护城河为核心
+          </li>
+          <li>
+            <strong>动量轨道</strong>（事件驱动 / 板块轮动 /
+            趋势跟踪）：短期超额，以量价+资金+热度为信号
+          </li>
+        </ul>
+        <p className="mt-1.5">
+          点击任一策略卡片展开详情，查看核心理念、适合人群、关键指标和 A 股示例标的。
+          点击「导入此配置」可将该策略的建议配置比例一键写入「配置」页的目标配置，
+          导入后自动跳转到配置页查看偏离度。
+        </p>
+
+        <h4 className="text-[13px] font-medium text-deep mt-3 mb-1">仓位轨道</h4>
+        <p>每项资产在新增/编辑时可标记所属轨道。概览页的仓位分配卡片实时展示两条轨道的占比：</p>
+        <ul className="list-disc list-outside ml-4 space-y-1 text-[13px] mt-1">
+          <li>
+            <strong>价值仓</strong>（目标 75%）：长期持有的核心仓位，追求复利和安全边际
+          </li>
+          <li>
+            <strong>卫星仓</strong>（目标 25%）：短期交易机会仓位，捕捉热点和趋势
+          </li>
+        </ul>
+        <p className="mt-1.5">
+          资产列表按轨道分组显示，每条资产名称旁标注轨道标签。未分类资产超过 5% 时系统会提示标注。
+          随着市场环境和投资经验变化，你可以逐步调整两条轨道的比例。
+        </p>
+      </Section>
+
+      <Section title="数据导入导出" icon="9">
         <p>
           概览页的「导出」按钮将全部数据（资产/负债/FIRE 设定/配置目标）导出为 JSON 文件。
           「导入」可将之前导出的数据恢复。建议定期导出备份。
