@@ -12,6 +12,7 @@ import type {
   RebalanceAlertStatus,
   ReturnAnalysis,
   Snapshot,
+  StrategyTemplate,
   Transaction,
   UpdateRebalanceAlertsInput,
   UpdateTransactionInput,
@@ -134,5 +135,11 @@ export const api = {
         method: 'PUT',
         body: JSON.stringify(data),
       }),
+  },
+  strategies: {
+    list: (type?: string) =>
+      request<StrategyTemplate[]>(`/strategies${type ? `?type=${type}` : ''}`),
+    get: (id: string) =>
+      request<StrategyTemplate>(`/strategies/${id}`),
   },
 };
