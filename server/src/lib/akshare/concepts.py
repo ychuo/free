@@ -12,11 +12,9 @@ def main():
         for _, row in df.iterrows():
             result.append({
                 "name": str(row.get("概念名称", "")),
-                "changePercent": 0.0,  # not available in summary
-                "leadingStock": str(row.get("龙头股", "--") or ""),
-                "leadingStockChange": 0.0,
-                "turnover": float(row.get("成分股数量", 0) or 0),
-                "fundFlowDirection": "neutral",
+                "driverEvent": str(row.get("驱动事件", "")),
+                "leadingStock": str(row.get("龙头股", "") or ""),
+                "stockCount": int(row.get("成分股数量", 0) or 0),
             })
         print(json.dumps(result, ensure_ascii=False))
     except Exception as e:

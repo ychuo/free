@@ -459,11 +459,9 @@ export interface ValuationItem {
 
 export interface ConceptItem {
   name: string;
-  changePercent: number;
+  driverEvent: string;
   leadingStock: string;
-  leadingStockChange: number;
-  turnover: number;
-  fundFlowDirection: 'inflow' | 'outflow' | 'neutral';
+  stockCount: number;
 }
 
 export interface FundFlowData {

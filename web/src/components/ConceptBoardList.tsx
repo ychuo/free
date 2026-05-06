@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import type { ConceptItem } from '../types';
 
 interface Props {
@@ -7,71 +6,36 @@ interface Props {
 }
 
 export default function ConceptBoardList({ data, loading }: Props) {
-  const [fundamentalOnly, setFundamentalOnly] = useState(false);
-  const sorted = [...data].sort((a, b) => b.changePercent - a.changePercent);
-
   return (
     <div className="rounded-lg border border-sand bg-ivory p-5">
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-serif font-medium text-deep">概念板块</h3>
-        <label className="flex items-center gap-1.5 text-[11px] text-stone cursor-pointer select-none">
-          <input
-            type="checkbox"
-            checked={fundamentalOnly}
-            onChange={(e) => setFundamentalOnly(e.target.checked)}
-            className="w-3 h-3 rounded border-sand accent-brand"
-          />
-          只看基本面支撑
-        </label>
-      </div>
+      <h3 className="text-sm font-serif font-medium text-deep mb-3">市场热点</h3>
       {loading ? (
         <div className="h-64 animate-pulse bg-sand/20 rounded" />
-      ) : sorted.length === 0 ? (
+      ) : data.length === 0 ? (
         <p className="text-center text-stone text-[12px] py-8">暂无数据</p>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-[12px]">
-            <thead>
-              <tr className="border-b border-sand/60 text-left text-stone">
-                <th className="py-2 pr-4 font-normal">概念</th>
-                <th className="py-2 pr-4 font-normal text-right">涨跌幅</th>
-                <th className="py-2 pr-4 font-normal">领涨股</th>
-                <th className="py-2 font-normal text-right">换手率</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sorted.slice(0, 20).map((item) => (
-                <tr
-                  key={item.name}
-                  className="border-b border-sand/30 hover:bg-parchment/50 transition-colors"
-                >
-                  <td className="py-2 pr-4 text-deep font-medium">{item.name}</td>
-                  <td
-                    className={`py-2 pr-4 text-right tabular-nums ${
-                      item.changePercent > 0
-                        ? 'text-red-500'
-                        : item.changePercent < 0
-                          ? 'text-emerald-600'
-                          : 'text-stone'
-                    }`}
-                  >
-                    {item.changePercent > 0 ? '+' : ''}
-                    {item.changePercent.toFixed(2)}%
-                  </td>
-                  <td className="py-2 pr-4">
-                    {item.leadingStock}
-                    <span className="ml-1 text-[10px] text-stone">
-                      {item.leadingStockChange > 0 ? '+' : ''}
-                      {item.leadingStockChange.toFixed(1)}%
-                    </span>
-                  </td>
-                  <td className="py-2 text-right tabular-nums text-stone">
-                    {item.turnover.toFixed(2)}%
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="space-y-2">
+          {data.map((item) => (
+            <div
+              key={item.name}
+              className="rounded border border-sand/60 bg-parchment/50 px-4 py-3 hover:border-sand transition-colors"
+            >
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-[13px] font-medium text-deep">{item.name}</span>
+                {item.leadingStock && item.leadingStock !== '--' && (
+                  <span className="text-[11px] text-stone">
+                    龙头：<span className="text-deep">{item.leadingStock}</span>
+                  </span>
+                )}
+              </div>
+              <p className="text-[11px] text-stone/70 leading-relaxed line-clamp-2">
+                {item.driverEvent}
+              </p>
+              {item.stockCount > 0 && (
+                <p className="text-[10px] text-stone/50 mt-1">{item.stockCount} 只成分股</p>
+              )}
+            </div>
+          ))}
         </div>
       )}
     </div>
