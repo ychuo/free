@@ -1,5 +1,5 @@
-import type { ConceptItem } from '../types';
 import { useState } from 'react';
+import type { ConceptItem } from '../types';
 
 interface Props {
   data: ConceptItem[];
@@ -48,7 +48,11 @@ export default function ConceptBoardList({ data, loading }: Props) {
                   <td className="py-2 pr-4 text-deep font-medium">{item.name}</td>
                   <td
                     className={`py-2 pr-4 text-right tabular-nums ${
-                      item.changePercent > 0 ? 'text-red-500' : item.changePercent < 0 ? 'text-emerald-600' : 'text-stone'
+                      item.changePercent > 0
+                        ? 'text-red-500'
+                        : item.changePercent < 0
+                          ? 'text-emerald-600'
+                          : 'text-stone'
                     }`}
                   >
                     {item.changePercent > 0 ? '+' : ''}

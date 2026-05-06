@@ -1,8 +1,8 @@
 import { RefreshCw } from 'lucide-react';
-import { Button } from '../components/ui/button';
-import ValuationHeatmap from '../components/ValuationHeatmap';
 import ConceptBoardList from '../components/ConceptBoardList';
 import FundFlowOverview from '../components/FundFlowOverview';
+import { Button } from '../components/ui/button';
+import ValuationHeatmap from '../components/ValuationHeatmap';
 import { useMarketData } from '../hooks/useMarketData';
 import { cn } from '../lib/utils';
 
@@ -14,9 +14,7 @@ export default function MarketPulse() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-lg font-serif font-medium tracking-wide text-deep">市场脉搏</h1>
-          <p className="text-[12px] text-stone mt-0.5">
-            行业估值水位、概念板块热度与资金流向
-          </p>
+          <p className="text-[12px] text-stone mt-0.5">行业估值水位、概念板块热度与资金流向</p>
         </div>
         <Button onClick={refresh} variant="outline" size="sm" disabled={refreshing}>
           <RefreshCw className={cn('h-3 w-3 mr-1', refreshing && 'animate-spin')} />
@@ -26,9 +24,9 @@ export default function MarketPulse() {
 
       {alerts.length > 0 && (
         <div className="space-y-2">
-          {alerts.map((a, i) => (
+          {alerts.map((a) => (
             <div
-              key={i}
+              key={`${a.assetName}-${a.alertType}`}
               className={`rounded-lg border px-4 py-3 text-[12px] ${
                 a.alertType === 'undervalued'
                   ? 'border-emerald-200 bg-emerald-50/50 text-emerald-800'

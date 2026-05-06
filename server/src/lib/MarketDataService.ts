@@ -1,6 +1,5 @@
-import type { ConceptItem, FundFlowData, ValuationItem } from '@free/shared';
-import { prisma } from './prisma';
 import { aStockMarketAdapter } from './adapters/AStockMarketAdapter';
+import { prisma } from './prisma';
 
 export class MarketDataService {
   private intervalId: ReturnType<typeof setInterval> | null = null;

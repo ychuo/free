@@ -5,6 +5,7 @@ import { assetRoutes } from './routes/assets';
 import { exchangeRateRoutes } from './routes/exchangeRates';
 import { fireProfileRoutes } from './routes/fireProfile';
 import { liabilityRoutes } from './routes/liabilities';
+import { marketDataRoutes } from './routes/marketData';
 import { netWorthRoutes } from './routes/netWorth';
 import { priceRoutes } from './routes/prices';
 import { rebalanceAlertRoutes } from './routes/rebalanceAlerts';
@@ -30,6 +31,7 @@ export async function createApp() {
   await app.register(returnRoutes, { prefix: '/api/returns' });
   await app.register(rebalanceAlertRoutes, { prefix: '/api/rebalance-alerts' });
   await app.register(strategyRoutes, { prefix: '/api/strategies' });
+  await app.register(marketDataRoutes, { prefix: '/api/market-data' });
 
   return app;
 }

@@ -25,9 +25,7 @@ export default function ValuationHeatmap({ data, loading }: Props) {
       {loading ? (
         <div className="h-64 animate-pulse bg-sand/20 rounded" />
       ) : data.length === 0 ? (
-        <p className="text-center text-stone text-[12px] py-8">
-          暂无数据，点击刷新获取最新估值
-        </p>
+        <p className="text-center text-stone text-[12px] py-8">暂无数据，点击刷新获取最新估值</p>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-[12px]">
