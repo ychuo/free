@@ -506,3 +506,58 @@ export interface PortfolioAlert {
   alertType: 'undervalued' | 'overvalued';
   message: string;
 }
+
+// === v3: Signal Engine ===
+
+export interface FactorBreakdown {
+  name: string;
+  label: string;
+  weight: number;
+  score: number;
+  contribution: number;
+  detail: string;
+}
+
+export interface SignalItem {
+  id: string;
+  market: string;
+  track: 'value' | 'momentum';
+  targetCode: string;
+  targetName: string;
+  score: number;
+  factors: FactorBreakdown[];
+  stage: 'early' | 'mid' | 'late';
+  backtest: {
+    threeMonthProb: number;
+    threeMonthMedian: number;
+    sampleSize: number;
+  } | null;
+  triggeredAt: string;
+}
+
+export interface SignalJournal {
+  id: string;
+  signalId: string;
+  note: string;
+  action: 'followed' | 'ignored' | 'watched';
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SignalHistoryItem {
+  signal: SignalItem;
+  journal: SignalJournal | null;
+  outcome: {
+    currentPrice: number;
+    changePercent: number;
+    daysElapsed: number;
+  } | null;
+}
+
+export interface PortfolioAdvice {
+  currentValueRatio: number;
+  currentMomentumRatio: number;
+  suggestedValueRatio: number;
+  suggestedMomentumRatio: number;
+  note: string;
+}
