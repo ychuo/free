@@ -6,6 +6,8 @@ import {
   type CreateAssetInput,
   DEFAULT_CURRENCY,
   SUPPORTED_CURRENCIES,
+  TrackType,
+  TRACK_LABELS,
 } from '../types';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -53,6 +55,7 @@ export default function AssetForm({ asset, onSave, onClose }: Props) {
   );
   const [tickerSymbol, setTickerSymbol] = useState(asset?.tickerSymbol ?? '');
   const [exchangeCode, setExchangeCode] = useState(asset?.exchangeCode ?? '');
+  const [track, setTrack] = useState<TrackType>(asset?.track || TrackType.UNCLASSIFIED);
 
   const totalValue = (parseFloat(quantity) || 0) * (parseFloat(unitPrice) || 0);
   const supportsMarketData = ['equity', 'crypto', 'fixed_income'].includes(category);
@@ -75,6 +78,7 @@ export default function AssetForm({ asset, onSave, onClose }: Props) {
       subType: subType || undefined,
       tickerSymbol: tickerSymbol || undefined,
       exchangeCode: exchangeCode || undefined,
+      track,
       quantity: parseFloat(quantity),
       unitPrice: parseFloat(unitPrice),
       currency: currency || 'CNY',
@@ -154,6 +158,24 @@ export default function AssetForm({ asset, onSave, onClose }: Props) {
               ))}
             </SelectContent>
           </Select>
+        </div>
+        <div>
+          <label className="block text-[12px] font-medium mb-1 text-stone">仓位轨道</label>
+          <Select value={track} onValueChange={(v) => setTrack(v as TrackType)}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="选择轨道">{TRACK_LABELS[track]}</SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {Object.entries(TRACK_LABELS).map(([value, label]) => (
+                <SelectItem key={value} value={value}>
+                  {label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <p className="text-[10px] text-stone/60 mt-0.5">
+            价值仓：长期持有核心仓位 | 卫星仓：短期交易机会
+          </p>
         </div>
         {SUB_TYPES[category].length > 0 && (
           <div>
