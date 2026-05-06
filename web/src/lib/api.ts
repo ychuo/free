@@ -150,6 +150,7 @@ export const api = {
     concepts: () => request<ConceptItem[]>('/market-data/concepts'),
     fundFlow: () => request<FundFlowData | null>('/market-data/fund-flow'),
     portfolioAlerts: () => request<PortfolioAlert[]>('/market-data/portfolio-alerts'),
-    refresh: () => request<{ valuation: number; concepts: number }>('/market-data/refresh', { method: 'POST' }),
+    refresh: () =>
+      request<{ valuation: number; concepts: number }>('/market-data/refresh', { method: 'POST' }),
   },
 };
