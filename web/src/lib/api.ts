@@ -11,9 +11,13 @@ import type {
   Liability,
   MarketPrice,
   NetWorthSummary,
+  PortfolioAdvice,
   PortfolioAlert,
   RebalanceAlertStatus,
   ReturnAnalysis,
+  SignalHistoryItem,
+  SignalItem,
+  SignalJournal,
   Snapshot,
   StrategyTemplate,
   Transaction,
@@ -152,5 +156,24 @@ export const api = {
     portfolioAlerts: () => request<PortfolioAlert[]>('/market-data/portfolio-alerts'),
     refresh: () =>
       request<{ valuation: number; concepts: number }>('/market-data/refresh', { method: 'POST' }),
+  },
+  signals: {
+    list: (track?: string, stage?: string) => {
+      const params = new URLSearchParams();
+      if (track) params.set('track', track);
+      if (stage) params.set('stage', stage);
+      const qs = params.toString();
+      return request<SignalItem[]>(`/signals${qs ? `?${qs}` : ''}`);
+    },
+    get: (id: string) => request<SignalItem & { journals: SignalJournal[] }>(`/signals/${id}`),
+    history: () => request<SignalHistoryItem[]>('/signals/history/list'),
+    getJournal: (signalId: string) => request<SignalJournal>(`/signals/${signalId}/journal`),
+    updateJournal: (signalId: string, data: { note?: string; action?: string }) =>
+      request<SignalJournal>(`/signals/${signalId}/journal`, {
+        method: 'PUT',
+        body: JSON.stringify(data),
+      }),
+    portfolioAdvice: () => request<PortfolioAdvice>('/signals/portfolio-advice'),
+    refresh: () => request<{ valueCount: number; momentumCount: number }>('/signals/refresh', { method: 'POST' }),
   },
 };
