@@ -7,6 +7,7 @@ import ConfirmDialog from '../components/ConfirmDialog';
 import LiabilityList from '../components/LiabilityList';
 import NetWorthCard from '../components/NetWorthCard';
 import { AssetListSkeleton, ChartSkeleton, NetWorthSkeleton } from '../components/Skeleton';
+import TrackAllocationCard from '../components/TrackAllocationCard';
 import { Button } from '../components/ui/button';
 import { useAllocation } from '../hooks/useAllocation';
 import { useAssets } from '../hooks/useAssets';
@@ -149,6 +150,8 @@ export default function AssetOverview() {
       </div>
 
       {nwLoading ? <NetWorthSkeleton /> : <NetWorthCard summary={summary} />}
+
+      {!assetsLoading && assets.length > 0 && <TrackAllocationCard assets={assets} />}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {nwLoading ? <ChartSkeleton /> : <AssetPieChart summary={summary} />}
