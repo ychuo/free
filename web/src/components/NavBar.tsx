@@ -11,6 +11,7 @@ const links = [
   { to: '/transactions', label: '交易' },
   { to: '/market-pulse', label: '脉搏' },
   { to: '/strategies', label: '策略' },
+  { to: '/signals', label: '信号' },
   { to: '/guide', label: '指南' },
 ];
 

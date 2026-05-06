@@ -9,6 +9,8 @@ import ReturnAttribution from './pages/ReturnAttribution';
 import StrategyExplorer from './pages/StrategyExplorer';
 import TransactionList from './pages/TransactionList';
 import UserGuide from './pages/UserGuide';
+import SignalDiscovery from './pages/SignalDiscovery';
+import SignalHistory from './pages/SignalHistory';
 
 export default function App() {
   return (
@@ -23,6 +25,8 @@ export default function App() {
           <Route path="/market-pulse" element={<MarketPulse />} />
           <Route path="/strategies" element={<StrategyExplorer />} />
           <Route path="/guide" element={<UserGuide />} />
+          <Route path="/signals" element={<SignalDiscovery />} />
+          <Route path="/signal-history" element={<SignalHistory />} />
         </Route>
       </Routes>
       <Toaster
