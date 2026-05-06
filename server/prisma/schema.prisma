@@ -144,3 +144,15 @@ model StrategyTemplate {
   riskLevel   String
   createdAt   DateTime @default(now())
 }
+
+model MarketIndicator {
+  id            String   @id @default(uuid())
+  market        String   @default("A_STOCK")
+  indicatorType String
+  category      String
+  data          Json
+  fetchedAt     DateTime @default(now())
+
+  @@unique([market, indicatorType, category])
+  @@index([fetchedAt])
+}
