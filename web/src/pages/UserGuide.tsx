@@ -251,7 +251,8 @@ export default function UserGuide() {
             <strong>驱动事件</strong>：触发该概念升温的具体原因（如政策发布、行业催化）
           </li>
           <li>
-            <strong>龙头股</strong>：该概念中市场关注度最高的代表性标的
+            <strong>龙头股</strong>
+            ：该概念中市场关注度最高的代表性标的（当前数据源暂不提供，显示为空）
           </li>
           <li>
             <strong>成分股数量</strong>：该概念包含的股票数量
