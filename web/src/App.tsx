@@ -5,8 +5,8 @@ import AllocationAnalysis from './pages/AllocationAnalysis';
 import AssetOverview from './pages/AssetOverview';
 import FireTracking from './pages/FireTracking';
 import ReturnAttribution from './pages/ReturnAttribution';
-import TransactionList from './pages/TransactionList';
 import StrategyExplorer from './pages/StrategyExplorer';
+import TransactionList from './pages/TransactionList';
 import UserGuide from './pages/UserGuide';
 
 export default function App() {

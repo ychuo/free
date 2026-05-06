@@ -1,13 +1,13 @@
 import { ArrowRight, TrendingUp } from 'lucide-react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Badge } from '../components/ui/badge';
+import { Button } from '../components/ui/button';
+import { Card } from '../components/ui/card';
 import { useStrategies } from '../hooks/useStrategies';
 import { api } from '../lib/api';
 import { cn } from '../lib/utils';
 import type { StrategyTemplate } from '../types';
-import { Card } from '../components/ui/card';
-import { Badge } from '../components/ui/badge';
-import { Button } from '../components/ui/button';
 
 const TRACK_MAP: Record<string, { label: string; color: string }> = {
   value: { label: '价值轨道', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
@@ -95,16 +95,21 @@ export default function StrategyExplorer() {
                   <div>
                     <div className="flex items-center gap-2 mb-1">
                       <h3 className="text-sm font-serif font-medium text-deep">{tmpl.name}</h3>
-                      <Badge variant="outline" className={cn('text-[10px] px-1.5 py-0', track.color)}>
+                      <Badge
+                        variant="outline"
+                        className={cn('text-[10px] px-1.5 py-0', track.color)}
+                      >
                         {track.label}
                       </Badge>
                     </div>
                     <span className={cn('text-[11px]', risk.color)}>{risk.label}</span>
                   </div>
-                  <TrendingUp className={cn(
-                    'h-4 w-4',
-                    tmpl.type === 'value' ? 'text-emerald-500' : 'text-amber-500',
-                  )} />
+                  <TrendingUp
+                    className={cn(
+                      'h-4 w-4',
+                      tmpl.type === 'value' ? 'text-emerald-500' : 'text-amber-500',
+                    )}
+                  />
                 </div>
 
                 <p className="text-[12px] text-stone leading-relaxed mb-3 line-clamp-2">

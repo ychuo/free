@@ -6,8 +6,8 @@ import {
   type CreateAssetInput,
   DEFAULT_CURRENCY,
   SUPPORTED_CURRENCIES,
-  TrackType,
   TRACK_LABELS,
+  TrackType,
 } from '../types';
 import { Button } from './ui/button';
 import { Input } from './ui/input';

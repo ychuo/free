@@ -9,6 +9,7 @@ const links = [
   { to: '/allocation', label: '配置' },
   { to: '/returns', label: '收益' },
   { to: '/transactions', label: '交易' },
+  { to: '/strategies', label: '策略' },
   { to: '/guide', label: '指南' },
 ];
 

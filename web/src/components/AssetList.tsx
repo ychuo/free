@@ -1,7 +1,7 @@
 import { Pencil, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import type { Asset, CreateAssetInput, MarketPrice } from '../types';
-import { type AssetCategory, CATEGORY_LABELS, type TrackType, TRACK_LABELS } from '../types';
+import { TRACK_LABELS, type TrackType } from '../types';
 import AssetForm from './AssetForm';
 import ConfirmDialog from './ConfirmDialog';
 import Modal from './Modal';
@@ -51,7 +51,7 @@ export default function AssetList({ assets, prices, onCreate, onUpdate, onDelete
           {Object.entries(grouped).map(([cat, items]) => (
             <div key={cat}>
               <h4 className="text-[11px] font-medium text-stone mb-1.5 px-0.5">
-                {TRACK_LABELS[key as TrackType] || key}
+                {TRACK_LABELS[cat as TrackType] || cat}
                 <span className="ml-1.5 text-stone/60">{items.length}</span>
               </h4>
               <div className="space-y-1">

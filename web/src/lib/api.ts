@@ -139,7 +139,6 @@ export const api = {
   strategies: {
     list: (type?: string) =>
       request<StrategyTemplate[]>(`/strategies${type ? `?type=${type}` : ''}`),
-    get: (id: string) =>
-      request<StrategyTemplate>(`/strategies/${id}`),
+    get: (id: string) => request<StrategyTemplate>(`/strategies/${id}`),
   },
 };
