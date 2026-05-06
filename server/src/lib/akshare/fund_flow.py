@@ -4,7 +4,7 @@ import akshare as ak
 
 def main():
     try:
-        north = ak.stock_hsgt_north_net_flow_in_em(symbol="北上")
+        north = ak.stock_hsgt_fund_flow_summary_em()
         daily_flow = float(north.iloc[-1].get("净流入", 0) or 0) if len(north) > 0 else 0
         weekly_flow = float(north.tail(5)["净流入"].sum() or 0) if len(north) >= 5 else 0
 
@@ -12,7 +12,7 @@ def main():
         flows = []
         for _, row in sector.iterrows():
             flows.append({
-                "sector": row.get("名称", ""),
+                "sector": str(row.get("名称", "")),
                 "netInflow": float(row.get("主力净流入-净额", 0) or 0) / 1e8,
                 "direction": "inflow" if float(row.get("主力净流入-净额", 0) or 0) > 0 else "outflow",
             })

@@ -16,9 +16,9 @@ def main():
         for _, row in df.iterrows():
             change = float(row.get("涨跌幅", 0) or 0)
             result.append({
-                "name": row.get("板块名称", ""),
+                "name": str(row.get("板块名称", "")),
                 "changePercent": change,
-                "leadingStock": row.get("领涨股票", ""),
+                "leadingStock": str(row.get("领涨股票", "")),
                 "leadingStockChange": float(row.get("领涨股票-涨跌幅", 0) or 0),
                 "turnover": float(row.get("换手率", 0) or 0),
                 "fundFlowDirection": fund_flow_direction(change),

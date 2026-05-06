@@ -5,12 +5,12 @@ import akshare as ak
 
 def main():
     try:
-        df = ak.stock_board_industry_pe_em()
+        df = ak.stock_board_industry_spot_em()
         now = datetime.now().isoformat()
         result = []
         for _, row in df.iterrows():
             result.append({
-                "sector": row.get("板块名称", ""),
+                "sector": str(row.get("板块名称", "")),
                 "currentPE": float(row.get("市盈率", 0) or 0),
                 "pePercentile": float(row.get("市盈率分位", 0) or 0),
                 "currentPB": float(row.get("市净率", 0) or 0),
