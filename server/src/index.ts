@@ -6,6 +6,7 @@ import { FundAdapter } from './lib/adapters/FundAdapter';
 import { HStockAdapter } from './lib/adapters/HStockAdapter';
 import { UStockAdapter } from './lib/adapters/UStockAdapter';
 import { exchangeRateService } from './lib/ExchangeRateService';
+import { marketDataService } from './lib/MarketDataService';
 import { priceService } from './lib/PriceService';
 
 priceService.register(new AStockAdapter());
@@ -22,6 +23,7 @@ try {
 
   priceService.startScheduler();
   exchangeRateService.startScheduler();
+  marketDataService.startScheduler();
 } catch (err) {
   app.log.error(err);
   process.exit(1);
