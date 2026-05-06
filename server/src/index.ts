@@ -27,16 +27,19 @@ try {
   marketDataService.startScheduler();
 
   // Signal computation: every 2 hours, offset from market data refresh
-  const signalInterval = setInterval(() => {
-    signalCalculator.computeAll().catch((e) =>
-      console.error('[SignalCalculator] Compute error:', e),
-    );
-  }, 2 * 60 * 60 * 1000);
+  const _signalInterval = setInterval(
+    () => {
+      signalCalculator
+        .computeAll()
+        .catch((e) => console.error('[SignalCalculator] Compute error:', e));
+    },
+    2 * 60 * 60 * 1000,
+  );
   // Initial computation after 30s (wait for market data to load)
   setTimeout(() => {
-    signalCalculator.computeAll().catch((e) =>
-      console.error('[SignalCalculator] Initial compute error:', e),
-    );
+    signalCalculator
+      .computeAll()
+      .catch((e) => console.error('[SignalCalculator] Initial compute error:', e));
   }, 30000);
 } catch (err) {
   app.log.error(err);

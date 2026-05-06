@@ -15,16 +15,16 @@ interface ScoreResult {
 
 const VALUE_WEIGHTS = [
   { name: 'valuation', label: '估值安全边际', weight: 0.35 },
-  { name: 'quality', label: '生意质量', weight: 0.30 },
-  { name: 'moat', label: '护城河信号', weight: 0.20 },
+  { name: 'quality', label: '生意质量', weight: 0.3 },
+  { name: 'moat', label: '护城河信号', weight: 0.2 },
   { name: 'catalyst', label: '催化剂', weight: 0.15 },
 ];
 
 const MOMENTUM_WEIGHTS = [
-  { name: 'heat', label: '概念热度', weight: 0.30 },
-  { name: 'capital', label: '资金信号', weight: 0.30 },
-  { name: 'trend', label: '趋势强度', weight: 0.20 },
-  { name: 'sentiment', label: '情绪信号', weight: 0.20 },
+  { name: 'heat', label: '概念热度', weight: 0.3 },
+  { name: 'capital', label: '资金信号', weight: 0.3 },
+  { name: 'trend', label: '趋势强度', weight: 0.2 },
+  { name: 'sentiment', label: '情绪信号', weight: 0.2 },
 ];
 
 export class SignalCalculator {

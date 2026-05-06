@@ -174,6 +174,9 @@ export const api = {
         body: JSON.stringify(data),
       }),
     portfolioAdvice: () => request<PortfolioAdvice>('/signals/portfolio-advice'),
-    refresh: () => request<{ valueCount: number; momentumCount: number }>('/signals/refresh', { method: 'POST' }),
+    refresh: () =>
+      request<{ valueCount: number; momentumCount: number }>('/signals/refresh', {
+        method: 'POST',
+      }),
   },
 };

@@ -10,10 +10,7 @@ export function useSignals(track?: string) {
 
   const fetch = useCallback(async () => {
     setLoading(true);
-    const [s, a] = await Promise.all([
-      api.signals.list(track),
-      api.signals.portfolioAdvice(),
-    ]);
+    const [s, a] = await Promise.all([api.signals.list(track), api.signals.portfolioAdvice()]);
     setSignals(s);
     setAdvice(a);
     setLoading(false);

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { api } from '../lib/api';
-import type { SignalHistoryItem } from '../types';
 import { Badge } from '../components/ui/badge';
+import { api } from '../lib/api';
 import { cn } from '../lib/utils';
+import type { SignalHistoryItem } from '../types';
 
 const ACTION_LABELS: Record<string, string> = {
   followed: '跟进',
@@ -82,7 +82,9 @@ export default function SignalHistory() {
                   <td className="py-2 pr-4 text-right tabular-nums">
                     {item.outcome ? (
                       <span
-                        className={item.outcome.changePercent > 0 ? 'text-red-500' : 'text-emerald-600'}
+                        className={
+                          item.outcome.changePercent > 0 ? 'text-red-500' : 'text-emerald-600'
+                        }
                       >
                         {item.outcome.changePercent > 0 ? '+' : ''}
                         {item.outcome.changePercent.toFixed(2)}%

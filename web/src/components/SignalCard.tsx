@@ -1,11 +1,11 @@
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useState } from 'react';
+import { cn } from '../lib/utils';
 import type { SignalItem } from '../types';
 import FactorBreakdown from './FactorBreakdown';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
-import { cn } from '../lib/utils';
 
 const STAGE_LABELS: Record<string, { label: string; color: string }> = {
   early: { label: '早期', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
@@ -47,7 +47,10 @@ export default function SignalCard({ signal, journalNote, journalAction, onSaveJ
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
             <h3 className="text-sm font-serif font-medium text-deep">{signal.targetName}</h3>
-            <Badge variant="outline" className="text-[10px] px-1.5 py-0 bg-brand/5 text-brand border-brand/20">
+            <Badge
+              variant="outline"
+              className="text-[10px] px-1.5 py-0 bg-brand/5 text-brand border-brand/20"
+            >
               {TRACK_LABELS[signal.track]}
             </Badge>
             <Badge variant="outline" className={cn('text-[10px] px-1.5 py-0', stage.color)}>
@@ -55,10 +58,16 @@ export default function SignalCard({ signal, journalNote, journalAction, onSaveJ
             </Badge>
           </div>
           <div className="flex items-center gap-3 mt-2">
-            <span className={cn(
-              'text-2xl font-bold tabular-nums',
-              signal.score > 70 ? 'text-emerald-600' : signal.score > 50 ? 'text-amber-600' : 'text-stone',
-            )}>
+            <span
+              className={cn(
+                'text-2xl font-bold tabular-nums',
+                signal.score > 70
+                  ? 'text-emerald-600'
+                  : signal.score > 50
+                    ? 'text-amber-600'
+                    : 'text-stone',
+              )}
+            >
               {signal.score}
             </span>
             <span className="text-[11px] text-stone">
@@ -66,19 +75,30 @@ export default function SignalCard({ signal, journalNote, journalAction, onSaveJ
             </span>
           </div>
         </div>
-        {expanded ? <ChevronUp className="h-4 w-4 text-stone" /> : <ChevronDown className="h-4 w-4 text-stone" />}
+        {expanded ? (
+          <ChevronUp className="h-4 w-4 text-stone" />
+        ) : (
+          <ChevronDown className="h-4 w-4 text-stone" />
+        )}
       </div>
 
       {expanded && (
-        <div className="mt-4 pt-4 border-t border-sand/60 space-y-4 animate-fade-up" onClick={(e) => e.stopPropagation()}>
+        // biome-ignore lint/a11y/noStaticElementInteractions: stopPropagation only, no interaction
+        <div
+          className="mt-4 pt-4 border-t border-sand/60 space-y-4 animate-fade-up"
+          onClick={(e) => e.stopPropagation()}
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') e.stopPropagation();
+          }}
+        >
           <FactorBreakdown factors={signal.factors} totalScore={signal.score} />
 
           {signal.backtest && (
             <div className="rounded border border-sand/60 bg-parchment/50 p-3">
               <h4 className="text-[11px] font-medium text-deep mb-1">历史回测参考</h4>
               <p className="text-[12px] text-stone">
-                类似信号出现后 3 个月：上涨概率 {signal.backtest.threeMonthProb}%，
-                中位数回报 +{signal.backtest.threeMonthMedian}%
+                类似信号出现后 3 个月：上涨概率 {signal.backtest.threeMonthProb}%， 中位数回报 +
+                {signal.backtest.threeMonthMedian}%
                 <span className="text-[10px] text-stone/60 ml-1">
                   (样本 {signal.backtest.sampleSize})
                 </span>

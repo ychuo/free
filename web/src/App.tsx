@@ -6,11 +6,11 @@ import AssetOverview from './pages/AssetOverview';
 import FireTracking from './pages/FireTracking';
 import MarketPulse from './pages/MarketPulse';
 import ReturnAttribution from './pages/ReturnAttribution';
+import SignalDiscovery from './pages/SignalDiscovery';
+import SignalHistory from './pages/SignalHistory';
 import StrategyExplorer from './pages/StrategyExplorer';
 import TransactionList from './pages/TransactionList';
 import UserGuide from './pages/UserGuide';
-import SignalDiscovery from './pages/SignalDiscovery';
-import SignalHistory from './pages/SignalHistory';
 
 export default function App() {
   return (

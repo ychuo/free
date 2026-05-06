@@ -10,7 +10,9 @@ export default function SignalDiscovery() {
   const [track, setTrack] = useState<'value' | 'momentum'>('value');
   const { signals, advice, loading, saveJournal, refetch } = useSignals(track);
   const [refreshing, setRefreshing] = useState(false);
-  const [journalData, setJournalData] = useState<Record<string, { note: string; action: string }>>({});
+  const [journalData, setJournalData] = useState<Record<string, { note: string; action: string }>>(
+    {},
+  );
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -33,7 +35,9 @@ export default function SignalDiscovery() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-lg font-serif font-medium tracking-wide text-deep">信号发现</h1>
-          <p className="text-[12px] text-stone mt-0.5">评分引擎帮你发现价值投资机会和热点交易信号</p>
+          <p className="text-[12px] text-stone mt-0.5">
+            评分引擎帮你发现价值投资机会和热点交易信号
+          </p>
         </div>
         <Button onClick={handleRefresh} variant="outline" size="sm" disabled={refreshing}>
           <RefreshCw className={cn('h-3 w-3 mr-1', refreshing && 'animate-spin')} />
@@ -81,9 +85,7 @@ export default function SignalDiscovery() {
           ))}
         </div>
       ) : signals.length === 0 ? (
-        <p className="text-center text-stone text-[12px] py-12">
-          暂无信号，点击"刷新信号"开始计算
-        </p>
+        <p className="text-center text-stone text-[12px] py-12">暂无信号，点击"刷新信号"开始计算</p>
       ) : (
         <div className="space-y-3">
           {signals.map((signal) => {

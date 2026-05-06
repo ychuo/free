@@ -34,7 +34,11 @@ export default function FactorBreakdown({ factors, totalScore }: Props) {
         <span
           className={cn(
             'text-sm font-bold tabular-nums',
-            totalScore > 70 ? 'text-emerald-600' : totalScore > 50 ? 'text-amber-600' : 'text-stone',
+            totalScore > 70
+              ? 'text-emerald-600'
+              : totalScore > 50
+                ? 'text-amber-600'
+                : 'text-stone',
           )}
         >
           {totalScore}
